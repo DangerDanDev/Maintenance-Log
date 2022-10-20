@@ -55,11 +55,12 @@ public class LogEntryPanel {
         //frame.setContentPane(entryPanel.getContentPanel());
         frame.setContentPane(panelScroller);
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 1; i++)
             panel.add(new LogEntryPanel().getContentPanel());
 
         frame.setSize(800,300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 
