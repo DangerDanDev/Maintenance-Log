@@ -22,6 +22,8 @@ public class Table {
     public Table(String name, ArrayList<Column> columns, Connection connection) throws SQLException {
         this.NAME = name;
 
+        //every table should start with the ID field, and this line
+        //makes it automatically happen for all Table subclasses
         columns.add(0, COL_ID);
         this.COLUMNS = columns;
 
