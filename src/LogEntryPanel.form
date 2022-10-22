@@ -48,6 +48,7 @@
               <component id="8822e" class="javax.swing.JTextArea" binding="tbCrew">
                 <constraints/>
                 <properties>
+                  <background color="-4144960"/>
                   <lineWrap value="true"/>
                   <wrapStyleWord value="true"/>
                 </properties>
