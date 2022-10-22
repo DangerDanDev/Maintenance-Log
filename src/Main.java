@@ -1,3 +1,6 @@
+import GUI.DiscrepancyPanel;
+import GUI.LogEntryPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
