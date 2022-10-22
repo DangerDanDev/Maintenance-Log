@@ -36,6 +36,11 @@ public class Table {
         System.out.println(sqlCreateStr);
         statement.executeUpdate(sqlCreateStr);
 
+        //Rather than creating all of the columns in the CREATE TABLE statement, we
+        //add them via the following ALTER TABLE statement after creation. This way, columns that were added
+        //to the program after the table was created will be auto-added with no separate update logic
+        // or other nonsense to fiddle around with;
+        // pre-existing tables will not be added, as they will throw an SQLException that is harmlessly caught.
         for (Column column : COLUMNS) {
             try {
                 String addColumnStatement = "ALTER TABLE " + NAME + " ADD COLUMN " + column;
