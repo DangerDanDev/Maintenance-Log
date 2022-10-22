@@ -33,26 +33,7 @@ public class LogEntryPanel {
         return this.panel1;
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        JScrollPane panelScroller = new JScrollPane(panel);
-        panelScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        panelScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        //LogEntryPanel entryPanel = new LogEntryPanel();
-        //frame.setContentPane(entryPanel.getContentPanel());
-        frame.setContentPane(panelScroller);
-
-        for(int i = 0; i < 1; i++)
-            panel.add(new LogEntryPanel().getContentPanel());
-
-        frame.setSize(800,300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setVisible(true);
-    }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
