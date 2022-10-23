@@ -2,6 +2,7 @@ import GUI.DiscrepancyPanel;
 import GUI.LogEntryPanel;
 import GUI.TailNumberBrowserPanel;
 import data.DatabaseManager;
+import data.Tables.DiscrepancyTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +33,9 @@ public class Main {
 
         DatabaseManager.initialize();
 
-        frame.setContentPane(new TailNumberBrowserPanel().getContentPane());
+        TailNumberBrowserPanel tailNumberBrowserPanel = new TailNumberBrowserPanel();
+        tailNumberBrowserPanel.refreshData();
+        frame.setContentPane(tailNumberBrowserPanel.getContentPane());
 
         frame.setVisible(true);
     }

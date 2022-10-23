@@ -1,4 +1,6 @@
-package data;
+package data.Tables;
+
+import data.Column;
 
 import javax.print.attribute.standard.MediaSize;
 import java.awt.*;
@@ -7,9 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class Table {
-    public final ArrayList<Column> COLUMNS;
-    public final String NAME;
+public abstract class Table {
+    protected final ArrayList<Column> COLUMNS = new ArrayList<>();
 
     public static final String TEXT = " TEXT ";
     public static final String INTEGER = " INTEGER ";
@@ -20,22 +21,23 @@ public class Table {
 
     public final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY + AUTO_INCREMENT);
 
-    public Table(String name, ArrayList<Column> columns, Connection connection) throws SQLException {
-        this.NAME = name;
-
+    public Table() {
         //every table should start with the ID field, and this line
         //makes it automatically happen for all Table subclasses
-        columns.add(0, COL_ID);
-        this.COLUMNS = columns;
-
-        createTableIfNotExists(connection);
+        addColumn(COL_ID);
     }
 
-    private void createTableIfNotExists(Connection connection) throws SQLException {
+    public abstract String getName();
+
+    protected void addColumn(Column column) {
+        this.COLUMNS.add(column);
+    }
+
+    public void createTableIfNotExists(Connection connection) throws SQLException {
 
         Statement statement = connection.createStatement();
 
-        String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + NAME + " (" + COL_ID.toString() + ")";
+        String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + COL_ID.toString() + ")";
         System.out.println(sqlCreateStr);
         statement.executeUpdate(sqlCreateStr);
 
@@ -46,7 +48,7 @@ public class Table {
         // pre-existing tables will not be added, as they will throw an SQLException that is harmlessly caught.
         for (Column column : COLUMNS) {
             try {
-                String addColumnStatement = "ALTER TABLE " + NAME + " ADD COLUMN " + column;
+                String addColumnStatement = "ALTER TABLE " + getName() + " ADD COLUMN " + column;
                 System.out.println(addColumnStatement);
                 statement.executeUpdate(addColumnStatement);
             } catch (SQLException e) {

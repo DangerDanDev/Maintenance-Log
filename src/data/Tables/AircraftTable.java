@@ -1,10 +1,7 @@
 package data.Tables;
 
 import data.Column;
-import data.Table;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AircraftTable extends Table {
@@ -18,16 +15,15 @@ public class AircraftTable extends Table {
     public static final Column COL_TAIL_NUM = new Column("tail_number", Table.TEXT);
     public static final Column COL_KEY_TYPE_1 = new Column("key_type_1", Table.TEXT);
 
-    public static ArrayList<Column> getColumns() {
-        ArrayList<Column> columns = new ArrayList<>();
+    public AircraftTable() {
+        super();
 
-        columns.add(COL_TAIL_NUM);
-        columns.add(COL_KEY_TYPE_1);
-
-        return columns;
+        addColumn(COL_TAIL_NUM);
+        addColumn(COL_KEY_TYPE_1);
     }
 
-    public AircraftTable(Connection connection) throws SQLException {
-        super(_NAME, getColumns(), connection);
+    @Override
+    public String getName() {
+        return "Aircraft";
     }
 }
