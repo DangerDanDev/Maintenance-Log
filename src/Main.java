@@ -1,5 +1,7 @@
 import GUI.DiscrepancyPanel;
 import GUI.LogEntryPanel;
+import GUI.TailNumberBrowserPanel;
+import data.DatabaseManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +13,9 @@ public class Main {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.setResizable(false);
 
-        JPanel borderPanel = new JPanel(new BorderLayout());
+        //THIS SECTION IS FOR TESTING THE BORDERPANE LAYOUT WITH
+        //DISCREPANCY ON THE LEFT AND LOG ENTRIES ON THE RIGHT
+        /*JPanel borderPanel = new JPanel(new BorderLayout());
         frame.setContentPane(borderPanel);
 
         JPanel logEntriesPanel = getLogEntriesPanel();
@@ -24,7 +28,11 @@ public class Main {
         borderPanel.add(discrepancyPanel.getContentPane(), BorderLayout.WEST);
 
         for(int i = 0; i < 3; i++)
-            logEntriesPanel.add(new LogEntryPanel().getContentPanel());
+            logEntriesPanel.add(new LogEntryPanel().getContentPanel());*/
+
+        DatabaseManager.initialize();
+
+        frame.setContentPane(new TailNumberBrowserPanel().getContentPane());
 
         frame.setVisible(true);
     }

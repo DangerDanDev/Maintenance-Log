@@ -7,23 +7,27 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 
-    private static Connection connection;
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + NAME);
+    }
+
+    public static AircraftTable AIRCRAFT_TABLE;
 
     public static final String NAME = "logbook_db.db";
 
-    public static void main(String[] args)
+    public static void initialize()
     {
 
-        connection = null;
+        Connection connection = null;
 
         try
         {
             // create a database connection
-            connection = DriverManager.getConnection("jdbc:sqlite:" + NAME);
+            connection = getConnection();
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-            Table aircraft = new AircraftTable(connection);
+             AIRCRAFT_TABLE = new AircraftTable(connection);
         }
         catch(SQLException e)
         {

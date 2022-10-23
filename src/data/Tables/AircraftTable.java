@@ -13,7 +13,7 @@ public class AircraftTable extends Table {
     public static final String INTEGER = Table.INTEGER;
     public static final String REAL = Table.REAL;
 
-    public static final String NAME = "Aircraft";
+    public static final String _NAME = "Aircraft";
 
     public static final Column COL_TAIL_NUM = new Column("tail_number", Table.TEXT);
     public static final Column COL_KEY_TYPE_1 = new Column("key_type_1", Table.TEXT);
@@ -28,6 +28,6 @@ public class AircraftTable extends Table {
     }
 
     public AircraftTable(Connection connection) throws SQLException {
-        super(NAME, getColumns(), connection);
+        super(_NAME, getColumns(), connection);
     }
 }

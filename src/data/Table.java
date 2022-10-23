@@ -16,8 +16,9 @@ public class Table {
     public static final String REAL = " REAL ";
     public static final String PRIMARY_KEY = " PRIMARY KEY ";
     public static final String NOT_NULL = " NOT NULL ";
+    public static final String AUTO_INCREMENT = "AUTOINCREMENT";
 
-    public final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY);
+    public final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY + AUTO_INCREMENT);
 
     public Table(String name, ArrayList<Column> columns, Connection connection) throws SQLException {
         this.NAME = name;
