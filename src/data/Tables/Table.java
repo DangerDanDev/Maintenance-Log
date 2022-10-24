@@ -39,6 +39,7 @@ public abstract class Table {
 
     public void createTableIfNotExists(Connection connection) throws SQLException {
 
+        System.out.println("Creating table: " + getName());
         Statement statement = connection.createStatement();
 
         String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + COL_ID.toString() + ")";
