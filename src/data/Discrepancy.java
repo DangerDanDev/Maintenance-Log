@@ -1,0 +1,74 @@
+package data;
+
+import java.sql.Date;
+
+public class Discrepancy {
+    private long id = -1;
+    private String tailNum;
+    private String narrative;
+    private Date dateCreated;
+    private String turnover;
+    private String partsOnOrder;
+
+    public Discrepancy() {
+
+    }
+
+    public Discrepancy(long id, String tailNum, String narrative, Date dateCreated, String turnover, String partsOnOrder) {
+        setId(id);
+        setTailNum(tailNum);
+        setNarrative(narrative);
+        setDateCreated(dateCreated);
+        setTurnover(turnover);
+        setPartsOnOrder(partsOnOrder);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getTailNum() {
+        return tailNum;
+    }
+
+    public void setTailNum(String tailNum) {
+        this.tailNum = tailNum;
+    }
+
+    public String getNarrative() {
+        return narrative;
+    }
+
+    public void setNarrative(String narrative) {
+        this.narrative = narrative;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getTurnover() {
+        return turnover;
+    }
+
+    public void setTurnover(String turnover) {
+        this.turnover = turnover;
+    }
+
+    public String getPartsOnOrder() {
+        return partsOnOrder;
+    }
+
+    public void setPartsOnOrder(String partsOnOrder) {
+        this.partsOnOrder = partsOnOrder;
+    }
+
+}

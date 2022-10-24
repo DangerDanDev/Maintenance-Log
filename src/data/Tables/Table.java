@@ -19,7 +19,7 @@ public abstract class Table {
     public static final String NOT_NULL = " NOT NULL ";
     public static final String AUTO_INCREMENT = "AUTOINCREMENT";
 
-    public final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY + AUTO_INCREMENT);
+    public static final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY + AUTO_INCREMENT);
 
     public Table() {
         //every table should start with the ID field, and this line
