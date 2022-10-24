@@ -62,7 +62,7 @@ public class TailNumberBrowserPanel {
 
                 //SELECT * FROM discrepancies
                 //WHERE tail_number = cbTailNumbers.SelectedItem()
-                String discrepanciesQuery = "SELECT * FROM " + DatabaseManager.DISCREPANCY_TABLE.getName() +
+                String discrepanciesQuery = "SELECT * FROM " + DiscrepancyTable.get().getName() +
                         " WHERE " + DiscrepancyTable.COL_TAIL_NUM.NAME + " = " + cbTailNumbers.getSelectedItem().toString();
                 ResultSet resultSet = statement.executeQuery(discrepanciesQuery);
 

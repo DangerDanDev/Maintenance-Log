@@ -21,10 +21,14 @@ public abstract class Table {
 
     public static final Column COL_ID = new Column("_id", INTEGER + PRIMARY_KEY + AUTO_INCREMENT);
 
-    public Table() {
+    protected Table() {
         //every table should start with the ID field, and this line
         //makes it automatically happen for all Table subclasses
         addColumn(COL_ID);
+    }
+
+    public static String References(Table table, Column column) {
+        return " REFERENCES " + table.getName() +"(" + column.NAME +")";
     }
 
     public abstract String getName();
