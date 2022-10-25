@@ -48,11 +48,12 @@ public class StatusTable extends Table {
 
             } catch (SQLException ex) {
                 System.err.println(ex.getMessage());
+                throw ex;
             }
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
+            throw ex;
         }
-
 
         return statuses;
     }
@@ -61,8 +62,6 @@ public class StatusTable extends Table {
         Status status = new Status(resultSet.getLong(COL_ID.NAME),
                 resultSet.getString(COL_TITLE.NAME),
                 resultSet.getString(COL_ABBREVIATION.NAME));
-
-        System.out.println("Status ID: " + status.getId());
 
         return status;
     }

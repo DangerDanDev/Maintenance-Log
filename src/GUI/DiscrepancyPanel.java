@@ -37,7 +37,6 @@ public class DiscrepancyPanel {
         try (Connection conn = DatabaseManager.getConnection()) {
             StatusTable.get().populateStatusComboBox(cbStatus, conn);
             setDiscrepancy(discrepancy);
-            System.out.println("Status: " + getDiscrepancy().getStatus().getTitle());
 
             initEventHandlers();
         } catch(SQLException ex) {
@@ -88,7 +87,7 @@ public class DiscrepancyPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             getDiscrepancy().setStatus((Status)cbStatus.getSelectedItem());
-            System.out.println(getDiscrepancy().getStatus().getTitle());
+            System.out.println("new status: " + getDiscrepancy().getStatus().getTitle());
         }
     }
 

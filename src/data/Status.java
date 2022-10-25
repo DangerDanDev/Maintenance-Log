@@ -38,8 +38,8 @@ public class Status {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Status && this instanceof Status) {
-            boolean equals = ((Status) obj).getId() == this.getId();
-            System.out.println("Result of status comparison: " + equals);
+            Status other = ((Status) obj);
+            boolean equals = other.getId() == this.getId();
             return equals;
         }
 
