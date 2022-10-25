@@ -18,6 +18,7 @@ public class DiscrepancySnippet {
     private JPanel panel1;
     private JButton btnViewDiscrepancy;
     private JComboBox cbStatus;
+    private JCheckBox cbShowOnNotes;
 
     private Discrepancy discrepancy;
 
@@ -43,6 +44,7 @@ public class DiscrepancySnippet {
         if(discrepancy != null) {
             tbNarrative.setText(discrepancy.getNarrative());
             cbStatus.setSelectedItem(discrepancy.getStatus());
+            cbShowOnNotes.setText(getDiscrepancy().getStatus().getTitle());
             System.out.println("Status of Discrepancy '" + discrepancy.getNarrative() + ": " + getDiscrepancy().getStatus().getTitle());
         }
     }

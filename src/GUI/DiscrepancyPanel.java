@@ -24,6 +24,7 @@ public class DiscrepancyPanel {
     private JPanel contentPane;
     private JTextArea tbNarrative;
     private JButton btnSave;
+    private JTextField tbDiscoveredBy;
 
     private Discrepancy discrepancy;
 
@@ -65,6 +66,7 @@ public class DiscrepancyPanel {
         tbPartsOnOrder.setText(discrepancy.getPartsOnOrder());
         tbNarrative.setText(discrepancy.getNarrative());
 
+        tbDiscoveredBy.setText(getDiscrepancy().getStatus().getTitle());
         cbStatus.setSelectedItem(discrepancy.getStatus());
     }
 
