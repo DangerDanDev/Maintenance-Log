@@ -39,30 +39,15 @@ public abstract class Table {
     public void createTableIfNotExists(Connection connection) throws SQLException {
 
         System.out.println("Creating table: " + getName());
-        Statement statement = connection.createStatement();
+        try(Statement statement = connection.createStatement()) {
 
-
-
-        String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + allColumnsToSQLString() +
-                ")";
-        System.out.println(sqlCreateStr);
-        statement.executeUpdate(sqlCreateStr);
-
-        //Rather than creating all of the columns in the CREATE TABLE statement, we
-        //add them via the following ALTER TABLE statement after creation. This way, columns that were added
-        //to the program after the table was created will be auto-added with no separate update logic
-        // or other nonsense to fiddle around with;
-        // pre-existing tables will not be added, as they will throw an SQLException that is harmlessly caught.
-        /*for (Column column : columns) {
-            try {
-                String addColumnStatement = "ALTER TABLE " + getName() + " ADD COLUMN " + column;
-                System.out.println(addColumnStatement);
-                statement.executeUpdate(addColumnStatement);
-            } catch (SQLException e) {
-                //System.out.println("Column (" + column + ") probably already exists");
-                System.err.println(e.getMessage());
-            }
-        }*/
+            String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + allColumnsToSQLString() +
+                    ")";
+            System.out.println(sqlCreateStr);
+            statement.executeUpdate(sqlCreateStr);
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
@@ -79,6 +64,15 @@ public abstract class Table {
                 stringBuilder.append(",");
         }
 
+
         return stringBuilder.toString();
+    }
+
+    public static String getUpdateRowString(Column column, String value) {
+        return column + "=" + value;
+    }
+
+    public static String getUpdateRowStringAddComma(Column column, String value) {
+        return getUpdateRowString(column, value) + ", ";
     }
 }

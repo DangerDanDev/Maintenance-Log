@@ -20,10 +20,6 @@ public class Status {
     private String Title;
     private String abbreviation;
 
-    public Status() {
-
-    }
-
     public Status(long id, String title, String abbreviation) {
         setId(id);
         setTitle(title);
@@ -41,8 +37,11 @@ public class Status {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Status)
-            return ((Status) obj).getId() == this.getId();
+        if(obj instanceof Status && this instanceof Status) {
+            boolean equals = ((Status) obj).getId() == this.getId();
+            System.out.println("Result of status comparison: " + equals);
+            return equals;
+        }
 
         return super.equals(obj);
     }

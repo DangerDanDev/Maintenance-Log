@@ -5,8 +5,11 @@ import data.Discrepancy;
 import data.Tables.StatusTable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -28,7 +31,6 @@ public class DiscrepancySnippet {
 
         setDiscrepancy(discrepancy);
         btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
-
     }
 
     public Discrepancy getDiscrepancy() {
@@ -41,6 +43,7 @@ public class DiscrepancySnippet {
         if(discrepancy != null) {
             tbNarrative.setText(discrepancy.getNarrative());
             cbStatus.setSelectedItem(discrepancy.getStatus());
+            System.out.println("Status of Discrepancy '" + discrepancy.getNarrative() + ": " + getDiscrepancy().getStatus().getTitle());
         }
     }
 
@@ -48,6 +51,10 @@ public class DiscrepancySnippet {
         return panel1;
     }
 
+    /**
+     * Listens for when the user clicks the View Discrepancy button to open the
+     * full discrepancy view and editing pane
+     */
     private class ViewDiscrepancyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

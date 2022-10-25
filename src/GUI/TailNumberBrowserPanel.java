@@ -42,12 +42,15 @@ public class TailNumberBrowserPanel {
             try(Statement statement = connection.createStatement()) {
 
                 String allTailNumbersQuery = "SELECT * FROM " + AircraftTable._NAME +" ORDER BY " + AircraftTable.COL_TAIL_NUM.NAME + " ASC ";
-                ResultSet resultSet = statement.executeQuery(allTailNumbersQuery);
+                try (ResultSet resultSet = statement.executeQuery(allTailNumbersQuery)) {
 
-                while(resultSet.next()) {
-                    String tailNum = resultSet.getString(AircraftTable.COL_TAIL_NUM.NAME);
-                    System.out.println(tailNum);
-                    cbTailNumbers.addItem(tailNum);
+                    while (resultSet.next()) {
+                        String tailNum = resultSet.getString(AircraftTable.COL_TAIL_NUM.NAME);
+                        System.out.println(tailNum);
+                        cbTailNumbers.addItem(tailNum);
+                    }
+                } catch (SQLException ex) {
+                    System.err.println(ex.getMessage());
                 }
             }
 
@@ -76,18 +79,21 @@ public class TailNumberBrowserPanel {
                         " AND " + DiscrepancyStatusEqualsStatusID;
 
                 System.out.println(discrepanciesQuery);
-                ResultSet resultSet = statement.executeQuery(discrepanciesQuery);
+                try (ResultSet resultSet = statement.executeQuery(discrepanciesQuery)) {
 
-                pnlDiscrepancies.removeAll();
-                pnlDiscrepancies.setLayout(new GridLayout(0, 1));
+                    pnlDiscrepancies.removeAll();
+                    pnlDiscrepancies.setLayout(new GridLayout(0, 1));
 
-                while (resultSet.next()) {
+                    while (resultSet.next()) {
 
-                    //pull the discrepancy from the result set
-                    Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
+                        //pull the discrepancy from the result set
+                        Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
 
-                    //add the new discrepancy to our list
-                    pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
+                        //add the new discrepancy to our list
+                        pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
+                    }
+                } catch (SQLException ex) {
+                    System.err.println(ex.getMessage());
                 }
             }
 

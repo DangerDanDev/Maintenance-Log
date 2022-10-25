@@ -29,8 +29,9 @@ public class StatusTable extends Table {
 
     public static void populateStatusComboBox(JComboBox comboBox, Connection conn) throws SQLException {
             ArrayList<Status> statuses = StatusTable.get().getAllStatuses(conn);
-            for(Status status : statuses)
+            for(Status status : statuses) {
                 comboBox.addItem(status);
+            }
     }
 
     public static ArrayList<Status> getAllStatuses(Connection connection) throws SQLException {
@@ -57,11 +58,11 @@ public class StatusTable extends Table {
     }
 
     public static Status getStatusFromResultSet(ResultSet resultSet) throws SQLException {
-        Status status = new Status();
+        Status status = new Status(resultSet.getLong(COL_ID.NAME),
+                resultSet.getString(COL_TITLE.NAME),
+                resultSet.getString(COL_ABBREVIATION.NAME));
 
-        status.setId(resultSet.getLong(COL_ID.NAME));
-        status.setTitle(resultSet.getString(COL_TITLE.NAME));
-        status.setAbbreviation(resultSet.getString(COL_ABBREVIATION.NAME));
+        System.out.println("Status ID: " + status.getId());
 
         return status;
     }

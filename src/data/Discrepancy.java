@@ -1,22 +1,23 @@
 package data;
 
 import java.sql.Date;
+import java.time.Instant;
 
 public class Discrepancy {
     private long id = -1;
     private String tailNum;
     private String narrative;
-    private Date dateCreated;
+    private Instant dateCreated;
     private String turnover;
     private String partsOnOrder;
 
     private Status status;
 
     public Discrepancy() {
-
+        this(-1, "", "", Instant.now(), "", "", null);
     }
 
-    public Discrepancy(long id, String tailNum, String narrative, Date dateCreated, String turnover, String partsOnOrder, Status status) {
+    public Discrepancy(long id, String tailNum, String narrative, Instant dateCreated, String turnover, String partsOnOrder, Status status) {
         setId(id);
         setTailNum(tailNum);
         setNarrative(narrative);
@@ -61,11 +62,11 @@ public class Discrepancy {
         this.narrative = narrative;
     }
 
-    public Date getDateCreated() {
+    public Instant getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(Instant dateCreated) {
         this.dateCreated = dateCreated;
     }
 
