@@ -12,12 +12,12 @@ import java.util.ArrayList;
  */
 public class DiscrepancyTable extends Table {
 
-    public static final Column COL_TAIL_NUM = new Column("tail_num", TEXT);
-    public static final Column COL_NARRATIVE = new Column("narrative", TEXT);
-    public static final Column COL_DATE_CREATED = new Column("date_created", INTEGER);
-    public static final Column COL_TURNOVER = new Column("turnover", TEXT);
-    public static final Column COL_PARTS_ON_ORDER = new Column("parts_on_order", TEXT);
-    public static final Column COL_STATUS = new Column("Status", INTEGER+ NOT_NULL + References(StatusTable.get(), StatusTable.COL_ID));
+    public static final Column COL_TAIL_NUM = new Column("tail_num", TEXT, NOT_NULL + References(AircraftTable.get(), AircraftTable.COL_TAIL_NUM));
+    public static final Column COL_NARRATIVE = new Column("narrative", TEXT, "");
+    public static final Column COL_DATE_CREATED = new Column("date_created", INTEGER, "");
+    public static final Column COL_TURNOVER = new Column("turnover", TEXT, "");
+    public static final Column COL_PARTS_ON_ORDER = new Column("parts_on_order", TEXT, "");
+    public static final Column COL_STATUS = new Column("Status", INTEGER,  NOT_NULL + References(StatusTable.get(), StatusTable.COL_ID));
 
     private static DiscrepancyTable discrepancyTable = new DiscrepancyTable();
     public static DiscrepancyTable get() { return discrepancyTable; }

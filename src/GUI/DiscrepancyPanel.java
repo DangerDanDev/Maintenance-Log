@@ -1,13 +1,19 @@
 package GUI;
 
+import data.DatabaseManager;
 import data.Discrepancy;
+import data.Status;
+import data.Tables.StatusTable;
+import org.sqlite.jdbc4.JDBC4Connection;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DiscrepancyPanel {
     private JComboBox cbTail;
-    //private JTextField textField1;
-    //private JTextField textField2;
     private JTextArea tbTurnover;
     private JTextArea tbPartsOnOrder;
     private JComboBox cbStatus;
@@ -21,8 +27,17 @@ public class DiscrepancyPanel {
     }
 
     public DiscrepancyPanel(Discrepancy discrepancy) {
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            StatusTable.get().populateStatusComboBox(cbStatus, conn);
+        } catch(SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
         setDiscrepancy(discrepancy);
     }
+
+
 
     public Discrepancy getDiscrepancy() {
         return discrepancy;
@@ -35,8 +50,9 @@ public class DiscrepancyPanel {
         tbTurnover.setText(discrepancy.getTurnover());
         tbPartsOnOrder.setText(discrepancy.getPartsOnOrder());
         tbNarrative.setText(discrepancy.getNarrative());
+        cbStatus.setSelectedItem(discrepancy);
 
-        //TODO: also set the status
+        cbStatus.setSelectedItem(discrepancy.getStatus());
     }
 
 }

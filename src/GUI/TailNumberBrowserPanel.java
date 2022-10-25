@@ -2,8 +2,10 @@ package GUI;
 
 import data.DatabaseManager;
 import data.Discrepancy;
+import data.Status;
 import data.Tables.AircraftTable;
 import data.Tables.DiscrepancyTable;
+import data.Tables.StatusTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,13 +62,21 @@ public class TailNumberBrowserPanel {
 
             try (Statement statement = connection.createStatement()) {
 
+                final String DiscrepancyTableAndStatusTable = DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
+
+                final String TailNumberIsSelectedOnComboBox = DiscrepancyTable.COL_TAIL_NUM + " = " + cbTailNumbers.getSelectedItem().toString() + " ";
+
+                final String DiscrepancyStatusEqualsStatusID = DiscrepancyTable.get().getName() + "." + DiscrepancyTable.COL_STATUS + "=" +
+                                                                StatusTable.get().getName() + "." + StatusTable.COL_ID + " ";
+
                 //SELECT * FROM discrepancies
                 //WHERE tail_number = cbTailNumbers.SelectedItem()
-                String discrepanciesQuery = "SELECT * FROM " + DiscrepancyTable.get().getName() +
-                        " WHERE " + DiscrepancyTable.COL_TAIL_NUM.NAME + " = " + cbTailNumbers.getSelectedItem().toString();
-                ResultSet resultSet = statement.executeQuery(discrepanciesQuery);
+                String discrepanciesQuery = "SELECT * FROM " + DiscrepancyTableAndStatusTable +
+                        " WHERE " + TailNumberIsSelectedOnComboBox +
+                        " AND " + DiscrepancyStatusEqualsStatusID;
 
                 System.out.println(discrepanciesQuery);
+                ResultSet resultSet = statement.executeQuery(discrepanciesQuery);
 
                 pnlDiscrepancies.removeAll();
                 pnlDiscrepancies.setLayout(new GridLayout(0, 1));
@@ -80,8 +90,9 @@ public class TailNumberBrowserPanel {
                             resultSet.getString(DiscrepancyTable.COL_NARRATIVE.NAME),
                             resultSet.getDate(DiscrepancyTable.COL_DATE_CREATED.NAME),
                             resultSet.getString(DiscrepancyTable.COL_TURNOVER.NAME),
-                            resultSet.getString(DiscrepancyTable.COL_PARTS_ON_ORDER.NAME)
-
+                            resultSet.getString(DiscrepancyTable.COL_PARTS_ON_ORDER.NAME),
+                            new Status(resultSet.getLong(StatusTable.COL_ID.NAME), resultSet.getString(StatusTable.COL_TITLE.NAME),
+                                    resultSet.getString(StatusTable.COL_ABBREVIATION.NAME))
                     );
 
                     //add the new discrepancy to our list

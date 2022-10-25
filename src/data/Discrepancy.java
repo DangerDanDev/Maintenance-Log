@@ -10,17 +10,31 @@ public class Discrepancy {
     private String turnover;
     private String partsOnOrder;
 
+    private Status status;
+
     public Discrepancy() {
 
     }
 
-    public Discrepancy(long id, String tailNum, String narrative, Date dateCreated, String turnover, String partsOnOrder) {
+    public Discrepancy(long id, String tailNum, String narrative, Date dateCreated, String turnover, String partsOnOrder, Status status) {
         setId(id);
         setTailNum(tailNum);
         setNarrative(narrative);
         setDateCreated(dateCreated);
         setTurnover(turnover);
         setPartsOnOrder(partsOnOrder);
+
+        setStatus(status);
+    }
+
+
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public long getId() {

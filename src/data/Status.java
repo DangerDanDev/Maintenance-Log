@@ -22,6 +22,19 @@ public class Status {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return getAbbreviation();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Status)
+            return ((Status) obj).getId() == this.getId();
+
+        return super.equals(obj);
+    }
+
     public void setId(long id) {
         this.id = id;
     }

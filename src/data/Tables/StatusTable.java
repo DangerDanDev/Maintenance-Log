@@ -1,11 +1,17 @@
 package data.Tables;
 
 import data.Column;
+import data.DatabaseManager;
+import data.Status;
+
+import javax.swing.*;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class StatusTable extends Table {
 
-    public static final Column COL_TITLE = new Column("title", TEXT);
-    public static final Column COL_ABBREVIATION = new Column("abbreviation", TEXT);
+    public static final Column COL_TITLE = new Column("title", TEXT,  NOT_NULL + UNIQUE);
+    public static final Column COL_ABBREVIATION = new Column("abbreviation", TEXT, NOT_NULL + UNIQUE);
 
     private static final StatusTable statusTable = new StatusTable();
     public static StatusTable get() { return statusTable; }
@@ -19,5 +25,38 @@ public class StatusTable extends Table {
     @Override
     public String getName() {
         return "status_table";
+    }
+
+    public void populateStatusComboBox(JComboBox comboBox, Connection conn) throws SQLException {
+            ArrayList<Status> statuses = StatusTable.get().getAllStatuses(conn);
+            for(Status status : statuses)
+                comboBox.addItem(status);
+    }
+
+    public ArrayList<Status> getAllStatuses(Connection connection) throws SQLException {
+        ArrayList<Status> statuses = new ArrayList<>();
+
+        String query = "SELECT * FROM " + StatusTable.get().getName();
+
+        try (Statement statement = connection.createStatement()) {
+            try(ResultSet resultSet = statement.executeQuery(query)) {
+
+                while(resultSet.next()) {
+                    Status status = new Status();
+                    status.setId(resultSet.getLong(COL_ID.NAME));
+                    status.setTitle(resultSet.getString(COL_TITLE.NAME));
+                    status.setAbbreviation(resultSet.getString(COL_ABBREVIATION.NAME));
+                    statuses.add(status);
+                }
+
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+
+        return statuses;
     }
 }

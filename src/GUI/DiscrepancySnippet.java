@@ -1,21 +1,34 @@
 package GUI;
 
+import data.DatabaseManager;
 import data.Discrepancy;
+import data.Tables.StatusTable;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DiscrepancySnippet {
     private JTextArea tbNarrative;
     private JPanel panel1;
     private JButton btnViewDiscrepancy;
+    private JComboBox cbStatus;
 
     private Discrepancy discrepancy;
 
     public DiscrepancySnippet(Discrepancy discrepancy) {
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            StatusTable.get().populateStatusComboBox(cbStatus, conn);
+        } catch(SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
         setDiscrepancy(discrepancy);
         btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
+
     }
 
     public Discrepancy getDiscrepancy() {
@@ -27,6 +40,7 @@ public class DiscrepancySnippet {
 
         if(discrepancy != null) {
             tbNarrative.setText(discrepancy.getNarrative());
+            cbStatus.setSelectedItem(discrepancy.getStatus());
         }
     }
 
