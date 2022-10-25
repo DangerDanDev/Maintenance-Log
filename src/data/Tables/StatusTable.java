@@ -27,13 +27,13 @@ public class StatusTable extends Table {
         return "status_table";
     }
 
-    public void populateStatusComboBox(JComboBox comboBox, Connection conn) throws SQLException {
+    public static void populateStatusComboBox(JComboBox comboBox, Connection conn) throws SQLException {
             ArrayList<Status> statuses = StatusTable.get().getAllStatuses(conn);
             for(Status status : statuses)
                 comboBox.addItem(status);
     }
 
-    public ArrayList<Status> getAllStatuses(Connection connection) throws SQLException {
+    public static ArrayList<Status> getAllStatuses(Connection connection) throws SQLException {
         ArrayList<Status> statuses = new ArrayList<>();
 
         String query = "SELECT * FROM " + StatusTable.get().getName();
@@ -42,11 +42,7 @@ public class StatusTable extends Table {
             try(ResultSet resultSet = statement.executeQuery(query)) {
 
                 while(resultSet.next()) {
-                    Status status = new Status();
-                    status.setId(resultSet.getLong(COL_ID.NAME));
-                    status.setTitle(resultSet.getString(COL_TITLE.NAME));
-                    status.setAbbreviation(resultSet.getString(COL_ABBREVIATION.NAME));
-                    statuses.add(status);
+                    statuses.add(getStatusFromResultSet(resultSet));
                 }
 
             } catch (SQLException ex) {
@@ -58,5 +54,15 @@ public class StatusTable extends Table {
 
 
         return statuses;
+    }
+
+    public static Status getStatusFromResultSet(ResultSet resultSet) throws SQLException {
+        Status status = new Status();
+
+        status.setId(resultSet.getLong(COL_ID.NAME));
+        status.setTitle(resultSet.getString(COL_TITLE.NAME));
+        status.setAbbreviation(resultSet.getString(COL_ABBREVIATION.NAME));
+
+        return status;
     }
 }

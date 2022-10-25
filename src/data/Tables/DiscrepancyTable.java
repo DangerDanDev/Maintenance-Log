@@ -4,6 +4,7 @@ import data.Column;
 import data.Discrepancy;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -36,5 +37,23 @@ public class DiscrepancyTable extends Table {
     @Override
     public String getName() {
         return "discrepancies";
+    }
+
+    /**
+     *
+     * @param rs
+     * @return A discrepancy from the result set
+     * @throws SQLException
+     */
+    public static Discrepancy getDiscrepancyFromResultSet(ResultSet rs) throws SQLException {
+        return new Discrepancy(
+                rs.getLong(COL_ID.NAME),
+                rs.getString(COL_TAIL_NUM.NAME),
+                rs.getString(COL_NARRATIVE.NAME),
+                rs.getDate(COL_DATE_CREATED.NAME),
+                rs.getString(COL_TURNOVER.NAME),
+                rs.getString(COL_PARTS_ON_ORDER.NAME),
+                StatusTable.getStatusFromResultSet(rs)
+        );
     }
 }

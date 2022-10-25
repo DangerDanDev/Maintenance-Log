@@ -84,16 +84,7 @@ public class TailNumberBrowserPanel {
                 while (resultSet.next()) {
 
                     //pull the discrepancy from the result set
-                    Discrepancy discrepancy = new Discrepancy(
-                            resultSet.getLong(DiscrepancyTable.COL_ID.NAME),
-                            resultSet.getString(DiscrepancyTable.COL_TAIL_NUM.NAME),
-                            resultSet.getString(DiscrepancyTable.COL_NARRATIVE.NAME),
-                            resultSet.getDate(DiscrepancyTable.COL_DATE_CREATED.NAME),
-                            resultSet.getString(DiscrepancyTable.COL_TURNOVER.NAME),
-                            resultSet.getString(DiscrepancyTable.COL_PARTS_ON_ORDER.NAME),
-                            new Status(resultSet.getLong(StatusTable.COL_ID.NAME), resultSet.getString(StatusTable.COL_TITLE.NAME),
-                                    resultSet.getString(StatusTable.COL_ABBREVIATION.NAME))
-                    );
+                    Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
 
                     //add the new discrepancy to our list
                     pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
