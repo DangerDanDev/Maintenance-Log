@@ -31,20 +31,21 @@ public class TailNumberBrowserPanel {
         tbTailNumbers.addActionListener(new TailNumberComboBoxListener());
     }
 
-    public void refreshData() {
+    public class QueryDiscrepancyHelper {
+        public ArrayList<Discrepancy> QueryDiscrepancies(Connection connection) throws SQLException {
 
-        try (Connection connection = DatabaseManager.getConnection()) {
+            ArrayList<Discrepancy> discrepancies = new ArrayList<>();
 
             final String SELECT_ALL = " SELECT * ";
 
-            final String FROM_DISCREPANCY_TABLE = " FROM " + DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
+            final String FROM_DISCREPANCY_TABLE_AND_STATUS_TABLE = " FROM " + DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
 
             final String WHERE_DISCREPANCY_STATUS_MATCHES_STATUS_ID = " WHERE " + DiscrepancyTable.get().getName() + "." +
                     DiscrepancyTable.COL_STATUS + "=" + StatusTable.get().getName() + "." + StatusTable.COL_ID;
 
             final String TAIL_NUM_MATCHES_SEARCH = DiscrepancyTable.COL_TAIL_NUM + " LIKE '%' || ? || '%' "; //1 should be equal to the value in the tail number search box
 
-            final String fullSQL = SELECT_ALL + FROM_DISCREPANCY_TABLE + WHERE_DISCREPANCY_STATUS_MATCHES_STATUS_ID
+            final String fullSQL = SELECT_ALL + FROM_DISCREPANCY_TABLE_AND_STATUS_TABLE + WHERE_DISCREPANCY_STATUS_MATCHES_STATUS_ID
                     + " AND " + TAIL_NUM_MATCHES_SEARCH;
             System.out.println(fullSQL);
 
@@ -54,54 +55,42 @@ public class TailNumberBrowserPanel {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
 
-                    pnlDiscrepancies.removeAll();
-                    pnlDiscrepancies.setLayout(new GridLayout(0, 1));
-
                     while (resultSet.next()) {
 
                         //pull the discrepancy from the result set
                         Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
-
-                        //add the new discrepancy to our list
-                        pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
+                        discrepancies.add(discrepancy);
                     }
+
+                    return discrepancies;
                 } catch (SQLException ex) {
                     System.err.println(ex.getMessage());
+                    throw ex;
                 }
+            } catch(SQLException ex) {
+                System.err.println(ex.getMessage());
+                throw  ex;
             }
+        }
+    }
 
-            /*try (Statement statement = connection.createStatement()) {
+    public void refreshData() {
 
-                final String DiscrepancyTableAndStatusTable = DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
+        try (Connection connection = DatabaseManager.getConnection()) {
 
-                final String TailNumCol_ContainsTailNumText = DiscrepancyTable.COL_TAIL_NUM + " LIKE '%" + tbTailNumbers.getText() + "%' ";
+            try {
+                ArrayList<Discrepancy> discrepancies = new QueryDiscrepancyHelper().QueryDiscrepancies(connection);
 
-                final String DiscrepancyStatusEqualsStatusID = DiscrepancyTable.get().getName() + "." + DiscrepancyTable.COL_STATUS + "=" +
-                                                                StatusTable.get().getName() + "." + StatusTable.COL_ID + " ";
+                pnlDiscrepancies.removeAll();
+                pnlDiscrepancies.setLayout(new GridLayout(0, 1));
 
-
-                String discrepanciesQuery = "SELECT * FROM " + DiscrepancyTableAndStatusTable +
-                        " WHERE " + TailNumCol_ContainsTailNumText +
-                        " AND " + DiscrepancyStatusEqualsStatusID;
-
-                System.out.println(discrepanciesQuery);
-                try (ResultSet resultSet = statement.executeQuery(discrepanciesQuery)) {
-
-                    pnlDiscrepancies.removeAll();
-                    pnlDiscrepancies.setLayout(new GridLayout(0, 1));
-
-                    while (resultSet.next()) {
-
-                        //pull the discrepancy from the result set
-                        Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
-
-                        //add the new discrepancy to our list
-                        pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
-                    }
-                } catch (SQLException ex) {
-                    System.err.println(ex.getMessage());
+                for (Discrepancy disc : discrepancies) {
+                    //add the new discrepancy to our list
+                    pnlDiscrepancies.add(new DiscrepancySnippet(disc).getContentPane());
                 }
-            }*/
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
 
             pnlDiscrepancies.revalidate();
 
