@@ -11,15 +11,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class TailNumberBrowserPanel {
 
-    private JComboBox cbTailNumbers;
+    private JTextField tbTailNumbers;
     private JPanel contentPane;
     private JPanel pnlDiscrepancies;
     private JTextArea tbDiscrepancyNarrative;
@@ -31,51 +28,60 @@ public class TailNumberBrowserPanel {
     }
 
     public TailNumberBrowserPanel() {
-        getTailNumbers();
-
-        cbTailNumbers.addActionListener(new TailNumberComboBoxListener());
-    }
-
-    private void getTailNumbers() {
-        try (Connection connection = DatabaseManager.getConnection()){
-
-            try(Statement statement = connection.createStatement()) {
-
-                String allTailNumbersQuery = "SELECT * FROM " + AircraftTable._NAME +" ORDER BY " + AircraftTable.COL_TAIL_NUM.NAME + " ASC ";
-                try (ResultSet resultSet = statement.executeQuery(allTailNumbersQuery)) {
-
-                    while (resultSet.next()) {
-                        String tailNum = resultSet.getString(AircraftTable.COL_TAIL_NUM.NAME);
-                        System.out.println(tailNum);
-                        cbTailNumbers.addItem(tailNum);
-                    }
-                } catch (SQLException ex) {
-                    System.err.println(ex.getMessage());
-                }
-            }
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
+        tbTailNumbers.addActionListener(new TailNumberComboBoxListener());
     }
 
     public void refreshData() {
 
         try (Connection connection = DatabaseManager.getConnection()) {
 
-            try (Statement statement = connection.createStatement()) {
+            final String SELECT_ALL = " SELECT * ";
+
+            final String FROM_DISCREPANCY_TABLE = " FROM " + DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
+
+            final String WHERE_DISCREPANCY_STATUS_MATCHES_STATUS_ID = " WHERE " + DiscrepancyTable.get().getName() + "." +
+                    DiscrepancyTable.COL_STATUS + "=" + StatusTable.get().getName() + "." + StatusTable.COL_ID;
+
+            final String TAIL_NUM_MATCHES_SEARCH = DiscrepancyTable.COL_TAIL_NUM + " LIKE '%' || ? || '%' "; //1 should be equal to the value in the tail number search box
+
+            final String fullSQL = SELECT_ALL + FROM_DISCREPANCY_TABLE + WHERE_DISCREPANCY_STATUS_MATCHES_STATUS_ID
+                    + " AND " + TAIL_NUM_MATCHES_SEARCH;
+            System.out.println(fullSQL);
+
+            try (PreparedStatement statement = connection.prepareStatement(fullSQL)) {
+
+                statement.setString(1, tbTailNumbers.getText() + "");
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+
+                    pnlDiscrepancies.removeAll();
+                    pnlDiscrepancies.setLayout(new GridLayout(0, 1));
+
+                    while (resultSet.next()) {
+
+                        //pull the discrepancy from the result set
+                        Discrepancy discrepancy = DiscrepancyTable.getDiscrepancyFromResultSet(resultSet);
+
+                        //add the new discrepancy to our list
+                        pnlDiscrepancies.add(new DiscrepancySnippet(discrepancy).getContentPane());
+                    }
+                } catch (SQLException ex) {
+                    System.err.println(ex.getMessage());
+                }
+            }
+
+            /*try (Statement statement = connection.createStatement()) {
 
                 final String DiscrepancyTableAndStatusTable = DiscrepancyTable.get().getName() + ", " + StatusTable.get().getName();
 
-                final String TailNumberIsSelectedOnComboBox = DiscrepancyTable.COL_TAIL_NUM + " = " + cbTailNumbers.getSelectedItem().toString() + " ";
+                final String TailNumCol_ContainsTailNumText = DiscrepancyTable.COL_TAIL_NUM + " LIKE '%" + tbTailNumbers.getText() + "%' ";
 
                 final String DiscrepancyStatusEqualsStatusID = DiscrepancyTable.get().getName() + "." + DiscrepancyTable.COL_STATUS + "=" +
                                                                 StatusTable.get().getName() + "." + StatusTable.COL_ID + " ";
 
-                //SELECT * FROM discrepancies
-                //WHERE tail_number = cbTailNumbers.SelectedItem()
+
                 String discrepanciesQuery = "SELECT * FROM " + DiscrepancyTableAndStatusTable +
-                        " WHERE " + TailNumberIsSelectedOnComboBox +
+                        " WHERE " + TailNumCol_ContainsTailNumText +
                         " AND " + DiscrepancyStatusEqualsStatusID;
 
                 System.out.println(discrepanciesQuery);
@@ -95,7 +101,7 @@ public class TailNumberBrowserPanel {
                 } catch (SQLException ex) {
                     System.err.println(ex.getMessage());
                 }
-            }
+            }*/
 
             pnlDiscrepancies.revalidate();
 
@@ -108,6 +114,7 @@ public class TailNumberBrowserPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             refreshData();
+            System.out.println("Searching for " + tbTailNumbers.getText());
         }
     }
 }
