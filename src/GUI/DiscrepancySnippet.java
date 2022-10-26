@@ -2,6 +2,7 @@ package GUI;
 
 import data.DatabaseManager;
 import data.Discrepancy;
+import data.Status;
 import data.Tables.StatusTable;
 
 import javax.swing.*;
@@ -25,13 +26,12 @@ public class DiscrepancySnippet {
     public DiscrepancySnippet(Discrepancy discrepancy) {
 
         try (Connection conn = DatabaseManager.getConnection()) {
-            StatusTable.get().populateStatusComboBox(cbStatus, conn);
+            StatusTable.populateStatusComboBox(cbStatus, conn);
+            setDiscrepancy(discrepancy);
+            btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
         } catch(SQLException ex) {
             System.err.println(ex.getMessage());
         }
-
-        setDiscrepancy(discrepancy);
-        btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
     }
 
     public Discrepancy getDiscrepancy() {
@@ -43,9 +43,18 @@ public class DiscrepancySnippet {
 
         if(discrepancy != null) {
             tbNarrative.setText(discrepancy.getNarrative());
+            //cbStatus.addItem(discrepancy.getStatus());
             cbStatus.setSelectedItem(discrepancy.getStatus());
             cbShowOnNotes.setText(getDiscrepancy().getStatus().getTitle());
-            System.out.println("Status of Discrepancy '" + discrepancy.getNarrative() + ": " + getDiscrepancy().getStatus().getTitle());
+
+            setCBStatusSelection(discrepancy.getStatus());
+        }
+    }
+
+    private void setCBStatusSelection(Status status) {
+        for(int i = 0; i < cbStatus.getItemCount(); i++) {
+            if(((Status)cbStatus.getItemAt(i)).getAbbreviation().equals(status.getAbbreviation()))
+                cbStatus.setSelectedIndex(i);
         }
     }
 

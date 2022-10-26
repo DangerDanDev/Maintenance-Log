@@ -29,6 +29,7 @@ public class StatusTable extends Table {
 
     public static void populateStatusComboBox(JComboBox comboBox, Connection conn) throws SQLException {
             ArrayList<Status> statuses = StatusTable.get().getAllStatuses(conn);
+            comboBox.removeAllItems();
             for(Status status : statuses) {
                 comboBox.addItem(status);
             }

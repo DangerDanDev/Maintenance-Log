@@ -64,15 +64,30 @@ public class DiscrepancyPanel {
         tbTurnover.setText(discrepancy.getTurnover());
         tbPartsOnOrder.setText(discrepancy.getPartsOnOrder());
         tbNarrative.setText(discrepancy.getNarrative());
-
         tbDiscoveredBy.setText(getDiscrepancy().getStatus().getTitle());
-        cbStatus.setSelectedItem(discrepancy.getStatus());
+
+        setCBStatusSelection(discrepancy.getStatus());
+    }
+
+    /**
+     * Because JComboBoxes are a little wonky with overridden .equals() functions,
+     * we iterate through the combo box and
+     * @param status
+     */
+    private void setCBStatusSelection(Status status) {
+        for(int i = 0; i < cbStatus.getItemCount(); i++) {
+            if(((Status)cbStatus.getItemAt(i)).getAbbreviation().equals(status.getAbbreviation()))
+                cbStatus.setSelectedIndex(i);
+        }
     }
 
     private class SaveButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try(Connection conn = DatabaseManager.getConnection()) {
+
+                getDiscrepancy().setStatus((Status)cbStatus.getSelectedItem());
+
                 DiscrepancyTable.updateDiscrepancyInDatabase(conn, getDiscrepancy());
                 System.out.println("Discrepancy successfully saved.");
             } catch(SQLException ex) {
