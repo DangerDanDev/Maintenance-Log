@@ -80,11 +80,12 @@ public abstract class Table {
 
         for(int i = 0; i < columns.size(); i++) {
             //we do not want to include the ID in an update column
-            if(columns.get(i).NAME != COL_ID.NAME)
+            if(columns.get(i).NAME != COL_ID.NAME) {
                 stringBuilder.append(columns.get(i).NAME);
 
-            if(i != columns.size()-1)
-                stringBuilder.append(",");
+                if (i != columns.size() - 1)
+                    stringBuilder.append(",");
+            }
         }
 
         return stringBuilder.toString();

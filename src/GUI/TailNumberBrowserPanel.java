@@ -19,6 +19,8 @@ public class TailNumberBrowserPanel {
     private JTextField tbTailNumbers;
     private JPanel contentPane;
     private JPanel pnlDiscrepancies;
+    private JPanel westPanel;
+    private JButton btnNewDiscrepancy;
     private JTextArea tbDiscrepancyNarrative;
 
     private ArrayList<DiscrepancySnippet> discrepancySnippets = new ArrayList<>();
@@ -29,6 +31,7 @@ public class TailNumberBrowserPanel {
 
     public TailNumberBrowserPanel() {
         tbTailNumbers.addActionListener(new TailNumberComboBoxListener());
+        btnNewDiscrepancy.addActionListener(new NewDiscrepancyListener());
     }
 
     public class QueryDiscrepancyHelper {
@@ -104,6 +107,19 @@ public class TailNumberBrowserPanel {
         public void actionPerformed(ActionEvent e) {
             refreshData();
             System.out.println("Searching for " + tbTailNumbers.getText());
+        }
+    }
+
+    public class NewDiscrepancyListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFrame frame = new JFrame();
+            frame.setSize(800,600);
+
+            DiscrepancyPanel discrepancyPanel = new DiscrepancyPanel(new Discrepancy());
+            frame.setContentPane(discrepancyPanel.getContentPane());
+
+            frame.setVisible(true);
         }
     }
 }

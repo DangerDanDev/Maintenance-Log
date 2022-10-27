@@ -70,7 +70,7 @@ public class DiscrepancyTable extends Table {
                         getUpdateRowStringAddComma(COL_PARTS_ON_ORDER, "'" + disc.getPartsOnOrder() + "'") +
                         getUpdateRowString(COL_STATUS, disc.getStatus().getId() + " ");
 
-        String WHERE_ID_EQUALS_ID = " WHERE " + COL_ID + "=" + disc.getId() + " ";                  //8
+        String WHERE_ID_EQUALS_ID = " WHERE " + COL_ID + "=" + disc.getId() + " ";
 
         String fullSQL = UPDATE_DISCREPANCIES + SET_DISCREPANCY_VALUES + WHERE_ID_EQUALS_ID;
         System.out.println(fullSQL);

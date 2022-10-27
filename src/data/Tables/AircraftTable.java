@@ -42,6 +42,8 @@ public class AircraftTable extends Table {
 
         for(String tailNum : tailNums)
             cb.addItem(tailNum);
+
+        cb.revalidate();
     }
 
 
@@ -55,7 +57,7 @@ public class AircraftTable extends Table {
                     String tailNum = rs.getString(COL_TAIL_NUM.NAME);
                     tailNums.add(tailNum);
                 }
-
+                System.out.println("Tail numbers returned from database: " + tailNums.size());
                 return tailNums;
 
             } catch (SQLException ex) {

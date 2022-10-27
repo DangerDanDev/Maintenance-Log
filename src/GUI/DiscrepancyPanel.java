@@ -3,6 +3,7 @@ package GUI;
 import data.DatabaseManager;
 import data.Discrepancy;
 import data.Status;
+import data.Tables.AircraftTable;
 import data.Tables.DiscrepancyTable;
 import data.Tables.StatusTable;
 import org.sqlite.jdbc4.JDBC4Connection;
@@ -25,6 +26,7 @@ public class DiscrepancyPanel {
     private JTextArea tbNarrative;
     private JButton btnSave;
     private JTextField tbDiscoveredBy;
+    private JTextField tbDateDiscovered;
 
     private Discrepancy discrepancy;
 
@@ -35,6 +37,7 @@ public class DiscrepancyPanel {
     public DiscrepancyPanel(Discrepancy discrepancy) {
 
         try (Connection conn = DatabaseManager.getConnection()) {
+            AircraftTable.populateComboBoxWithAllTailNums(cbTail, conn);
             StatusTable.get().populateStatusComboBox(cbStatus, conn);
             setDiscrepancy(discrepancy);
 
@@ -64,17 +67,22 @@ public class DiscrepancyPanel {
         tbTurnover.setText(discrepancy.getTurnover());
         tbPartsOnOrder.setText(discrepancy.getPartsOnOrder());
         tbNarrative.setText(discrepancy.getNarrative());
-        tbDiscoveredBy.setText(getDiscrepancy().getStatus().getTitle());
+        tbDateDiscovered.setText(discrepancy.getDateCreated().toString());
 
-        setCBStatusSelection(discrepancy.getStatus());
+        if(discrepancy.getStatus() != null)
+            setCBStatusSelection(discrepancy.getStatus());
     }
 
     /**
      * Because JComboBoxes are a little wonky with overridden .equals() functions,
-     * we iterate through the combo box and
+     * we iterate through the combo box and check the Abbreviation value (it has the "unique" constraint
+     * in the database, so there will never be two)
      * @param status
      */
     private void setCBStatusSelection(Status status) {
+        if(status == null)
+            return;
+
         for(int i = 0; i < cbStatus.getItemCount(); i++) {
             if(((Status)cbStatus.getItemAt(i)).getAbbreviation().equals(status.getAbbreviation()))
                 cbStatus.setSelectedIndex(i);
@@ -84,11 +92,25 @@ public class DiscrepancyPanel {
     private class SaveButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+
+            getDiscrepancy().setStatus((Status)cbStatus.getSelectedItem());
+            getDiscrepancy().setTailNum(cbTail.getSelectedItem().toString());
+            getDiscrepancy().setNarrative(tbNarrative.getText());
+            getDiscrepancy().setTurnover(tbNarrative.getText());
+            getDiscrepancy().setPartsOnOrder(tbPartsOnOrder.getText());
+
             try(Connection conn = DatabaseManager.getConnection()) {
 
-                getDiscrepancy().setStatus((Status)cbStatus.getSelectedItem());
+                //insert or update as applicable
+                if(getDiscrepancy().getId() == Discrepancy.INVALID_ID) {
+                    System.out.println("Inserting discrepancy into database");
+                    DiscrepancyTable.insertDiscrepancyIntoDatabase(conn, discrepancy);
+                }
+                else {
+                    System.out.println("Updating discrepancy in database");
+                    DiscrepancyTable.updateDiscrepancyInDatabase(conn, getDiscrepancy());
+                }
 
-                DiscrepancyTable.updateDiscrepancyInDatabase(conn, getDiscrepancy());
                 System.out.println("Discrepancy successfully saved.");
             } catch(SQLException ex) {
                 System.err.println(ex.getMessage());
