@@ -2,6 +2,11 @@ package data.Tables;
 
 import data.Column;
 
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AircraftTable extends Table {
@@ -29,4 +34,38 @@ public class AircraftTable extends Table {
     public String getName() {
         return "Aircraft";
     }
+
+    public static void populateComboBoxWithAllTailNums(JComboBox cb, Connection conn) throws  SQLException{
+        ArrayList<String> tailNums = get().getAllTailNumbers(conn);
+
+        cb.removeAllItems();
+
+        for(String tailNum : tailNums)
+            cb.addItem(tailNum);
+    }
+
+
+    public ArrayList<String> getAllTailNumbers(Connection conn) throws SQLException {
+        ArrayList<String> tailNums = new ArrayList<>();
+
+        try (PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + getName())) {
+            try (ResultSet rs = statement.executeQuery()) {
+
+                while (rs.next()) {
+                    String tailNum = rs.getString(COL_TAIL_NUM.NAME);
+                    tailNums.add(tailNum);
+                }
+
+                return tailNums;
+
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
 }

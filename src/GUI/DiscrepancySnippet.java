@@ -6,13 +6,12 @@ import data.Status;
 import data.Tables.StatusTable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class DiscrepancySnippet {
     private JTextArea tbNarrative;
@@ -20,6 +19,9 @@ public class DiscrepancySnippet {
     private JButton btnViewDiscrepancy;
     private JComboBox cbStatus;
     private JCheckBox cbShowOnNotes;
+    private JTextField tbTailNumber;
+    private JTextField tbDateCreated;
+    private JTextField tbDiscoveredBy;
 
     private Discrepancy discrepancy;
 
@@ -27,8 +29,11 @@ public class DiscrepancySnippet {
 
         try (Connection conn = DatabaseManager.getConnection()) {
             StatusTable.populateStatusComboBox(cbStatus, conn);
-            setDiscrepancy(discrepancy);
+
             btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
+
+            setDiscrepancy(discrepancy);
+
         } catch(SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -43,9 +48,9 @@ public class DiscrepancySnippet {
 
         if(discrepancy != null) {
             tbNarrative.setText(discrepancy.getNarrative());
-            //cbStatus.addItem(discrepancy.getStatus());
             cbStatus.setSelectedItem(discrepancy.getStatus());
-            cbShowOnNotes.setText(getDiscrepancy().getStatus().getTitle());
+            tbTailNumber.setText(discrepancy.getTailNum());
+            tbDateCreated.setText(discrepancy.getDateCreated().truncatedTo(ChronoUnit.MINUTES).toString());
 
             setCBStatusSelection(discrepancy.getStatus());
         }
