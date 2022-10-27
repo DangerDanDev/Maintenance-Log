@@ -1,12 +1,10 @@
 package data.Tables;
 
 import data.Column;
-import data.DatabaseManager;
 import data.Discrepancy;
 
 import java.sql.*;
 import java.time.Instant;
-import java.util.ArrayList;
 
 /**
  * A singleton table instance
@@ -61,7 +59,8 @@ public class DiscrepancyTable extends Table {
         String UPDATE_DISCREPANCIES = " UPDATE " + get().getName() + " ";
 
         //TODO: Figure out a workaround for having the "'" + "'" snippets in the update query,
-        //since that is a very poor method of getting spaces into an update
+        //since that is a very poor method of getting spaces into an update. Probs will
+        //need to convert to a PreparedStatement
         String SET_DISCREPANCY_VALUES = " SET " +
                 //getUpdateRowStringAddComma(COL_ID, disc.getId() + "") +
                         getUpdateRowStringAddComma(COL_TAIL_NUM, disc.getTailNum()) +
@@ -71,33 +70,52 @@ public class DiscrepancyTable extends Table {
                         getUpdateRowStringAddComma(COL_PARTS_ON_ORDER, "'" + disc.getPartsOnOrder() + "'") +
                         getUpdateRowString(COL_STATUS, disc.getStatus().getId() + " ");
 
-        /*String SET_DISCREPANCY_VALUES = " SET " +
-                getUpdateRowStringAddComma(COL_ID, "?") +               //1
-                getUpdateRowStringAddComma(COL_TAIL_NUM, "?") +         //2
-                getUpdateRowStringAddComma(COL_NARRATIVE, "?") +        //3
-                getUpdateRowStringAddComma(COL_DATE_CREATED, "?") +     //4
-                getUpdateRowStringAddComma(COL_TURNOVER, "?") +         //5
-                getUpdateRowStringAddComma(COL_PARTS_ON_ORDER, "?") +   //6
-                getUpdateRowString(COL_STATUS, "?");                    //7 */
-
         String WHERE_ID_EQUALS_ID = " WHERE " + COL_ID + "=" + disc.getId() + " ";                  //8
 
         String fullSQL = UPDATE_DISCREPANCIES + SET_DISCREPANCY_VALUES + WHERE_ID_EQUALS_ID;
         System.out.println(fullSQL);
 
         try (Statement statement = conn.createStatement()) {
-
-            /*statement.setLong(1, disc.getId());
-            statement.setString(2, disc.getTailNum());
-            statement.setString(3, disc.getNarrative());
-            statement.setString(4, disc.getDateCreated().toString());
-            statement.setString(5, disc.getTurnover());
-            statement.setString(6, disc.getPartsOnOrder());
-            statement.setLong(7, disc.getStatus().getId());
-            statement.setLong(8, disc.getId());*/
-
             return statement.executeUpdate(fullSQL);
         } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public static void insertDiscrepancyIntoDatabase(Connection conn,Discrepancy discrepancy) throws SQLException {
+
+        final String INSERT_INTO_DISCREPANCIES = " INSERT INTO " + get().getName() + " ";
+
+        final String ALL_COLUMNS_EXCEPT_ID = " (" + get().getAllColumnsUpdateString() + ") ";
+
+        final String DISCREPANCY_VALUES = " VALUES (?,?,?,?,?,?) ";
+
+        final int TAIL_NUM = 1;
+        final int NARRATIVE = 2;
+        final int DATE_CREATED = 3;
+        final int TURNOVER = 4;
+        final int PARTS_ON_ORDER = 5;
+        final int STATUS = 6;
+
+        final String UPDATE_QUERY = INSERT_INTO_DISCREPANCIES + ALL_COLUMNS_EXCEPT_ID + DISCREPANCY_VALUES;
+        System.out.println("Discrepancy Insertion query: " + UPDATE_QUERY);
+
+        try (PreparedStatement ps = conn.prepareStatement(UPDATE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(TAIL_NUM, discrepancy.getTailNum());
+            ps.setString(NARRATIVE, discrepancy.getNarrative());
+            ps.setString(DATE_CREATED, discrepancy.getDateCreated().toString());
+            ps.setString(TURNOVER, discrepancy.getTurnover());
+            ps.setString(PARTS_ON_ORDER, discrepancy.getPartsOnOrder());
+            ps.setLong(STATUS, discrepancy.getStatus().getId());
+
+            ps.executeUpdate();
+
+            long id = ps.getGeneratedKeys().getLong(1);
+            discrepancy.setId(id);
+
+        }catch ( SQLException ex) {
             System.err.println(ex.getMessage());
             throw ex;
         }

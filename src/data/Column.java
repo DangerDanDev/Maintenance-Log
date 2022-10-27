@@ -29,4 +29,5 @@ public class Column {
     public String getCreateString() {
         return NAME + " " + TYPE + " " + CONSTRAINTS;
     }
+
 }

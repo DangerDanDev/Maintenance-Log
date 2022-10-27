@@ -41,7 +41,7 @@ public abstract class Table {
         System.out.println("Creating table: " + getName());
         try(Statement statement = connection.createStatement()) {
 
-            String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + allColumnsToSQLString() +
+            String sqlCreateStr = "CREATE TABLE IF NOT EXISTS " + getName() + " (" + getAllColumnsCreateString() +
                     ")";
             System.out.println(sqlCreateStr);
             statement.executeUpdate(sqlCreateStr);
@@ -53,9 +53,10 @@ public abstract class Table {
     /**
      *
      * @return A string that can be put into a "CREATE TABLE" SQL statement
-     * containing all of the columns in this table
+     * containing all of the columns in this table. The calling method must supply the
+     * parenthese and table name.
      */
-    public String allColumnsToSQLString() {
+    public String getAllColumnsCreateString() {
         StringBuilder stringBuilder = new StringBuilder();
 
         for(int i = 0; i < this.columns.size(); i++) {
@@ -64,6 +65,27 @@ public abstract class Table {
                 stringBuilder.append(",");
         }
 
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     *
+     * @return A string that can be put into an INSERT INTO table_name (*********)
+     * You must add the parenthese externally and also specify the table name externally
+     * in the query. The returned string will NOT include the udpate column
+     */
+    public String getAllColumnsUpdateString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(int i = 0; i < columns.size(); i++) {
+            //we do not want to include the ID in an update column
+            if(columns.get(i).NAME != COL_ID.NAME)
+                stringBuilder.append(columns.get(i).NAME);
+
+            if(i != columns.size()-1)
+                stringBuilder.append(",");
+        }
 
         return stringBuilder.toString();
     }

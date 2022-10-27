@@ -4,7 +4,10 @@ import java.sql.Date;
 import java.time.Instant;
 
 public class Discrepancy {
-    private long id = -1;
+
+    public static long INVALID_ID = -1;
+
+    private long id;
     private String tailNum;
     private String narrative;
     private Instant dateCreated;
@@ -14,7 +17,7 @@ public class Discrepancy {
     private Status status;
 
     public Discrepancy() {
-        this(-1, "", "", Instant.now(), "", "", null);
+        this(INVALID_ID, "", "", Instant.now(), "", "", null);
     }
 
     public Discrepancy(long id, String tailNum, String narrative, Instant dateCreated, String turnover, String partsOnOrder, Status status) {
