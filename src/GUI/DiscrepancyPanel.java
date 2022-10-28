@@ -50,6 +50,16 @@ public class DiscrepancyPanel {
         }
     }
 
+    public void showDialog(JFrame parent) {
+        JDialog dialog = new JDialog(parent, Dialog.ModalityType.DOCUMENT_MODAL);
+        System.out.println("ModalityType: " + dialog.getModalityType().toString());
+
+        dialog.setSize(800,600);
+
+        dialog.setContentPane(getContentPane());
+        dialog.setVisible(true);
+    }
+
     private void initEventHandlers() {
         btnSave.addActionListener(new SaveButtonListener());
         cbStatus.addActionListener(new StatusBoxListener());

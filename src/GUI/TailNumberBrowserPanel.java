@@ -29,9 +29,22 @@ public class TailNumberBrowserPanel {
         return contentPane;
     }
 
+    public JFrame frame;
+
     public TailNumberBrowserPanel() {
         tbTailNumbers.addActionListener(new TailNumberComboBoxListener());
         btnNewDiscrepancy.addActionListener(new NewDiscrepancyListener());
+
+        refreshData();
+
+        frame = new JFrame();
+        frame.setSize(800,600);
+        frame.setContentPane(getContentPane());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void show() {
+        frame.setVisible(true);
     }
 
     public class QueryDiscrepancyHelper {
@@ -113,13 +126,9 @@ public class TailNumberBrowserPanel {
     public class NewDiscrepancyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFrame frame = new JFrame();
-            frame.setSize(800,600);
-
             DiscrepancyPanel discrepancyPanel = new DiscrepancyPanel(new Discrepancy());
-            frame.setContentPane(discrepancyPanel.getContentPane());
+            discrepancyPanel.showDialog(frame);
 
-            frame.setVisible(true);
         }
     }
 }
