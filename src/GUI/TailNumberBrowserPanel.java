@@ -102,7 +102,7 @@ public class TailNumberBrowserPanel {
 
                 for (Discrepancy disc : discrepancies) {
                     //add the new discrepancy to our list
-                    pnlDiscrepancies.add(new DiscrepancySnippet(disc).getContentPane());
+                    pnlDiscrepancies.add(new DiscrepancySnippet(frame,disc).getContentPane());
                 }
             } catch (SQLException ex) {
                 System.err.println(ex.getMessage());
@@ -126,9 +126,8 @@ public class TailNumberBrowserPanel {
     public class NewDiscrepancyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            DiscrepancyPanel discrepancyPanel = new DiscrepancyPanel(new Discrepancy());
-            discrepancyPanel.showDialog(frame);
-
+            DiscrepancyDialog dialog = new DiscrepancyDialog(frame, new Discrepancy());
+            dialog.show();
         }
     }
 }

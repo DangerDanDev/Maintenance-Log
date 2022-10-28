@@ -25,11 +25,14 @@ public class DiscrepancySnippet {
 
     private Discrepancy discrepancy;
 
-    public DiscrepancySnippet(Discrepancy discrepancy) {
+    private JFrame parent;
+
+    public DiscrepancySnippet(JFrame parent, Discrepancy discrepancy) {
 
         try (Connection conn = DatabaseManager.getConnection()) {
             StatusTable.populateStatusComboBox(cbStatus, conn);
 
+            this.parent = parent;
             btnViewDiscrepancy.addActionListener(new ViewDiscrepancyListener());
 
             setDiscrepancy(discrepancy);
@@ -74,13 +77,17 @@ public class DiscrepancySnippet {
     private class ViewDiscrepancyListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFrame frame = new JFrame();
+            /*JFrame frame = new JFrame();
             frame.setSize(800,600);
 
             DiscrepancyPanel discrepancyPanel = new DiscrepancyPanel(getDiscrepancy());
             frame.setContentPane(discrepancyPanel.getContentPane());
 
             frame.setVisible(true);
+             */
+
+            DiscrepancyDialog dialog = new DiscrepancyDialog(parent, getDiscrepancy());
+            dialog.show();
         }
     }
 }
