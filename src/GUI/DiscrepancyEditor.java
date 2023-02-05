@@ -187,7 +187,10 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
         }
     }
 
-    private class ItemEditedListener implements KeyListener{
+    /**
+     * Listens for when text fields are edited to mark the Discrepancy as being unsaved
+     */
+    private class ItemEditedListener implements KeyListener {
         @Override
         public void keyTyped(KeyEvent e) {
             onItemEdited();
