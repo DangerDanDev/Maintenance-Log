@@ -33,7 +33,6 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        setTitle(TITLE);
 
         setLocation(2300, 440);
 
@@ -70,7 +69,8 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
         tfDiscoveredBy.addKeyListener(getItemEditListener());
         tfNarrative.addKeyListener(getItemEditListener());
         tfPartsOnOrder.addKeyListener(getItemEditListener());
-
+        cbStatus.addItemListener(getItemEditListener());
+        cbTailNumber.addItemListener(getItemEditListener());
     }
 
     /**
@@ -108,10 +108,6 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
             DBManager.initialize();
 
             DiscrepancyEditor dialog = new DiscrepancyEditor(DiscrepancyTable.getInstance().getItemById(3));
-            dialog.pack();
-            dialog.setVisible(true);
-
-            dialog = new DiscrepancyEditor(DiscrepancyTable.getInstance().getItemById(3));
             dialog.pack();
             dialog.setVisible(true);
 

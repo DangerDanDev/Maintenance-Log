@@ -5,8 +5,7 @@ import data.tables.DiscrepancyTable;
 import data.tables.Table;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.sql.SQLException;
 
 public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDialog implements DatabaseObject.ChangeListener, Table.TableListener {
@@ -58,6 +57,7 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
 
     public EditorDialogAbstract(String windowTitle, Table table) {
         setEditorTitle(windowTitle);
+        setTitle(getEditorTitle());
         setTable(table);
     }
 
@@ -134,7 +134,7 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         this.itemEditListener = itemEditListener;
     }
 
-    private class ItemEditListener implements KeyListener {
+    private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
         @Override
         public void keyTyped(KeyEvent e) {
             onItemEdited();
@@ -148,6 +148,17 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         @Override
         public void keyReleased(KeyEvent e) {
 
+        }
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(e.getStateChange() == ItemEvent.SELECTED)
+                onItemEdited();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onItemEdited();
         }
     }
 
