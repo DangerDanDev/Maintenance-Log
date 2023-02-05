@@ -6,6 +6,7 @@ import data.DatabaseObject;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Table<T extends DatabaseObject> {
 
@@ -15,6 +16,12 @@ public abstract class Table<T extends DatabaseObject> {
     public static final String TEXT = " TEXT ";
 
     public static final String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
+
+    /**
+     * A hash map of all loaded items stored by ID; used to
+     * ensure we aren't loading the same objects multiple times
+     */
+    private HashMap<Long, T> loadedItems = new HashMap<>();
 
     /**
      * The list of items that this table's "CREATE TABLE" statement will make
@@ -41,12 +48,6 @@ public abstract class Table<T extends DatabaseObject> {
         addColumn(COL_DATE_EDITED);
     }
 
-    public Table(String name, ArrayList<Column> cols) {
-        this(name);
-        for(Column c : cols)
-            columns.add(c);
-    }
-
     /**
      * Looks an item up by its ID and inflates it from the given resultset
      * @param id
@@ -56,16 +57,18 @@ public abstract class Table<T extends DatabaseObject> {
     public T getItemById(long id) throws SQLException {
 
         QueryIndexer idx = new QueryIndexer();
-        String QUERY_ALL_ITEMS = " SELECT * FROM " + NAME + WHERE + COL_ID + "=" + idx.index(COL_ID);
+        String QUERY_BY_ID = " SELECT * FROM " + NAME + WHERE + COL_ID + "=" + idx.index(COL_ID);
 
-        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_ALL_ITEMS)) {
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_BY_ID)) {
 
+            //we can't nest the try-with-resources because we have to set this
+            //index here which makes this block a lot messier :/
             ps.setLong(idx.indexOf(COL_ID), id);
 
             try (ResultSet rs = ps.executeQuery()) {
 
                 if(rs.next()) {
-                    return getItemFromResultSet(rs);
+                    return inflateOrReturnExistingItem(rs);
                 }
 
                 else {
@@ -79,6 +82,53 @@ public abstract class Table<T extends DatabaseObject> {
         } catch (SQLException ex) {
             System.out.println("Error inflating item from database");
             System.err.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    /**
+     * Checks the ID returned by a ResultSet, and if we already have the object loaded,
+     * returns it to the calling code. Otherwise it inflates it from the ResultSet
+     * and returns it to the calling code.
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    private T inflateOrReturnExistingItem(ResultSet rs) throws SQLException {
+        //if we already have the object loaded, return it without
+        //inflating the result set
+        if(loadedItems.containsKey(rs.getLong(COL_ID.NAME)))
+            return loadedItems.get(rs.getLong(COL_ID.NAME));
+
+        //if we do not have the object loaded, inflate it
+        //and add it to our list of loaded objects
+        else {
+            T item = getItemFromResultSet(rs);
+            loadedItems.put(item.getId(), item);
+            return item;
+        }
+    }
+
+    /**
+     * Grabs all of the items out of this database and returns them to the calling code
+     * @return
+     * @throws SQLException
+     */
+    public ArrayList<T> getAllItems() throws SQLException{
+        String QUERY_ALL_ITEMS = "SELECT * FROM " + NAME;
+
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_ALL_ITEMS);
+            ResultSet rs = ps.executeQuery()) {
+
+            ArrayList<T> items = new ArrayList<>();
+
+            while(rs.next()) {
+                items.add(inflateOrReturnExistingItem(rs));
+            }
+
+            return items;
+
+        } catch (SQLException ex) {
             throw ex;
         }
     }
