@@ -4,7 +4,9 @@ import data.DatabaseObject;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class DiscrepancyTable extends Table<Discrepancy> {
 
@@ -19,16 +21,16 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     private DiscrepancyTable() {
         super("discrepancies");
 
-        COL_TEXT = new Column(this, "text", TEXT);
+        COL_TEXT = new Column("text", TEXT);
         addColumn(COL_TEXT);
 
-        COL_TURNOVER = new Column(this, "turnover", TEXT);
+        COL_TURNOVER = new Column("turnover", TEXT);
         addColumn(COL_TURNOVER);
 
-        COL_CREW = new Column(this, "crew", TEXT);
+        COL_CREW = new Column( "crew", TEXT);
         addColumn(COL_CREW);
 
-        COL_PARTS_ON_ORDER = new Column(this, "parts_on_order", TEXT);
+        COL_PARTS_ON_ORDER = new Column( "parts_on_order", TEXT);
         addColumn(COL_PARTS_ON_ORDER);
     }
 
@@ -40,5 +42,27 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
 
         super.setStatementValues(statement, indexer, discrepancy);
+    }
+
+    /**
+     * Inflates a Discrepancy from a ResultSet provided from the Table class
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public Discrepancy getItemFromResultSet(ResultSet rs) throws SQLException {
+        Discrepancy d = new Discrepancy();
+
+        d.setId(rs.getLong(COL_ID.NAME));
+        d.setText(rs.getString(COL_TEXT.NAME));
+        d.setCrew(rs.getString(COL_CREW.NAME));
+        d.setTurnover(rs.getString(COL_TURNOVER.NAME));
+        d.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
+        d.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
+        d.setPartsOnOrder(rs.getString(COL_PARTS_ON_ORDER.NAME));
+        d.setSaved(true); //we just pulled it from the database so it's obviously saved
+
+        return d;
     }
 }

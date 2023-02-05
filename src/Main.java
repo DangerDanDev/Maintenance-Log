@@ -5,9 +5,11 @@ import data.tables.Table;
 import model.Discrepancy;
 import org.sqlite.SQLiteConfig;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String args[]) {
@@ -15,8 +17,8 @@ public class Main {
 
             DBManager.initialize();
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 }
