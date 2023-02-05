@@ -87,6 +87,16 @@ public class Table<T extends DatabaseObject> {
         return str.toString();
     }
 
+    /**
+     * Called before executing an update query to set the ID field so
+     * we update the right records. IE:
+     * "SET COL = VALUE, ..., ...,
+     * WHERE COL_ID = ? <------ use this method to set that value before executing the query
+     * @param item
+     * @param idx
+     * @param ps
+     * @throws SQLException
+     */
     public void setUpdateQueryItemId(T item, QueryIndexer idx, PreparedStatement ps) throws SQLException {
         ps.setLong(idx.indexOf(COL_ID), item.getId());
     }
