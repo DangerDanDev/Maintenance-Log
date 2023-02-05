@@ -12,6 +12,8 @@ public class DBManager {
 
     private static Connection conn = null;
 
+    public static final Table TEST_TABLE =  new Table("test_table");
+
     /**
      * Returns the current existing connection object, unless there is none. In that case, it
      * Gets a shiny new unique instance of a database connection.
@@ -31,7 +33,7 @@ public class DBManager {
     }
 
     private static Table tables[] = {
-        new Table("test_table"),
+       TEST_TABLE,
     };
 
     public static void initialize() throws SQLException {

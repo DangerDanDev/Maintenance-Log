@@ -3,9 +3,8 @@ package data.tables;
 import data.DBManager;
 import data.DatabaseObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class Table<T extends DatabaseObject> {
@@ -44,13 +43,58 @@ public class Table<T extends DatabaseObject> {
             columns.add(c);
     }
 
+    public void updateItem(T item) {
+
+        item.setSaved(true);
+        onItemUpdated(item);
+    }
+
+    public final void addItem(T item) {
+
+        item.setDateCreated(Instant.now());
+        item.setDateLastEdited(Instant.now());
+
+        String addSQL = "INSERT INTO " + NAME + "(" + COL_DATE_CREATED + ", " + COL_DATE_EDITED + ") " +
+                "VALUES (?,?)";
+
+        System.out.println("Add item SQL: " + addSQL);
+
+        try(PreparedStatement st = DBManager.getConnection().prepareStatement(addSQL, Statement.RETURN_GENERATED_KEYS)) {
+            st.setString(1, item.getDateCreated().toString());
+            st.setString(2, item.getDateLastEdited().toString());
+
+            st.execute();
+
+            try (ResultSet rs = st.getGeneratedKeys()) {
+                if(rs.next())
+                    item.setId(rs.getLong(1));
+
+                System.out.println("New item ID is: " + item.getId());
+            }catch (SQLException ex) {
+                System.err.println("Could not get generated keys");
+                System.err.println(ex.getMessage());
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println("Error adding default items.");
+            System.err.println(ex.getMessage());
+        }
+
+        item.setSaved(true);
+        onItemAdded(item);
+    }
+
+    public void removeItem(T item) {
+        onItemDeleted(item);
+    }
+
     /**
      *
      */
     public void create() {
 
         String CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS " + NAME + "(" +
-                getColumnsAsSQLStr() +
+                getColumnDefinitionSQLStr() +
                 ")";
 
         Connection c = DBManager.getConnection();
@@ -76,7 +120,7 @@ public class Table<T extends DatabaseObject> {
         }
     }
 
-    public String getColumnsAsSQLStr() {
+    public String getColumnDefinitionSQLStr() {
         StringBuilder str = new StringBuilder();
 
         for(int i = 0; i < columns.size(); i++) {
@@ -135,6 +179,10 @@ public class Table<T extends DatabaseObject> {
 
             return str.toString();
         }
+
+        public String toString() {
+            return NAME;
+        }
     }
 
     private ArrayList<TableListener<T>> listeners = new ArrayList();
@@ -150,18 +198,18 @@ public class Table<T extends DatabaseObject> {
      * Notifies all listeners that an item has been created/added in this table
      * @param item
      */
-    private void onItemCreated(T item) {
+    private void onItemAdded(T item) {
         for(TableListener<T> listener : listeners)
-            listener.onItemCreated(item);
+            listener.onItemAdded(item);
     }
 
     /**
      * Notifies all listeners that an item has been edited in this table
      * @param item
      */
-    private void onItemEdited(T item) {
+    private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
-            listener.onItemEdited(item);
+            listener.onItemUpdated(item);
     }
 
     /**
@@ -182,13 +230,13 @@ public class Table<T extends DatabaseObject> {
          * Called on a listener when an item in this table is created
          * @param addedItem
          */
-        void onItemCreated(T addedItem);
+        void onItemAdded(T addedItem);
 
         /**
          * Called on a listener when an item in this table is edited
          * @param editedItem
          */
-        void onItemEdited(T editedItem);
+        void onItemUpdated(T editedItem);
 
         /**
          * Called on a listener when an item is deleted from this table
