@@ -3,11 +3,12 @@ package model;
 import data.DatabaseObject;
 
 public class Discrepancy extends DatabaseObject {
+
     private String text = "";
 
     private String turnover = "";
 
-    private String crew = "";
+    private String discoveredBy = "";
 
     private String partsOnOrder = "";
 
@@ -28,12 +29,12 @@ public class Discrepancy extends DatabaseObject {
         this.turnover = turnover;
     }
 
-    public String getCrew() {
-        return crew;
+    public String getDiscoveredBy() {
+        return discoveredBy;
     }
 
-    public void setCrew(String crew) {
-        this.crew = crew;
+    public void setDiscoveredBy(String discoveredBy) {
+        this.discoveredBy = discoveredBy;
     }
 
     public String getPartsOnOrder() {

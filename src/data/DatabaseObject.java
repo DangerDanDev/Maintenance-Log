@@ -25,7 +25,7 @@ public class DatabaseObject {
     /**
      *
      */
-    private boolean saved;
+    private boolean saved = false;
 
     public long getId() {
         return id;
@@ -57,6 +57,9 @@ public class DatabaseObject {
 
     public void setSaved(boolean saved) {
         this.saved = saved;
+
+        if(saved && listener != null)
+            listener.onItemSaved();
     }
 
     @Override
@@ -70,5 +73,26 @@ public class DatabaseObject {
 
         //otherwise do the normal java checks
         return super.equals(obj);
+    }
+
+    /**
+     * Interface for an EditorDialog to be nofified when I am edited (meaning I am now "unsaved") and
+     * when I am saved
+     */
+    public interface ChangeListener {
+        void onItemSaved();
+    }
+
+    /**
+     * The editor dialog listening for changes to me
+     */
+    private ChangeListener listener;
+
+    public ChangeListener getListener() {
+        return listener;
+    }
+
+    public void setListener(ChangeListener listener) {
+        this.listener = listener;
     }
 }

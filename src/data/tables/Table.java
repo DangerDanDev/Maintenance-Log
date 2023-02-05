@@ -28,8 +28,6 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private ArrayList<Column> columns = new ArrayList<>();
 
-    private ArrayList<T> items = new ArrayList<>();
-
     /**
      * The name of this table
      */
