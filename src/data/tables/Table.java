@@ -217,7 +217,9 @@ public class Table<T extends DatabaseObject> {
     }
 
     /**
-     *
+     * Executes the SQL CREATE TABLE IF NOT EXISTS statement for this table
+     * Manually adds columns after the fact if they do not exist to see if
+     * any of them were added after the table was created (ie: program update)
      */
     public void create() throws SQLException {
 
@@ -236,7 +238,7 @@ public class Table<T extends DatabaseObject> {
             throw ex;
         }
 
-        //check to see if any columns have been added to the table (ie: program was updated)
+        //check to see if any columns have been added to the table since it was created (ie: program was updated)
         for(Column column : columns) {
             String alterTable = "ALTER TABLE " + NAME + " ADD COLUMN " + column.getDefinitionSQL();
             try(PreparedStatement alterStatement = c.prepareStatement(alterTable)) {
