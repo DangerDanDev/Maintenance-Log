@@ -4,7 +4,9 @@ import data.DatabaseObject;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class DiscrepancyTable extends Table<Discrepancy> {
 
@@ -40,5 +42,21 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
 
         super.setStatementValues(statement, indexer, discrepancy);
+    }
+
+    @Override
+    public Discrepancy getItemFromResultSet(ResultSet rs) throws SQLException {
+        Discrepancy d = new Discrepancy();
+
+        d.setId(rs.getLong(COL_ID.NAME));
+        d.setText(rs.getString(COL_TEXT.NAME));
+        d.setCrew(rs.getString(COL_CREW.NAME));
+        d.setTurnover(rs.getString(COL_TURNOVER.NAME));
+        d.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
+        d.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
+        d.setPartsOnOrder(rs.getString(COL_PARTS_ON_ORDER.NAME));
+        d.setSaved(true); //we just pulled it from the database so it's obviously saved
+
+        return d;
     }
 }

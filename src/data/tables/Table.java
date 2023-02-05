@@ -7,12 +7,14 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public class Table<T extends DatabaseObject> {
+public abstract class Table<T extends DatabaseObject> {
 
-    public static String INTEGER = " INTEGER ";
-    public static String TEXT = " TEXT ";
+    public static final String WHERE = " WHERE ";
 
-    public static String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
+    public static final String INTEGER = " INTEGER ";
+    public static final String TEXT = " TEXT ";
+
+    public static final String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
 
     /**
      * The list of items that this table's "CREATE TABLE" statement will make
@@ -45,13 +47,48 @@ public class Table<T extends DatabaseObject> {
             columns.add(c);
     }
 
-    public T getItemById(long id) {
+    /**
+     * Looks an item up by its ID and inflates it from the given resultset
+     * @param id
+     * @return
+     * @throws SQLException
+     */
+    public T getItemById(long id) throws SQLException {
+
         QueryIndexer idx = new QueryIndexer();
+        String QUERY_ALL_ITEMS = " SELECT * FROM " + NAME + WHERE + COL_ID + "=" + idx.index(COL_ID);
 
-        String QUERY_ALL_ITEMS = " SELECT * FROM " + NAME;
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_ALL_ITEMS)) {
 
-        return null;
+            ps.setLong(idx.indexOf(COL_ID), id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if(rs.next()) {
+                    return getItemFromResultSet(rs);
+                }
+
+                else {
+                    return null;
+                }
+
+            } catch (SQLException ex) {
+                throw ex;
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Error inflating item from database");
+            System.err.println(ex.getMessage());
+            throw ex;
+        }
     }
+
+    /**
+     * Subclasses must implement this to inflate their objects from a Query ResultSet
+     * @param rs
+     * @return
+     */
+    public abstract T getItemFromResultSet(ResultSet rs) throws SQLException;
 
     /**
      * Updates a single item in the database, including updating
