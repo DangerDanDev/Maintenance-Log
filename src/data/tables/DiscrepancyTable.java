@@ -1,6 +1,5 @@
 package data.tables;
 
-import data.DatabaseObject;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;
@@ -12,7 +11,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
 
     public final Column COL_TEXT;
     public final Column COL_TURNOVER;
-    public final Column COL_CREW;
+    public final Column COL_DISC_BY;
     public final Column COL_PARTS_ON_ORDER;
 
     private static DiscrepancyTable instance = new DiscrepancyTable();
@@ -27,8 +26,8 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         COL_TURNOVER = new Column("turnover", TEXT);
         addColumn(COL_TURNOVER);
 
-        COL_CREW = new Column( "crew", TEXT);
-        addColumn(COL_CREW);
+        COL_DISC_BY = new Column( "crew", TEXT);
+        addColumn(COL_DISC_BY);
 
         COL_PARTS_ON_ORDER = new Column( "parts_on_order", TEXT);
         addColumn(COL_PARTS_ON_ORDER);
@@ -38,7 +37,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, Discrepancy discrepancy) throws SQLException {
         statement.setString(indexer.indexOf(COL_TEXT), discrepancy.getText());
         statement.setString(indexer.indexOf(COL_TURNOVER), discrepancy.getTurnover());
-        statement.setString(indexer.indexOf(COL_CREW), discrepancy.getCrew());
+        statement.setString(indexer.indexOf(COL_DISC_BY), discrepancy.getDiscoveredBy());
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
 
         super.setStatementValues(statement, indexer, discrepancy);
@@ -56,7 +55,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
 
         d.setId(rs.getLong(COL_ID.NAME));
         d.setText(rs.getString(COL_TEXT.NAME));
-        d.setCrew(rs.getString(COL_CREW.NAME));
+        d.setDiscoveredBy(rs.getString(COL_DISC_BY.NAME));
         d.setTurnover(rs.getString(COL_TURNOVER.NAME));
         d.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
         d.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
