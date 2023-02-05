@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeListener{
+public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> implements DatabaseObject.ChangeListener{
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -26,10 +26,10 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
 
-    private Discrepancy discrepancy;
-    private ItemEditedListener itemEditedListener = new ItemEditedListener();
+    //private Discrepancy discrepancy;
 
     public DiscrepancyEditor(Discrepancy discrepancy) {
+        super("Discrepancy Editor");
 
         setContentPane(contentPane);
         setModal(true);
@@ -38,7 +38,7 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
 
         setLocation(2300, 440);
 
-        setDiscrepancy(discrepancy);
+        setItem(discrepancy);
 
         //subscribe to updates from the discrepancy table
         DiscrepancyTable.getInstance().addListener(discrepancyTableListener);
@@ -70,10 +70,10 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        tfTurnover.addKeyListener(itemEditedListener);
-        tfDiscoveredBy.addKeyListener(itemEditedListener);
-        tfNarrative.addKeyListener(itemEditedListener);
-        tfPartsOnOrder.addKeyListener(itemEditedListener);
+        tfTurnover.addKeyListener(getItemEditListener());
+        tfDiscoveredBy.addKeyListener(getItemEditListener());
+        tfNarrative.addKeyListener(getItemEditListener());
+        tfPartsOnOrder.addKeyListener(getItemEditListener());
 
     }
 
@@ -81,17 +81,17 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
 
         //if the discrepancy has not been edited, we don't need to go through any of that saving
         //funny business
-        if(!discrepancy.isSaved()) {
+        if(!getItem().isSaved()) {
 
             //push the changes to the discrepancy
             //save the pushed changes
-            discrepancy.setText(tfNarrative.getText());
-            discrepancy.setTurnover(tfTurnover.getText());
-            discrepancy.setDiscoveredBy(tfDiscoveredBy.getText());
-            discrepancy.setPartsOnOrder(tfPartsOnOrder.getText());
+            getItem().setText(tfNarrative.getText());
+            getItem().setTurnover(tfTurnover.getText());
+            getItem().setDiscoveredBy(tfDiscoveredBy.getText());
+            getItem().setPartsOnOrder(tfPartsOnOrder.getText());
 
             try {
-                DiscrepancyTable.getInstance().updateItem(discrepancy);
+                DiscrepancyTable.getInstance().updateItem(getItem());
             } catch (SQLException ex) {
                 String options[] = {
                         "Close Window Anyway",
@@ -120,51 +120,22 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
         dispose();
     }
 
-    public Discrepancy getDiscrepancy() {
-        return discrepancy;
-    }
-
-    public void setDiscrepancy(Discrepancy discrepancy) {
-        //if we were subscribed to a previous discrepancy, now is the time
-        //to unsubscribe
-        if(this.discrepancy != null)
-            this.discrepancy.setListener(null);
-
-        this.discrepancy = discrepancy;
-
-        if(this.discrepancy == null)
-            return; //do not refresh and do not set a listener if we have no discrepancy
-
-        this.discrepancy.setListener(this);
-
-        refreshData();
-    }
-
     /**
      * Called when we call setDiscrepancy() or when the DiscrepancyTable notifies us
      * that our current discrepancy has been edited from somewhere else
      */
+    @Override
     public void refreshData() {
-        tfNarrative.setText(discrepancy.getText());
-        tfTurnover.setText(discrepancy.getTurnover());
-        tfDiscoveredBy.setText(discrepancy.getDiscoveredBy());
-        tfPartsOnOrder.setText(discrepancy.getPartsOnOrder());
+        tfNarrative.setText(getItem().getText());
+        tfTurnover.setText(getItem().getTurnover());
+        tfDiscoveredBy.setText(getItem().getDiscoveredBy());
+        tfPartsOnOrder.setText(getItem().getPartsOnOrder());
 
-        tfDateCreated.setText(discrepancy.getDateCreated().toString());
-        tfDateLastEdited.setText(discrepancy.getDateLastEdited().toString());
+        tfDateCreated.setText(getItem().getDateCreated().toString());
+        tfDateLastEdited.setText(getItem().getDateLastEdited().toString());
     }
 
     public static final String TITLE = "Discrepancy Editor";
-
-    @Override
-    public void onItemSaved() {
-        setTitle(TITLE);
-    }
-
-    public void onItemEdited() {
-        setTitle(TITLE + " (unsaved)");
-        discrepancy.setSaved(false);
-    }
 
     public static void main(String[] args) {
 
@@ -188,26 +159,6 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
     }
 
     /**
-     * Listens for when text fields are edited to mark the Discrepancy as being unsaved
-     */
-    private class ItemEditedListener implements KeyListener {
-        @Override
-        public void keyTyped(KeyEvent e) {
-            onItemEdited();
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-    }
-
-    /**
      * Listens for updates to the discrepancy table
      */
     private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
@@ -225,7 +176,7 @@ public class DiscrepancyEditor extends JDialog implements DatabaseObject.ChangeL
         @Override
         public void onItemUpdated(Object editedItem) {
             //if our current discrepancy was updated, we need to refresh
-            if(editedItem.equals(getDiscrepancy()))
+            if(editedItem.equals(getItem()))
                 refreshData();
         }
 
