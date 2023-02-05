@@ -3,7 +3,6 @@ package data.tables;
 import data.DBManager;
 import data.DatabaseObject;
 
-import javax.print.attribute.standard.MediaSize;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
