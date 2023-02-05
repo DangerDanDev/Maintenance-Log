@@ -11,7 +11,7 @@ import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> implements DatabaseObject.ChangeListener{
+public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -26,10 +26,9 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> impleme
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
 
-    //private Discrepancy discrepancy;
 
     public DiscrepancyEditor(Discrepancy discrepancy) {
-        super("Discrepancy Editor");
+        super("Discrepancy Editor", DiscrepancyTable.getInstance());
 
         setContentPane(contentPane);
         setModal(true);
@@ -39,9 +38,6 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> impleme
         setLocation(2300, 440);
 
         setItem(discrepancy);
-
-        //subscribe to updates from the discrepancy table
-        DiscrepancyTable.getInstance().addListener(discrepancyTableListener);
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -77,47 +73,15 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> impleme
 
     }
 
-    private void onOK() {
-
-        //if the discrepancy has not been edited, we don't need to go through any of that saving
-        //funny business
-        if(!getItem().isSaved()) {
-
-            //push the changes to the discrepancy
-            //save the pushed changes
-            getItem().setText(tfNarrative.getText());
-            getItem().setTurnover(tfTurnover.getText());
-            getItem().setDiscoveredBy(tfDiscoveredBy.getText());
-            getItem().setPartsOnOrder(tfPartsOnOrder.getText());
-
-            try {
-                DiscrepancyTable.getInstance().updateItem(getItem());
-            } catch (SQLException ex) {
-                String options[] = {
-                        "Close Window Anyway",
-                        "Continue Editing",
-                };
-
-                int result = JOptionPane.showOptionDialog(null, "Save failed. Would Would you like to discard changes and close anyways or remain on " +
-                        "this screen?", "Save error!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{}, 1);
-
-                if (result != 0)
-                    return;
-            }
-        }
-
-        closeWindow();
-    }
-
-    private void onCancel() {
-        closeWindow();
-    }
-
     /**
-     * unsubscribes me from DiscrepanciesTable and closes the window
+     * Pushes the user's changes to the discrepancy object
      */
-    private void closeWindow() {
-        dispose();
+    @Override
+    public void pushChanges() {
+        getItem().setText(tfNarrative.getText());
+        getItem().setTurnover(tfTurnover.getText());
+        getItem().setDiscoveredBy(tfDiscoveredBy.getText());
+        getItem().setPartsOnOrder(tfPartsOnOrder.getText());
     }
 
     /**
@@ -155,34 +119,6 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> impleme
             ex.printStackTrace();
         } finally {
             System.exit(0);
-        }
-    }
-
-    /**
-     * Listens for updates to the discrepancy table
-     */
-    private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
-
-    /**
-     * Used to listen for updates from the Discrepancies Table
-     */
-    private class DiscrepancyTableListener implements Table.TableListener{
-
-        @Override
-        public void onItemAdded(Object addedItem) {
-            //do nothing; we are ONLY concerned about our current discrepancy
-        }
-
-        @Override
-        public void onItemUpdated(Object editedItem) {
-            //if our current discrepancy was updated, we need to refresh
-            if(editedItem.equals(getItem()))
-                refreshData();
-        }
-
-        @Override
-        public void onItemDeleted(Object deletedItem) {
-            //do nothing; we are only concerned about our CURRENT discrepancy
         }
     }
 }
