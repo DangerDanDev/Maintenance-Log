@@ -3,6 +3,7 @@ package data.tables;
 import data.DBManager;
 import data.DatabaseObject;
 
+import javax.print.attribute.standard.MediaSize;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,10 +44,51 @@ public class Table<T extends DatabaseObject> {
             columns.add(c);
     }
 
-    public void updateItem(T item) {
+    public void updateItem(T item) throws SQLException{
+        QueryIndexer idx = new QueryIndexer();
 
-        item.setSaved(true);
-        onItemUpdated(item);
+        String updateText = getUpdateStatement(item, idx);
+        System.out.println(updateText);
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(updateText)) {
+
+            setStatementValues(ps, idx, item);
+            setUpdateQueryItemId(item, idx, ps);
+            ps.execute();
+
+            //if we get here, the item was officially saved
+            item.setSaved(true);
+            onItemUpdated(item);
+
+        } catch (SQLException ex) {
+            System.out.println("Error updating database object.");
+            System.out.println(updateText);
+            throw ex;
+        }
+    }
+
+    public String getUpdateStatement(T item, QueryIndexer idx) {
+        StringBuilder str = new StringBuilder();
+
+        str.append("UPDATE " + NAME + " SET ");
+
+        //start at 1 because we're skipping the ID column
+        for(int i = 1; i < columns.size(); i++) {
+            Column c = columns.get(i);
+
+            str.append(c.NAME + "=" + idx.index(c));
+
+            //append a comma unless we're on the last column
+            if(i != columns.size() - 1)
+                str.append(",");
+        }
+
+        str.append(" WHERE " + COL_ID + "=" + idx.index(COL_ID));
+
+        return str.toString();
+    }
+
+    public void setUpdateQueryItemId(T item, QueryIndexer idx, PreparedStatement ps) throws SQLException {
+        ps.setLong(idx.indexOf(COL_ID), item.getId());
     }
 
     /**
@@ -86,11 +128,14 @@ public class Table<T extends DatabaseObject> {
             System.out.println("Error adding default items.");
             System.err.println(ex.getMessage());
         }
-
     }
 
     /**
-     * Sets a PreparedStatement's values using a QueryIndexer
+     * Sets a PreparedStatement's values using a QueryIndexer.
+     * Override this method in subclasses to set additional columns' values.
+     * Note: This method does NOT set the ID field, so for update queries you
+     * will need to call the setsetUpdateQueryItemId() method to make sure you are
+     * updating the right row.
      * @param statement
      * @param indexer
      * @param item
@@ -149,7 +194,7 @@ public class Table<T extends DatabaseObject> {
     /**
      *
      */
-    public void create() {
+    public void create() throws SQLException {
 
         String CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS " + NAME + "(" +
                 getColumnDefinitionSQLStr() +
@@ -163,6 +208,7 @@ public class Table<T extends DatabaseObject> {
             System.out.println("SQLite error in " + this + ".create() method");
             System.out.println(CREATE_TABLE_IF_NOT_EXISTS);
             System.err.println(ex.getMessage());
+            throw ex;
         }
 
         //check to see if any columns have been added to the table (ie: program was updated)

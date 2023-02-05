@@ -4,6 +4,7 @@ import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class Main {
     public static void main(String args[]) {
@@ -11,8 +12,10 @@ public class Main {
 
             DBManager.initialize();
 
-            for(int i = 0; i < 3; i++)
-                DBManager.TEST_TABLE.addItem(new DatabaseObject());
+            DatabaseObject obj = new DatabaseObject();
+            obj.setDateCreated(Instant.parse("2000-02-03T10:37:30.00Z"));
+            obj.setId(13);
+            DBManager.TEST_TABLE.updateItem(obj);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
