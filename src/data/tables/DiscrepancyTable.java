@@ -34,11 +34,11 @@ public class DiscrepancyTable extends Table<Discrepancy> {
 
     @Override
     public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, Discrepancy discrepancy) throws SQLException {
-        super.setStatementValues(statement, indexer, discrepancy);
-
         statement.setString(indexer.indexOf(COL_TEXT), discrepancy.getText());
         statement.setString(indexer.indexOf(COL_TURNOVER), discrepancy.getTurnover());
         statement.setString(indexer.indexOf(COL_CREW), discrepancy.getCrew());
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
+
+        super.setStatementValues(statement, indexer, discrepancy);
     }
 }
