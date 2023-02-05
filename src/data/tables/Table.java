@@ -34,7 +34,7 @@ public class Table<T extends DatabaseObject> {
         this.COL_DATE_CREATED = new Column(this,"_date_created", TEXT);
         addColumn(COL_DATE_CREATED);
 
-        this.COL_DATE_EDITED = new Column(this,"_date_edited", TEXT);
+        this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT);
         addColumn(COL_DATE_EDITED);
     }
 
@@ -44,12 +44,22 @@ public class Table<T extends DatabaseObject> {
             columns.add(c);
     }
 
+    /**
+     * Updates a single item in the database, including updating
+     * it's "Last edited" field
+     * @param item
+     * @throws SQLException
+     */
     public void updateItem(T item) throws SQLException{
         QueryIndexer idx = new QueryIndexer();
+        Instant previousLastEditedDate = item.getDateLastEdited();
 
         String updateText = getUpdateStatement(item, idx);
         System.out.println(updateText);
         try (PreparedStatement ps = DBManager.getConnection().prepareStatement(updateText)) {
+
+            //if we're updating the record, keep the live one on the App updated too
+            item.setDateLastEdited(Instant.now());
 
             setStatementValues(ps, idx, item);
             setUpdateQueryItemId(item, idx, ps);
@@ -60,6 +70,10 @@ public class Table<T extends DatabaseObject> {
             onItemUpdated(item);
 
         } catch (SQLException ex) {
+
+            //if the update failed, be sure to revert the last edited date
+            item.setDateLastEdited(previousLastEditedDate);
+
             System.out.println("Error updating database object.");
             System.out.println(updateText);
             throw ex;
