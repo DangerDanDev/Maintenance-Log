@@ -249,6 +249,12 @@ public class Table<T extends DatabaseObject> {
         }
     }
 
+    /**
+     *
+     * @return an SQL string with column definitions; IE: "NAME TYPE, NAME TYPE, NAME TYPE"
+     * Note: does not include the parenthese, the returned string needs to be wrapped in parenthese
+     * if applicable.
+     */
     public String getColumnDefinitionSQLStr() {
         StringBuilder str = new StringBuilder();
 
@@ -294,6 +300,10 @@ public class Table<T extends DatabaseObject> {
             this(table, name,type, "");
         }
 
+        /**
+         *
+         * @return An SQL string with this column's definition, ie: "NAME TYPE"
+         */
         public String getDefinitionSQL() {
             StringBuilder str = new StringBuilder();
 
