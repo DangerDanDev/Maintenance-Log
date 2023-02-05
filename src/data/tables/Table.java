@@ -49,19 +49,19 @@ public class Table<T extends DatabaseObject> {
         onItemUpdated(item);
     }
 
-    public final void addItem(T item) {
+    /**
+     *
+     * @param item
+     */
+    public void addItem(T item) {
 
         item.setDateCreated(Instant.now());
         item.setDateLastEdited(Instant.now());
 
-        String addSQL = "INSERT INTO " + NAME + "(" + COL_DATE_CREATED + ", " + COL_DATE_EDITED + ") " +
-                "VALUES (?,?)";
+        QueryIndexer indexer = new QueryIndexer();
 
-        System.out.println("Add item SQL: " + addSQL);
-
-        try(PreparedStatement st = DBManager.getConnection().prepareStatement(addSQL, Statement.RETURN_GENERATED_KEYS)) {
-            st.setString(1, item.getDateCreated().toString());
-            st.setString(2, item.getDateLastEdited().toString());
+        try(PreparedStatement st = DBManager.getConnection().prepareStatement(getAddItemSQL(indexer), Statement.RETURN_GENERATED_KEYS)) {
+            setStatementValues(st, indexer, item);
 
             st.execute();
 
@@ -70,18 +70,76 @@ public class Table<T extends DatabaseObject> {
                     item.setId(rs.getLong(1));
 
                 System.out.println("New item ID is: " + item.getId());
+
+                //if we reach here, we have successfully saved!
+                item.setSaved(true);
+                onItemAdded(item);
+
             }catch (SQLException ex) {
                 System.err.println("Could not get generated keys");
                 System.err.println(ex.getMessage());
             }
+
         }
+
         catch (SQLException ex) {
             System.out.println("Error adding default items.");
             System.err.println(ex.getMessage());
         }
 
-        item.setSaved(true);
-        onItemAdded(item);
+    }
+
+    /**
+     * Sets a PreparedStatement's values using a QueryIndexer
+     * @param statement
+     * @param indexer
+     * @param item
+     * @throws SQLException
+     */
+    public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, T item) throws SQLException {
+        statement.setString(indexer.indexOf(COL_DATE_CREATED), item.getDateCreated().toString());
+        statement.setString(indexer.indexOf(COL_DATE_EDITED), item.getDateLastEdited().toString());
+    }
+
+    private String getAddItemSQL(QueryIndexer indexer) {
+        StringBuilder str = new StringBuilder();
+
+        str.append(" INSERT INTO " + NAME + " (");
+
+        //start at 1 because we are getting the ADD ITEM sql string,
+        //we do not yet have an ID for it
+        for(int i = 1; i < columns.size(); i++) {
+            Column c = columns.get(i);
+
+            //here is where we add the column names
+            //INSERT INTO table_name(...,...,...)
+            str.append(c.NAME);
+            indexer.index(c);
+
+            //as usual, append a comma unless we are on the last index
+            if(i != columns.size() - 1)
+                str.append(",");
+        }
+
+        str.append(")");
+
+        str.append(" VALUES (" );
+
+        //start at 1 because we are getting the ADD ITEM sql string,
+        //we do not yet have an ID for it
+        for(int i = 1; i < columns.size(); i++) {
+
+            //here is we add the "?,?,?" and index the columns for it
+            str.append("?");
+
+            //as usual, append a comma unless we are on the last index
+            if(i != columns.size() - 1)
+                str.append(",");
+        }
+
+        str.append(")");
+
+        return str.toString();
     }
 
     public void removeItem(T item) {
