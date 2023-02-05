@@ -44,6 +44,12 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         super.setStatementValues(statement, indexer, discrepancy);
     }
 
+    /**
+     * Inflates a Discrepancy from a ResultSet provided from the Table class
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Discrepancy getItemFromResultSet(ResultSet rs) throws SQLException {
         Discrepancy d = new Discrepancy();
