@@ -58,4 +58,17 @@ public class DatabaseObject {
     public void setSaved(boolean saved) {
         this.saved = saved;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        //if we are the same type and have the same ID, we are
+        //the same object
+        if(getClass() == obj.getClass()) {
+            DatabaseObject dbObj = (DatabaseObject) obj;
+            return getId() == dbObj.getId();
+        }
+
+        //otherwise do the normal java checks
+        return super.equals(obj);
+    }
 }
