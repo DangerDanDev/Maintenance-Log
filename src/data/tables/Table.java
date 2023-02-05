@@ -136,4 +136,64 @@ public class Table<T extends DatabaseObject> {
             return str.toString();
         }
     }
+
+    private ArrayList<TableListener<T>> listeners = new ArrayList();
+
+    public void addListener(TableListener<T> listener) {
+        listeners.add(listener);
+    }
+    public void removeListener(TableListener<T> listener) {
+        listeners.remove(listener);
+    }
+
+    /**
+     * Notifies all listeners that an item has been created/added in this table
+     * @param item
+     */
+    private void onItemCreated(T item) {
+        for(TableListener<T> listener : listeners)
+            listener.onItemCreated(item);
+    }
+
+    /**
+     * Notifies all listeners that an item has been edited in this table
+     * @param item
+     */
+    private void onItemEdited(T item) {
+        for(TableListener<T> listener : listeners)
+            listener.onItemEdited(item);
+    }
+
+    /**
+     * Notifies all listeners that an item has been removed from this table
+     * @param item
+     */
+    private void onItemDeleted(T item) {
+        for(TableListener<T> listener : listeners)
+            listener.onItemDeleted(item);
+    }
+
+    /**
+     * Allows an outsider to listen for items being added, removed, or edited in this table
+     * @param <T>
+     */
+    public interface TableListener<T>{
+        /**
+         * Called on a listener when an item in this table is created
+         * @param addedItem
+         */
+        void onItemCreated(T addedItem);
+
+        /**
+         * Called on a listener when an item in this table is edited
+         * @param editedItem
+         */
+        void onItemEdited(T editedItem);
+
+        /**
+         * Called on a listener when an item is deleted from this table
+         * @param deletedItem
+         */
+        void onItemDeleted(T deletedItem);
+    }
 }
