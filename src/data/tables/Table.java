@@ -30,7 +30,7 @@ public class Table<T extends DatabaseObject> {
         this.COL_ID = new Column(this,"id", INTEGER + PRIMARY_KEY);
         addColumn(COL_ID);
 
-        this.COL_DATE_CREATED = new Column(this,"_date_created", TEXT);
+        this.COL_DATE_CREATED = new Column(this,"date_created", TEXT);
         addColumn(COL_DATE_CREATED);
 
         this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT);

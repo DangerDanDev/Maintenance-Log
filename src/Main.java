@@ -1,5 +1,8 @@
 import data.DBManager;
 import data.DatabaseObject;
+import data.tables.DiscrepancyTable;
+import data.tables.Table;
+import model.Discrepancy;
 import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
@@ -11,11 +14,6 @@ public class Main {
         try(Connection c = DBManager.getConnection()) {
 
             DBManager.initialize();
-
-            DatabaseObject obj = new DatabaseObject();
-            obj.setDateCreated(Instant.parse("2000-02-03T10:37:30.00Z"));
-            obj.setId(13);
-            DBManager.TEST_TABLE.updateItem(obj);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();

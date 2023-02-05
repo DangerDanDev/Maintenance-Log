@@ -13,9 +13,6 @@ public class DBManager {
 
     private static Connection conn = null;
 
-    public static final Table TEST_TABLE =  new Table("test_table");
-    public static final Table DiscrepancyTable = new DiscrepancyTable();
-
     /**
      * Returns the current existing connection object, unless there is none. In that case, it
      * Gets a shiny new unique instance of a database connection.
@@ -35,8 +32,7 @@ public class DBManager {
     }
 
     private static Table tables[] = {
-            TEST_TABLE,
-            DiscrepancyTable,
+            DiscrepancyTable.getInstance(),
     };
 
     public static void initialize() throws SQLException {
