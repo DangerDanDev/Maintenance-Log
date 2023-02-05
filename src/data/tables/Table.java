@@ -29,13 +29,13 @@ public class Table<T extends DatabaseObject> {
     public Table(String name) {
         this.NAME = name;
 
-        this.COL_ID = new Column(this,"id", INTEGER + PRIMARY_KEY);
+        this.COL_ID = new Column("id", INTEGER + PRIMARY_KEY);
         addColumn(COL_ID);
 
-        this.COL_DATE_CREATED = new Column(this,"date_created", TEXT);
+        this.COL_DATE_CREATED = new Column("date_created", TEXT);
         addColumn(COL_DATE_CREATED);
 
-        this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT);
+        this.COL_DATE_EDITED = new Column("date_edited", TEXT);
         addColumn(COL_DATE_EDITED);
     }
 
@@ -43,6 +43,14 @@ public class Table<T extends DatabaseObject> {
         this(name);
         for(Column c : cols)
             columns.add(c);
+    }
+
+    public T getItemById(long id) {
+        QueryIndexer idx = new QueryIndexer();
+
+        String QUERY_ALL_ITEMS = " SELECT * FROM " + NAME;
+
+        return null;
     }
 
     /**
@@ -287,19 +295,19 @@ public class Table<T extends DatabaseObject> {
         public final String CONSTRAINTS;
         public final String DEFAULTS;
 
-        public Column(Table table, String name, String type, String constraints, String defaults) {
-            NAME = table.NAME + "_" + name;
+        public Column(String name, String type, String constraints, String defaults) {
+            NAME = Table.this.NAME + "_" + name;
             TYPE = type;
             CONSTRAINTS = constraints;
             DEFAULTS = defaults;
         }
 
-        public Column(Table table, String name, String type, String constraints) {
-            this(table, name, type, constraints, "");
+        public Column(String name, String type, String constraints) {
+            this(name, type, constraints, "");
         }
 
-        public Column(Table table, String name, String type) {
-            this(table, name,type, "");
+        public Column(String name, String type) {
+            this(name,type, "");
         }
 
         /**
