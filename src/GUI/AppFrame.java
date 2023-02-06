@@ -27,7 +27,7 @@ public class AppFrame extends JFrame {
         try {
 
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
-            ArrayList<EditorDialogAbstract> panels = new ArrayList<>();
+            ArrayList<EditorPanelDialogBase> panels = new ArrayList<>();
             for (Status s : statuses)
                 panels.add(new StatusEditorPanel(s));
 

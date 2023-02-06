@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
+public class DiscrepancyEditor extends EditorPanelDialogBase<Discrepancy> {
     private JPanel contentPane;
     private JButton buttonSave;
     private JButton buttonCancel;

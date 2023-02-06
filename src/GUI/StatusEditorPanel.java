@@ -1,18 +1,16 @@
 package GUI;
 
 import data.DBManager;
-import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
 import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class StatusEditorPanel extends EditorDialogAbstract<Status>{
+public class StatusEditorPanel extends EditorPanelDialogBase<Status> {
 
     private JPanel contentPane;
     private JTextField tfStatusTitle;
