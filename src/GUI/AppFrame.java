@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 public class AppFrame extends JFrame {
 
-    private JPanel panel1;
+    private JPanel contentPane;
+    private JTabbedPane tabbedPane1;
 
     public AppFrame() {
         super("Hawk Logbook");
@@ -19,6 +20,7 @@ public class AppFrame extends JFrame {
         setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
+        setContentPane(contentPane);
         setVisible(true);
     }
 
