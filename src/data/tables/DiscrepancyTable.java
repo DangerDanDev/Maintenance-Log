@@ -1,5 +1,6 @@
 package data.tables;
 
+import data.QueryIndexer;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     public final Column COL_TURNOVER;
     public final Column COL_DISC_BY;
     public final Column COL_PARTS_ON_ORDER;
+    public final Column COL_STATUS_ID;
 
     private static DiscrepancyTable instance = new DiscrepancyTable();
     public static DiscrepancyTable getInstance() { return instance; }
@@ -31,6 +33,9 @@ public class DiscrepancyTable extends Table<Discrepancy> {
 
         COL_PARTS_ON_ORDER = new Column( "parts_on_order", TEXT);
         addColumn(COL_PARTS_ON_ORDER);
+
+        COL_STATUS_ID = new Column("status_id", INTEGER);
+        addColumn(COL_STATUS_ID);
     }
 
     @Override
@@ -39,6 +44,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         statement.setString(indexer.indexOf(COL_TURNOVER), discrepancy.getTurnover());
         statement.setString(indexer.indexOf(COL_DISC_BY), discrepancy.getDiscoveredBy());
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
+        statement.setLong(indexer.indexOf(COL_STATUS_ID), discrepancy.getStatus().getId());
 
         super.setStatementValues(statement, indexer, discrepancy);
     }
@@ -61,6 +67,9 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         d.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
         d.setPartsOnOrder(rs.getString(COL_PARTS_ON_ORDER.NAME));
         d.setSaved(true); //we just pulled it from the database so it's obviously saved
+
+        //inflate the status and give it to me
+        d.setStatus(StatusTable.getInstance().getItemById(rs.getLong(COL_STATUS_ID.NAME)));
 
         return d;
     }

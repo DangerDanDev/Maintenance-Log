@@ -12,6 +12,7 @@ public class Discrepancy extends DatabaseObject {
 
     private String partsOnOrder = "";
 
+    private Status status;
 
     public String getText() {
         return text;
@@ -43,5 +44,13 @@ public class Discrepancy extends DatabaseObject {
 
     public void setPartsOnOrder(String partsOnOrder) {
         this.partsOnOrder = partsOnOrder;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

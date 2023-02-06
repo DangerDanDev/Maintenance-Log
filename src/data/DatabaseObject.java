@@ -1,5 +1,6 @@
 package data;
 
+import javax.swing.*;
 import java.time.Instant;
 
 /**
@@ -94,5 +95,20 @@ public class DatabaseObject {
 
     public void setListener(ChangeListener listener) {
         this.listener = listener;
+    }
+
+    public void selectInComboBox(JComboBox cb) {
+
+        boolean foundMatch = false;
+
+        for(int i = 0; i < cb.getItemCount(); i++) {
+            boolean selectedItemIsDatabaseObject = cb.getItemAt(i) instanceof DatabaseObject;
+            boolean bothIDsMatch = selectedItemIsDatabaseObject && ((DatabaseObject)cb.getItemAt(i)).getId() == getId();
+            if (selectedItemIsDatabaseObject && bothIDsMatch) {
+                cb.setSelectedIndex(i);
+                foundMatch = true;
+                break;
+            }
+        }
     }
 }
