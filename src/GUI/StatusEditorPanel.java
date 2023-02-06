@@ -28,7 +28,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
 
         //hook up all the events that get this item marked as unsaved
         tfStatusTitle.addKeyListener(getItemEditListener());
-        cbShowOnNotes.addChangeListener(getItemEditListener());
+        cbShowOnNotes.addActionListener(getItemEditListener());
         cbCompletesJob.addActionListener(getItemEditListener());
         bColorPicker.addActionListener(getItemEditListener());
 
@@ -50,6 +50,19 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
 
         bSave.setEnabled(true);
         bUndoChanges.setEnabled(true);
+    }
+
+    @Override
+    public boolean save() {
+        if(!super.save()) {
+
+            //show an error dialog
+            JOptionPane.showMessageDialog(null,"Save failed!", "Save failed!", JOptionPane.ERROR_MESSAGE);
+
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -78,6 +91,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
             dialog.pack();
             dialog.setLocation(3000, 600);
             dialog.setModal(true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
 
         } catch (SQLException ex) {

@@ -68,7 +68,16 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         //if the discrepancy has not been edited, we don't need to go through any of that saving
         //funny business
         if(!getItem().isSaved())
-            save();
+            if(!save()) {
+
+                //yes is close anyways, no is keep window open
+                String options[] = {"Yes", "No"};
+                int result = JOptionPane.showOptionDialog(null, "Save failed. Close window anyways? Your changes will be lost.",
+                        "Save failed!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+
+                if(result != 0)
+                    return;
+            }
 
         closeWindow();
     }
@@ -76,23 +85,15 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
     /**
      * Attempts to save the item we are editing, displays a dialog if we fail
      */
-    public void save() {
+    public boolean save() {
         //push the user's changes to the discrepancy object
         pushChanges();
 
         try {
             getTable().updateItem(getItem());
+            return true;
         } catch (SQLException ex) {
-            String options[] = {
-                    "Close Window Anyway",
-                    "Continue Editing",
-            };
-
-            int result = JOptionPane.showOptionDialog(null, "Save failed. Would Would you like to discard changes and close anyways or remain on " +
-                    "this screen?", "Save error!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{}, 1);
-
-            if (result != 0)
-                return;
+            return false;
         }
     }
 
@@ -141,7 +142,7 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         this.itemEditListener = itemEditListener;
     }
 
-    private class ItemEditListener implements KeyListener, ItemListener, ActionListener, ChangeListener {
+    private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
         @Override
         public void keyTyped(KeyEvent e) {
             onItemEdited();
@@ -165,11 +166,6 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            onItemEdited();
-        }
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
             onItemEdited();
         }
     }
