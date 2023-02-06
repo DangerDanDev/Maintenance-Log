@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class StatusEditorPanel extends EditorDialogAbstract<Status>{
 
@@ -52,17 +53,17 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
         bUndoChanges.setEnabled(true);
     }
 
+
+
     @Override
     public boolean save() {
-        if(!super.save()) {
-
-            //show an error dialog
-            JOptionPane.showMessageDialog(null,"Save failed!", "Save failed!", JOptionPane.ERROR_MESSAGE);
-
-            return false;
-        } else {
+        if (super.save())
             return true;
-        }
+
+        //show an error dialog if the save failed
+        else
+            JOptionPane.showMessageDialog(null, "Save failed!", "Save failed!", JOptionPane.ERROR_MESSAGE);
+        return false;
     }
 
     @Override
@@ -71,6 +72,9 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
 
         bColorPicker.setBackground(getItem().getColor());
         colorPlaceholder = getItem().getColor();
+
+        bSave.setEnabled(false);
+        bUndoChanges.setEnabled(false);
     }
 
     @Override
@@ -84,10 +88,18 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
 
             DBManager.initialize();
 
-            StatusEditorPanel panel = new StatusEditorPanel(StatusTable.getInstance().getItemById(5));
+            ArrayList<StatusEditorPanel> panels = new ArrayList<>();
+            ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
+            for(Status s : statuses)
+                panels.add(new StatusEditorPanel(s));
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            for(StatusEditorPanel p : panels)
+                panel.add(p.contentPane);
 
             JDialog dialog = new JDialog();
-            dialog.setContentPane(panel.contentPane);
+            dialog.setContentPane(panel);
             dialog.pack();
             dialog.setLocation(3000, 600);
             dialog.setModal(true);
