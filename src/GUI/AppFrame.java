@@ -1,7 +1,9 @@
 package GUI;
 
 import data.DBManager;
+import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
+import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
@@ -13,14 +15,20 @@ public class AppFrame extends JFrame {
 
     private JPanel contentPane;
     private JTabbedPane tabbedPane1;
+    private JPanel notesPanel;
 
-    public AppFrame() {
+    public AppFrame() throws SQLException {
         super("Hawk Logbook");
+
+        notesPanel.setLayout(new BoxLayout(notesPanel, BoxLayout.Y_AXIS));
+
+        loadNotes();
 
         setSize(800,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
         setContentPane(contentPane);
+        pack();
         setVisible(true);
     }
 
@@ -37,6 +45,14 @@ public class AppFrame extends JFrame {
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");
+        }
+    }
+
+    private void loadNotes() throws SQLException {
+        ArrayList<Discrepancy> discrepancies = DiscrepancyTable.getInstance().getAllItems();
+
+        for(Discrepancy d : discrepancies) {
+            notesPanel.add(new DiscrepancyLineItem(d).getCustomContentPane());
         }
     }
 
