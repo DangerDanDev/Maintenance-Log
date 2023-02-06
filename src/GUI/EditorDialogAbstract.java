@@ -7,6 +7,7 @@ import data.tables.Table;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
@@ -62,6 +63,8 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         setTitle(getEditorTitle());
         setTable(table);
     }
+
+    public abstract Container getCustomContentPane();
 
     protected void onSave() {
 

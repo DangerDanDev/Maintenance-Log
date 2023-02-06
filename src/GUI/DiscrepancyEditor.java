@@ -7,6 +7,7 @@ import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -66,6 +67,11 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
+    }
+
+    @Override
+    public Container getCustomContentPane() {
+        return contentPane;
     }
 
     private void populateCBStatuses()  {

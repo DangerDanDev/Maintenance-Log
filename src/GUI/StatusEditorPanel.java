@@ -40,6 +40,11 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
         setItem(status);
     }
 
+    @Override
+    public Container getCustomContentPane() {
+        return contentPane;
+    }
+
     /**
      * This method is called when the user changes data on one of the controls;
      * effectively, it happens when anything that would require the item to be
