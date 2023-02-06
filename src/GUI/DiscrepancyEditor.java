@@ -67,6 +67,8 @@ public class DiscrepancyEditor extends EditorPanelDialogBase<Discrepancy> {
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
+
+        pack();
     }
 
     @Override
