@@ -5,6 +5,8 @@ import data.tables.DiscrepancyTable;
 import data.tables.Table;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.sql.SQLException;
 
@@ -61,32 +63,37 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         setTable(table);
     }
 
-    protected void onOK() {
+    protected void onSave() {
 
         //if the discrepancy has not been edited, we don't need to go through any of that saving
         //funny business
-        if(!getItem().isSaved()) {
-
-            //push the user's changes to the discrepancy object
-            pushChanges();
-
-            try {
-                getTable().updateItem(getItem());
-            } catch (SQLException ex) {
-                String options[] = {
-                        "Close Window Anyway",
-                        "Continue Editing",
-                };
-
-                int result = JOptionPane.showOptionDialog(null, "Save failed. Would Would you like to discard changes and close anyways or remain on " +
-                        "this screen?", "Save error!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{}, 1);
-
-                if (result != 0)
-                    return;
-            }
-        }
+        if(!getItem().isSaved())
+            save();
 
         closeWindow();
+    }
+
+    /**
+     * Attempts to save the item we are editing, displays a dialog if we fail
+     */
+    public void save() {
+        //push the user's changes to the discrepancy object
+        pushChanges();
+
+        try {
+            getTable().updateItem(getItem());
+        } catch (SQLException ex) {
+            String options[] = {
+                    "Close Window Anyway",
+                    "Continue Editing",
+            };
+
+            int result = JOptionPane.showOptionDialog(null, "Save failed. Would Would you like to discard changes and close anyways or remain on " +
+                    "this screen?", "Save error!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, new String[]{}, 1);
+
+            if (result != 0)
+                return;
+        }
     }
 
 
@@ -134,7 +141,7 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
         this.itemEditListener = itemEditListener;
     }
 
-    private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
+    private class ItemEditListener implements KeyListener, ItemListener, ActionListener, ChangeListener {
         @Override
         public void keyTyped(KeyEvent e) {
             onItemEdited();
@@ -158,6 +165,11 @@ public abstract class EditorDialogAbstract<T extends DatabaseObject> extends JDi
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            onItemEdited();
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
             onItemEdited();
         }
     }

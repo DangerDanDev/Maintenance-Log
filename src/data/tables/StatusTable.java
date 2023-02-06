@@ -40,7 +40,6 @@ public class StatusTable extends Table<Status> {
         String rawColor = rs.getString(COL_COLOR.NAME);
         String rgb[] = rawColor.split(",");
         status.setColor(new Color(Integer.parseInt(rgb[0].trim()), Integer.parseInt(rgb[1].trim()), Integer.parseInt(rgb[2].trim())));
-        status.setColor(Color.WHITE);
         status.setSaved(true);
 
         return status;
@@ -50,7 +49,7 @@ public class StatusTable extends Table<Status> {
     public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, Status item) throws SQLException {
         super.setStatementValues(statement, indexer, item);
 
-        String rgb = item.getColor().getRed() + " , " + item.getColor().getGreen() + " , " + item.getColor().getGreen();
+        String rgb = item.getColor().getRed() + "," + item.getColor().getGreen() + "," + item.getColor().getGreen();
 
         statement.setString(indexer.indexOf(COL_TITLE), item.getTitle());
         statement.setString(indexer.indexOf(COL_COLOR), rgb);

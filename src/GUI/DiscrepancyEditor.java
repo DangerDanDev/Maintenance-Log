@@ -1,10 +1,8 @@
 package GUI;
 
 import data.DBManager;
-import data.DatabaseObject;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
-import data.tables.Table;
 import model.Discrepancy;
 import model.Status;
 
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 
 public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
     private JPanel contentPane;
-    private JButton buttonOK;
+    private JButton buttonSave;
     private JButton buttonCancel;
     private JTextArea tfNarrative;
     private JTextArea tfTurnover;
@@ -35,16 +33,16 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
 
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        getRootPane().setDefaultButton(buttonSave);
 
         setLocation(2300, 440);
 
         populateCBStatuses();
         setItem(discrepancy);
 
-        buttonOK.addActionListener(new ActionListener() {
+        buttonSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onOK();
+                onSave();
             }
         });
 
