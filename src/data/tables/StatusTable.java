@@ -49,7 +49,7 @@ public class StatusTable extends Table<Status> {
     public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, Status item) throws SQLException {
         super.setStatementValues(statement, indexer, item);
 
-        String rgb = item.getColor().getRed() + "," + item.getColor().getGreen() + "," + item.getColor().getGreen();
+        String rgb = item.getColor().getRed() + "," + item.getColor().getGreen() + "," + item.getColor().getBlue();
 
         statement.setString(indexer.indexOf(COL_TITLE), item.getTitle());
         statement.setString(indexer.indexOf(COL_COLOR), rgb);

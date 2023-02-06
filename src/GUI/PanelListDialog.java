@@ -87,5 +87,7 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
             ex.printStackTrace();
             throw ex;
         }
+
+        System.exit(0);
     }
 }

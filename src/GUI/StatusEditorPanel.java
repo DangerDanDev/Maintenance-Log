@@ -22,7 +22,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
     private JButton bSave;
     private JButton bUndoChanges;
 
-    private Color colorPlaceholder = Color.WHITE;
+    private Color colorPlaceHolder = Color.WHITE;
 
     public StatusEditorPanel(Status status){
         super("Status Editor", StatusTable.getInstance());
@@ -31,7 +31,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
         tfStatusTitle.addKeyListener(getItemEditListener());
         cbShowOnNotes.addActionListener(getItemEditListener());
         cbCompletesJob.addActionListener(getItemEditListener());
-        bColorPicker.addActionListener(getItemEditListener());
+        bColorPicker.addActionListener(listener -> changeColor());
 
         //hook up the save and cancel button
         bSave.addActionListener(ActionListener -> save());
@@ -58,7 +58,21 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
         bUndoChanges.setEnabled(true);
     }
 
+    /**
+     * Called when the user click the change color button
+     */
+    private void changeColor() {
+        colorPlaceHolder = JColorChooser.showDialog(this, "Status color", colorPlaceHolder, false);
 
+        //if the user selected a color, we will set the button's background to reflect it
+        if (colorPlaceHolder != null) {
+            bColorPicker.setBackground(colorPlaceHolder);
+            onItemEdited();
+        }
+        //if the user did not pick a color, revert the placeholder back to the item's pre-existing color
+        else
+            colorPlaceHolder = getItem().getColor();
+    }
 
     @Override
     public boolean save() {
@@ -66,9 +80,10 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
             return true;
 
         //show an error dialog if the save failed
-        else
+        else {
             JOptionPane.showMessageDialog(null, "Save failed!", "Save failed!", JOptionPane.ERROR_MESSAGE);
-        return false;
+            return false;
+        }
     }
 
     @Override
@@ -76,7 +91,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
         tfStatusTitle.setText(getItem().getTitle());
 
         bColorPicker.setBackground(getItem().getColor());
-        colorPlaceholder = getItem().getColor();
+        colorPlaceHolder = getItem().getColor();
 
         bSave.setEnabled(false);
         bUndoChanges.setEnabled(false);
@@ -85,7 +100,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
     @Override
     public void pushChanges() {
         getItem().setTitle(tfStatusTitle.getText());
-        getItem().setColor(colorPlaceholder);
+        getItem().setColor(colorPlaceHolder);
     }
 
     public static void main(String[] args) throws SQLException {
@@ -115,5 +130,7 @@ public class StatusEditorPanel extends EditorDialogAbstract<Status>{
             ex.printStackTrace();
             throw ex;
         }
+
+        System.exit(0);
     }
 }
