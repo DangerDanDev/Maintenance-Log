@@ -2,6 +2,7 @@ package data.tables;
 
 import data.DBManager;
 import data.DatabaseObject;
+import data.QueryIndexer;
 
 import java.sql.*;
 import java.time.Instant;
@@ -14,6 +15,8 @@ public abstract class Table<T extends DatabaseObject> {
 
     public static final String INTEGER = " INTEGER ";
     public static final String TEXT = " TEXT ";
+
+    public static final String NOT_NULL = " NOT NULL ";
 
     public static final String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
 

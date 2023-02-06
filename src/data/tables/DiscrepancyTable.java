@@ -1,5 +1,6 @@
 package data.tables;
 
+import data.QueryIndexer;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;

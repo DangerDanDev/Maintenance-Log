@@ -1,4 +1,6 @@
-package data.tables;
+package data;
+
+import data.tables.Table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
