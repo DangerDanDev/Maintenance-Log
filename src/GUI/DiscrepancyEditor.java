@@ -3,13 +3,16 @@ package GUI;
 import data.DBManager;
 import data.DatabaseObject;
 import data.tables.DiscrepancyTable;
+import data.tables.StatusTable;
 import data.tables.Table;
 import model.Discrepancy;
+import model.Status;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
     private JPanel contentPane;
@@ -36,6 +39,7 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
 
         setLocation(2300, 440);
 
+        populateCBStatuses();
         setItem(discrepancy);
 
         buttonOK.addActionListener(new ActionListener() {
@@ -58,19 +62,25 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-
         tfTurnover.addKeyListener(getItemEditListener());
         tfDiscoveredBy.addKeyListener(getItemEditListener());
         tfNarrative.addKeyListener(getItemEditListener());
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
+    }
+
+    private void populateCBStatuses()  {
+        cbStatus.removeAllItems();
+
+        try {
+            ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
+            for(Status s : statuses)
+                cbStatus.addItem(s);
+        } catch(SQLException ex) {
+            System.out.println("Error loading statuses from Status table.");
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
@@ -82,6 +92,7 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
         getItem().setTurnover(tfTurnover.getText());
         getItem().setDiscoveredBy(tfDiscoveredBy.getText());
         getItem().setPartsOnOrder(tfPartsOnOrder.getText());
+        getItem().setStatus((Status)cbStatus.getSelectedItem());
     }
 
     /**
@@ -94,6 +105,7 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
         tfTurnover.setText(getItem().getTurnover());
         tfDiscoveredBy.setText(getItem().getDiscoveredBy());
         tfPartsOnOrder.setText(getItem().getPartsOnOrder());
+        getItem().getStatus().selectInComboBox(cbStatus);
 
         tfDateCreated.setText(getItem().getDateCreated().toString());
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());
@@ -101,7 +113,7 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
 
     public static final String TITLE = "Discrepancy Editor";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException{
 
         try(Connection c = DBManager.getConnection()) {
 
@@ -113,6 +125,7 @@ public class DiscrepancyEditor extends EditorDialogAbstract<Discrepancy> {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw ex;
         } finally {
             System.exit(0);
         }

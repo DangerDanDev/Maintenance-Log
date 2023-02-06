@@ -255,7 +255,7 @@ public abstract class Table<T extends DatabaseObject> {
      * Sets a PreparedStatement's values using a QueryIndexer.
      * Override this method in subclasses to set additional columns' values.
      * Note: This method does NOT set the ID field, so for update queries you
-     * will need to call the setsetUpdateQueryItemId() method to make sure you are
+     * will need to call the setUpdateQueryItemId() method to make sure you are
      * updating the right row.
      * @param statement
      * @param indexer

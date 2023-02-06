@@ -5,6 +5,7 @@ import data.DatabaseObject;
 import data.QueryIndexer;
 import model.Status;
 
+import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +39,8 @@ public class StatusTable extends Table<Status> {
 
         String rawColor = rs.getString(COL_COLOR.NAME);
         String rgb[] = rawColor.split(",");
-        status.setColor(new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[0]), Integer.parseInt(rgb[0])));
+        status.setColor(new Color(Integer.parseInt(rgb[0].trim()), Integer.parseInt(rgb[1].trim()), Integer.parseInt(rgb[2].trim())));
+        status.setColor(Color.WHITE);
         status.setSaved(true);
 
         return status;
