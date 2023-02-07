@@ -77,10 +77,10 @@ public class DatabaseObject {
     }
 
     /**
-     * Interface for an EditorDialog to be nofified when I am edited (meaning I am now "unsaved") and
-     * when I am saved
+     * Interface for an EditorDialog to be nofified when my item is saved
      */
     public interface ChangeListener {
+        //TODO: this seems redundant with the TableListener onItemUpdated() event
         void onItemSaved();
     }
 
