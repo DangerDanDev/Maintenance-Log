@@ -23,7 +23,7 @@
           <preferredSize width="400" height="30"/>
         </properties>
       </component>
-      <component id="55991" class="javax.swing.JTextField" binding="tfTurnover">
+      <component id="847e0" class="javax.swing.JTextField" binding="tfTurnover">
         <constraints/>
         <properties>
           <columns value="0"/>

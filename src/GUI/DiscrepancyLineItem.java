@@ -28,9 +28,20 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         StatusTable.getInstance().addListener(statusTableListener);
         DiscrepancyTable.getInstance().addListener(discrepancyTableListener);
 
-        tfNarrative.addMouseListener(new DoubleClickListener());
+        tfNarrative.addMouseListener(doubleClickListener);
+        tfPartsOnOrder.addMouseListener(doubleClickListener);
+        tfTurnover.addMouseListener(doubleClickListener);
     }
 
+    /**
+     * Listens for the user double clicking on discrepancy fields to open the editor
+     */
+    private DoubleClickListener doubleClickListener = new DoubleClickListener();
+
+    /**
+     * Listens for the user double clicking on the discrepancy fields
+     * and opens the discrepancy editor when that happens
+     */
     private class DoubleClickListener implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
