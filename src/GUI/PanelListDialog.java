@@ -21,11 +21,11 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
      * List of all the panels I have domain over. Typically, these will be
      * custom editor panels (ie: StatusEditorPanel, AircraftProfileEditorPanel, etc)
      */
-    private ArrayList<EditorPanelDialogBase<T>> panels = new ArrayList<>();
+    private ArrayList<EditorDialog<T>> panels = new ArrayList<>();
 
     private JPanel contentPane = new JPanel();
 
-    public PanelListDialog(ArrayList<EditorPanelDialogBase> customPanels) {
+    public PanelListDialog(ArrayList<EditorDialog> customPanels) {
 
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(contentPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -46,11 +46,11 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
      * EditorPanels passed in
      * @param panelsToAdd
      */
-    public void populate(ArrayList<EditorPanelDialogBase> panelsToAdd) {
+    public void populate(ArrayList<EditorDialog> panelsToAdd) {
         panels.clear();
         contentPane.removeAll();
 
-        for(EditorPanelDialogBase<T> panel : panelsToAdd) {
+        for(EditorDialog<T> panel : panelsToAdd) {
             addPanel(panel);
         }
     }
@@ -59,12 +59,12 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
      * Adds an EditorPanel to my current content window
      * @param panel
      */
-    public void addPanel(EditorPanelDialogBase panel) {
+    public void addPanel(EditorDialog panel) {
         panels.add(panel);
         contentPane.add(panel.getCustomContentPane());
     }
 
-    public void removePanel(EditorPanelDialogBase panel) {
+    public void removePanel(EditorDialog panel) {
         panels.remove(panel);
         contentPane.remove(panel.getCustomContentPane());
     }
@@ -74,7 +74,7 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
 
             DBManager.initialize();
 
-            ArrayList<EditorPanelDialogBase> customPanels = new ArrayList<>();
+            ArrayList<EditorDialog> customPanels = new ArrayList<>();
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
             for(Status s : statuses){
                 customPanels.add(new StatusEditorPanel(s));

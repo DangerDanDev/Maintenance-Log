@@ -37,7 +37,7 @@ public class AppFrame extends JFrame {
         try {
 
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
-            ArrayList<EditorPanelDialogBase> panels = new ArrayList<>();
+            ArrayList<EditorDialog> panels = new ArrayList<>();
             for (Status s : statuses)
                 panels.add(new StatusEditorPanel(s));
 

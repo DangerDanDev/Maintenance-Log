@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
-public abstract class EditorPanelDialogBase<T extends DatabaseObject> extends JDialog implements DatabaseObject.ChangeListener, Table.TableListener {
+public abstract class EditorDialog<T extends DatabaseObject> extends JDialog implements DatabaseObject.ChangeListener, Table.TableListener {
 
     private String editorTitle;
     public String getEditorTitle() {
@@ -58,7 +58,7 @@ public abstract class EditorPanelDialogBase<T extends DatabaseObject> extends JD
      */
     public abstract void pushChanges();
 
-    public EditorPanelDialogBase(String windowTitle, Table table) {
+    public EditorDialog(String windowTitle, Table table) {
         setEditorTitle(windowTitle);
         setTitle(getEditorTitle());
         setTable(table);

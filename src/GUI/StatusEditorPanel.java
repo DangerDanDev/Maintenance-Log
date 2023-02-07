@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class StatusEditorPanel extends EditorPanelDialogBase<Status> {
+public class StatusEditorPanel extends EditorDialog<Status> {
 
     private JPanel contentPane;
     private JTextField tfStatusTitle;
