@@ -1,4 +1,4 @@
-package GUI;
+package GUI.BaseClasses;
 
 import data.DatabaseObject;
 import data.tables.DiscrepancyTable;

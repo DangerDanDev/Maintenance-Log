@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.BaseClasses.EditorDialog;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;

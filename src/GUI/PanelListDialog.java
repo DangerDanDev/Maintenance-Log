@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.BaseClasses.EditorDialog;
 import data.DBManager;
 import data.DatabaseObject;
 import data.tables.StatusTable;
