@@ -24,7 +24,7 @@ public class StatusEditorPanel extends EditorPanel<Status> {
 
     private Color colorPlaceHolder = Color.WHITE;
 
-    public StatusEditorPanel(Status status){
+    public StatusEditorPanel(Status status, EditorPanelHost host){
         super(StatusTable.getInstance());
 
         //hook up all the events that get this item marked as unsaved
@@ -37,6 +37,7 @@ public class StatusEditorPanel extends EditorPanel<Status> {
         bSave.addActionListener(ActionListener -> save());
         bUndoChanges.addActionListener(ActionListener -> refreshData());
 
+        setEditorPanelHost(host);
         setItem(status);
     }
 
@@ -114,28 +115,40 @@ public class StatusEditorPanel extends EditorPanel<Status> {
     }
 
 
-
     public static void main(String[] args) throws SQLException {
         try(Connection c = DBManager.getConnection()) {
 
             DBManager.initialize();
 
+            JDialog dialog = new JDialog();
+            dialog.setLocation(3000, 600);
+            dialog.setModal(true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+            EditorPanelHost host = new EditorPanelHost() {
+                @Override
+                public void onItemEdited(Object item) {
+                    dialog.setTitle("Unsaved");
+                }
+
+                @Override
+                public void onItemSaved(Object item) {
+                    dialog.setTitle("Saved");
+                }
+            };
+
             ArrayList<StatusEditorPanel> panels = new ArrayList<>();
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
             for(Status s : statuses)
-                panels.add(new StatusEditorPanel(s));
+                panels.add(new StatusEditorPanel(s, host));
 
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
             for(StatusEditorPanel p : panels)
                 panel.add(p.contentPane);
 
-            JDialog dialog = new JDialog();
             dialog.setContentPane(panel);
             dialog.pack();
-            dialog.setLocation(3000, 600);
-            dialog.setModal(true);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
 
         } catch (SQLException ex) {

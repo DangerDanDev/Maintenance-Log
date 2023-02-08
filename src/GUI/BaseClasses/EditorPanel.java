@@ -52,6 +52,11 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         try {
             getTable().updateItem(getItem());
             onSaveSucceeded();
+
+            //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved
+            if(getEditorPanelHost() != null)
+                getEditorPanelHost().onItemSaved(getItem());
+
             return true;
         } catch (SQLException ex) {
             onSaveFailed();
@@ -117,10 +122,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     /**
      * Called when the user has made changes to the item we are editing via one of the GUI controls;
-     * Mark the window title to say unsaved and set the item's saved flag to false as well
+     * Marks the item as unsaved and lets the PanelHost (JDialog or JFrame, usually) that the iteam
+     * has been edited
      */
     public void onItemEdited() {
         getItem().setSaved(false);
+
+        if(getEditorPanelHost() != null)
+            getEditorPanelHost().onItemEdited(getItem());
     }
 
     private ItemEditListener itemEditListener = new ItemEditListener();
@@ -163,5 +172,32 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     //////////////////////////////////////////////////////////////////////////////
     // END ITEM EDIT LISTENER
+    /////////////////////////////////////////////////////////////////////////////
+
+    /////////////////////////////////////////////////////////////////////////////
+    // EDITOR PANEL HOST LISTENER
+    /////////////////////////////////////////////////////////////////////////////
+
+    private EditorPanelHost<T> editorPanelHost;
+
+    public EditorPanelHost<T> getEditorPanelHost() {
+        return editorPanelHost;
+    }
+
+    public void setEditorPanelHost(EditorPanelHost<T> editorPanelHost) {
+        this.editorPanelHost = editorPanelHost;
+    }
+
+    /**
+     * An interface so that I can notify my host (ie: JDialog or JFrame) that
+     * I have been edited
+     */
+    public interface EditorPanelHost<T> {
+        void onItemEdited(T item);
+        void onItemSaved(T item);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // End EDITOR PANEL HOST LISTENER
     /////////////////////////////////////////////////////////////////////////////
 }
