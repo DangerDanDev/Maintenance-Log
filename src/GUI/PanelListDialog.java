@@ -75,13 +75,13 @@ public class PanelListDialog<T extends DatabaseObject> extends JDialog {
 
             DBManager.initialize();
 
-            ArrayList<EditorDialog> customPanels = new ArrayList<>();
+/*            ArrayList<EditorDialog> customPanels = new ArrayList<>();
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
             for(Status s : statuses){
                 customPanels.add(new StatusEditorPanel(s));
             }
 
-            PanelListDialog listDialog = new PanelListDialog(customPanels);
+            PanelListDialog listDialog = new PanelListDialog(customPanels);*/
 
         } catch (
                 SQLException ex) {

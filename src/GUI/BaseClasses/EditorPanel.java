@@ -4,6 +4,7 @@ import data.DatabaseObject;
 import data.tables.Table;
 
 import javax.swing.*;
+import java.awt.event.*;
 import java.sql.SQLException;
 
 public abstract class EditorPanel<T extends DatabaseObject> implements Table.TableListener<T> {
@@ -18,9 +19,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     private T item;
 
-    public EditorPanel(T item, Table table) {
-        setItem(item);
-
+    public EditorPanel(Table<T> table) {
         setTable(table);
     }
 
@@ -79,7 +78,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     @Override
     public void onItemUpdated(T editedItem) {
-        if(table.equals(getItem()))
+        if(editedItem.equals(getItem()))
             refreshData();
     }
 
@@ -111,4 +110,58 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         if(this.table != null)
             this.table.addListener(this);
     }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // ITEM EDIT LISTENER
+    ////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Called when the user has made changes to the item we are editing via one of the GUI controls;
+     * Mark the window title to say unsaved and set the item's saved flag to false as well
+     */
+    public void onItemEdited() {
+        getItem().setSaved(false);
+    }
+
+    private ItemEditListener itemEditListener = new ItemEditListener();
+
+    public ItemEditListener getItemEditListener() {
+        return itemEditListener;
+    }
+
+    public void setItemEditListener(ItemEditListener itemEditListener) {
+        this.itemEditListener = itemEditListener;
+    }
+
+    private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
+            onItemEdited();
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if(e.getStateChange() == ItemEvent.SELECTED)
+                onItemEdited();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onItemEdited();
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // END ITEM EDIT LISTENER
+    /////////////////////////////////////////////////////////////////////////////
 }

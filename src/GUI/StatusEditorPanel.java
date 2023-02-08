@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.BaseClasses.EditorDialog;
+import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.StatusTable;
 import model.Status;
@@ -11,7 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class StatusEditorPanel extends EditorDialog<Status> {
+public class StatusEditorPanel extends EditorPanel<Status> {
 
     private JPanel contentPane;
     private JTextField tfStatusTitle;
@@ -24,7 +25,7 @@ public class StatusEditorPanel extends EditorDialog<Status> {
     private Color colorPlaceHolder = Color.WHITE;
 
     public StatusEditorPanel(Status status){
-        super("Status Editor", StatusTable.getInstance());
+        super(StatusTable.getInstance());
 
         //hook up all the events that get this item marked as unsaved
         tfStatusTitle.addKeyListener(getItemEditListener());
@@ -40,8 +41,18 @@ public class StatusEditorPanel extends EditorDialog<Status> {
     }
 
     @Override
-    public Container getCustomContentPane() {
+    public JPanel getContentPane() {
         return contentPane;
+    }
+
+    @Override
+    public void onSaveFailed() {
+
+    }
+
+    @Override
+    public void onSaveSucceeded() {
+
     }
 
     /**
@@ -61,7 +72,7 @@ public class StatusEditorPanel extends EditorDialog<Status> {
      * Called when the user click the change color button
      */
     private void changeColor() {
-        colorPlaceHolder = JColorChooser.showDialog(this, "Status color", colorPlaceHolder, false);
+        colorPlaceHolder = JColorChooser.showDialog(null, "Status color", colorPlaceHolder, false);
 
         //if the user selected a color, we will set the button's background to reflect it
         if (colorPlaceHolder != null) {
@@ -101,6 +112,8 @@ public class StatusEditorPanel extends EditorDialog<Status> {
         getItem().setTitle(tfStatusTitle.getText());
         getItem().setColor(colorPlaceHolder);
     }
+
+
 
     public static void main(String[] args) throws SQLException {
         try(Connection c = DBManager.getConnection()) {

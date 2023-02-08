@@ -35,7 +35,7 @@ public class AppFrame extends JFrame {
 
     private void showStatusEditor()  {
 
-        try {
+        /*try {
 
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
             ArrayList<EditorDialog> panels = new ArrayList<>();
@@ -46,7 +46,7 @@ public class AppFrame extends JFrame {
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");
-        }
+        }*/
     }
 
     private void loadNotes() throws SQLException {
