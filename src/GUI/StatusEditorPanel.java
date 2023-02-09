@@ -125,7 +125,10 @@ public class StatusEditorPanel extends EditorPanel<Status> {
             dialog.setModal(true);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+            ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();;
+
             EditorPanelHost host = new EditorPanelHost() {
+
                 @Override
                 public void onItemEdited(Object item) {
                     dialog.setTitle("Unsaved");
@@ -133,21 +136,27 @@ public class StatusEditorPanel extends EditorPanel<Status> {
 
                 @Override
                 public void onItemSaved(Object item) {
+                    for(Status s : statuses) {
+                        if(!s.isSaved())
+                            return;
+                    }
                     dialog.setTitle("Saved");
                 }
             };
 
             ArrayList<StatusEditorPanel> panels = new ArrayList<>();
-            ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
+
             for(Status s : statuses)
                 panels.add(new StatusEditorPanel(s, host));
 
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             for(StatusEditorPanel p : panels)
                 panel.add(p.contentPane);
 
-            dialog.setContentPane(panel);
+            dialog.setContentPane(scrollPane);
             dialog.pack();
             dialog.setVisible(true);
 
