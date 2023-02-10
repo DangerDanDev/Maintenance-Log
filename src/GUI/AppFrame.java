@@ -49,6 +49,10 @@ public class AppFrame extends JFrame {
         }
     }
 
+    /**
+     * Loads all the relevant discrepancies and populates the NotesPanel with them
+     * @throws SQLException
+     */
     private void loadNotes() throws SQLException {
         ArrayList<Discrepancy> discrepancies = DiscrepancyTable.getInstance().getAllItems();
 
