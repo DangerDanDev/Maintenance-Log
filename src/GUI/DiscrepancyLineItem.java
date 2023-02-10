@@ -46,8 +46,14 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         @Override
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-                DiscrepancyEditor editor = new DiscrepancyEditor(getItem());
-                editor.setVisible(true);
+                JDialog dialog = new JDialog();
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.setModal(true);
+
+                DiscrepancyEditor editor = new DiscrepancyEditor(getItem(), null);
+                dialog.setContentPane(editor.getContentPane());
+                dialog.pack();
+                dialog.setVisible(true);
             }
         }
 

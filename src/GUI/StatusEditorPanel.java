@@ -25,7 +25,7 @@ public class StatusEditorPanel extends EditorPanel<Status> {
     private Color colorPlaceHolder = Color.WHITE;
 
     public StatusEditorPanel(Status status, EditorPanelHost host){
-        super(StatusTable.getInstance());
+        super(StatusTable.getInstance(),host);
 
         //hook up all the events that get this item marked as unsaved
         tfStatusTitle.addKeyListener(getItemEditListener());
@@ -37,23 +37,12 @@ public class StatusEditorPanel extends EditorPanel<Status> {
         bSave.addActionListener(ActionListener -> save());
         bUndoChanges.addActionListener(ActionListener -> refreshData());
 
-        setEditorPanelHost(host);
         setItem(status);
     }
 
     @Override
     public JPanel getContentPane() {
         return contentPane;
-    }
-
-    @Override
-    public void onSaveFailed() {
-
-    }
-
-    @Override
-    public void onSaveSucceeded() {
-
     }
 
     /**
@@ -128,6 +117,11 @@ public class StatusEditorPanel extends EditorPanel<Status> {
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();;
 
             EditorPanelHost host = new EditorPanelHost() {
+
+                @Override
+                public void onItemSaveFailed(Object item) {
+                    //do nothing
+                }
 
                 @Override
                 public void onItemEdited(Object item) {

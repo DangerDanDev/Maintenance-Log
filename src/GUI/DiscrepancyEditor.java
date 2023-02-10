@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.BaseClasses.EditorDialog;
+import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
@@ -14,7 +15,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DiscrepancyEditor extends EditorDialog<Discrepancy> {
+public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JPanel contentPane;
     private JButton buttonSave;
     private JButton buttonCancel;
@@ -30,37 +31,11 @@ public class DiscrepancyEditor extends EditorDialog<Discrepancy> {
     private JTextField tfDateLastEdited;
 
 
-    public DiscrepancyEditor(Discrepancy discrepancy) {
-        super("Discrepancy Editor", DiscrepancyTable.getInstance());
-
-        setContentPane(contentPane);
-        setModal(true);
-        getRootPane().setDefaultButton(buttonSave);
-
-        setLocation(2300, 440);
+    public DiscrepancyEditor(Discrepancy discrepancy, EditorPanelHost host) {
+        super(DiscrepancyTable.getInstance(), host);
 
         populateCBStatuses();
         setItem(discrepancy);
-
-        buttonSave.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onSave();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
 
         tfTurnover.addKeyListener(getItemEditListener());
         tfDiscoveredBy.addKeyListener(getItemEditListener());
@@ -68,13 +43,6 @@ public class DiscrepancyEditor extends EditorDialog<Discrepancy> {
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
-
-        pack();
-    }
-
-    @Override
-    public Container getCustomContentPane() {
-        return contentPane;
     }
 
     private void populateCBStatuses()  {
@@ -88,6 +56,21 @@ public class DiscrepancyEditor extends EditorDialog<Discrepancy> {
             System.out.println("Error loading statuses from Status table.");
             System.err.println(ex.getMessage());
         }
+    }
+
+    @Override
+    public JPanel getContentPane() {
+        return contentPane;
+    }
+
+    @Override
+    public void onSaveFailed() {
+
+    }
+
+    @Override
+    public void onSaveSucceeded() {
+
     }
 
     /**
@@ -126,15 +109,21 @@ public class DiscrepancyEditor extends EditorDialog<Discrepancy> {
 
             DBManager.initialize();
 
-            DiscrepancyEditor dialog = new DiscrepancyEditor(DiscrepancyTable.getInstance().getItemById(3));
-            dialog.pack();
-            dialog.setVisible(true);
+            JFrame frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            DiscrepancyEditor editor = new DiscrepancyEditor(DiscrepancyTable.getInstance().getItemById(1), null);
+            JPanel contentPane = new JPanel();
+            contentPane.add(editor.getContentPane());
+            frame.setContentPane(contentPane);
+            frame.pack();
+            frame.setVisible(true);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw ex;
         } finally {
-            System.exit(0);
+
         }
     }
 }

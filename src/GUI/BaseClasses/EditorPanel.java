@@ -19,8 +19,15 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     private T item;
 
-    public EditorPanel(Table<T> table) {
+    /**
+     *
+     * @param table
+     * @param host: the dialog or jFrame that hosts me, if applicable
+     */
+    public EditorPanel(Table<T> table, EditorPanelHost host) {
+
         setTable(table);
+        setEditorPanelHost(host);
     }
 
     /**
@@ -65,22 +72,36 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     }
 
     /**
-     * Called when a save is failed. Shold notify the user of what happened
+     * Called when a save is failed. Should notify the user of what happened
      * and give them options on what to do
      */
-    public abstract void onSaveFailed();
+    public void onSaveFailed() {
+        if(getEditorPanelHost() != null)
+            getEditorPanelHost().onItemSaveFailed(getItem());
+    }
 
     /**
      * Called when a save is successful; if applicable, should close the EditorDialog,
      * remove "unsaved" markers from window titles, etc
      */
-    public abstract void onSaveSucceeded();
+    public void onSaveSucceeded() {
+        if(getEditorPanelHost() != null)
+            getEditorPanelHost().onItemSaved(getItem());
+    }
 
+    /**
+     * Called when an item is added to the database table
+     * @param addedItem
+     */
     @Override
     public void onItemAdded(T addedItem) {
         //do nothing, we're just an editor panel and should only edit existing items
     }
 
+    /**
+     * Called when the table notifies us that the item has been changed
+     * @param editedItem
+     */
     @Override
     public void onItemUpdated(T editedItem) {
         if(editedItem.equals(getItem()))
@@ -142,6 +163,9 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         this.itemEditListener = itemEditListener;
     }
 
+    /**
+     * Implements various swing event handlers to listen for any edited controls
+     */
     private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -195,6 +219,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public interface EditorPanelHost<T> {
         void onItemEdited(T item);
         void onItemSaved(T item);
+        void onItemSaveFailed(T item);
     }
 
     /////////////////////////////////////////////////////////////////////////////
