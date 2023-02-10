@@ -57,8 +57,11 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     public boolean save() {
 
+        //bypass saving if the user hasn't made any changes
         if(getItem().isSaved()) {
-            getEditorPanelHost().close();
+            if(getEditorPanelHost() != null)
+                getEditorPanelHost().close();
+
             return true;
         }
 

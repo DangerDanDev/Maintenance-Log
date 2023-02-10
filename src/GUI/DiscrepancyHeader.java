@@ -52,6 +52,7 @@ public class DiscrepancyHeader extends EditorPanel<Discrepancy> {
      */
     private void onStatusChanged() {
         cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
+        getItem().setSaved(false);
 
         if(!save()) {
             JOptionPane.showMessageDialog(null, "Save failed due to database error.");
