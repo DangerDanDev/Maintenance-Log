@@ -13,14 +13,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
-public class DiscrepancyHeader extends EditorPanel<Discrepancy> {
+public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
     private JPanel panel1;
     private JTextField tfNarrative;
     private JTextField tfTurnover;
     private JTextField tfPartsOnOrder;
 
-    public DiscrepancyHeader(Discrepancy disc) throws SQLException {
+    public DiscrepancySnippet(Discrepancy disc) throws SQLException {
         super(DiscrepancyTable.getInstance(), null);
 
         populateComboBox();
