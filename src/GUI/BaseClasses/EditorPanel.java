@@ -57,7 +57,12 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         pushChanges();
 
         try {
-            getTable().updateItem(getItem());
+            //if it's a new object we want to insert it into the database first
+            //if it's not a new item, update it
+            if(getItem().getId() == DatabaseObject.INVALID_ID)
+                getTable().addItem(getItem());
+            else
+                getTable().updateItem(getItem());
             onSaveSucceeded();
 
             //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved

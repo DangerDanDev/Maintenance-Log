@@ -160,11 +160,12 @@ public abstract class Table<T extends DatabaseObject> {
 
             setStatementValues(ps, idx, item);
             setUpdateQueryItemId(item, idx, ps);
-            ps.execute();
+            ps.executeUpdate();
 
             //if we get here, the item was officially saved
             item.setSaved(true);
             onItemUpdated(item);
+
 
         } catch (SQLException ex) {
 

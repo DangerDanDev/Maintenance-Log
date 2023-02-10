@@ -9,6 +9,7 @@ import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,6 +62,13 @@ public class AppFrame extends JFrame {
         }
     }
 
+    private void createNewDiscrepancy() {
+        EditorDialog<Discrepancy> dialog = new EditorDialog<>("New Discrepancy",
+                new DiscrepancyEditor(new Discrepancy(), null));
+
+        dialog.setVisible(true);
+    }
+
     private class MenuManager {
         JMenuBar menuBar = new JMenuBar();
 
@@ -74,10 +82,10 @@ public class AppFrame extends JFrame {
             menuBar.add(file);
 
             menuBar.add(edit);
-            edit.add(editStatuses).addActionListener(listener -> showStatusEditor());
-            edit.add(newDiscrepancy);
-
+            edit.add(editStatuses).addActionListener(event -> showStatusEditor());
+            edit.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
         }
+
     }
 
     public static void main(String[] args) {

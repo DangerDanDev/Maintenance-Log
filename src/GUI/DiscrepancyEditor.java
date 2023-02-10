@@ -99,7 +99,12 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfTurnover.setText(getItem().getTurnover());
         tfDiscoveredBy.setText(getItem().getDiscoveredBy());
         tfPartsOnOrder.setText(getItem().getPartsOnOrder());
+
+        if(getItem().getStatus() == null)
+            getItem().setStatus((Status)cbStatus.getItemAt(0));
+
         getItem().getStatus().selectInComboBox(cbStatus);
+        cbStatus.setBackground(getItem().getStatus().getColor());
 
         tfDateCreated.setText(getItem().getDateCreated().toString());
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());

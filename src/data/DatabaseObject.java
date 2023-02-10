@@ -9,9 +9,15 @@ import java.time.Instant;
 public class DatabaseObject {
 
     /**
+     * Constant for an id field indicating that this item has not
+     * yet been saved to the database.
+     */
+    public static final long INVALID_ID = -1;
+
+    /**
      * My ID in the SQLite database
      */
-    private long id = -1;
+    private long id = INVALID_ID;
 
     /**
      * The date I was created
