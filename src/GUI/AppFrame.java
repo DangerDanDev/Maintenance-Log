@@ -85,7 +85,7 @@ public class AppFrame extends JFrame {
      */
     private void addDiscrepancy(Discrepancy d)  {
         try {
-            notesPanel.add(new DiscrepancyLineItem(d).getContentPane());
+            notesPanel.add(new DiscrepancyHeader(d).getContentPane());
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
             System.err.println(ex.getMessage());
