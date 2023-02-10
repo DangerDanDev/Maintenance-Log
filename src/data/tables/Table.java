@@ -4,6 +4,7 @@ import data.DBManager;
 import data.DatabaseObject;
 import data.QueryIndexer;
 
+import javax.swing.*;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -438,7 +439,12 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemAdded(T item) {
         for(TableListener<T> listener : listeners)
-            listener.onItemAdded(item);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onItemAdded(item);
+                }
+            });
     }
 
     /**
@@ -447,7 +453,12 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
-            listener.onItemUpdated(item);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onItemUpdated(item);
+                }
+            });
     }
 
     /**
@@ -456,7 +467,12 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemDeleted(T item) {
         for(TableListener<T> listener : listeners)
-            listener.onItemDeleted(item);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onItemDeleted(item);
+                }
+            });
     }
 
     /**

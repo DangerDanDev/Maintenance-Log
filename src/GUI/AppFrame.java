@@ -5,11 +5,11 @@ import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
+import data.tables.Table;
 import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,6 +27,22 @@ public class AppFrame extends JFrame {
 
         loadNotes();
 
+        DiscrepancyTable.getInstance().addListener(new Table.TableListener<Discrepancy>() {
+            @Override
+            public void onItemAdded(Discrepancy addedItem) {
+                addDiscrepancy(addedItem);
+            }
+
+            @Override
+            public void onItemUpdated(Discrepancy editedItem) {
+
+            }
+
+            @Override
+            public void onItemDeleted(Discrepancy deletedItem) {
+
+            }
+        });
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
@@ -58,7 +74,21 @@ public class AppFrame extends JFrame {
         ArrayList<Discrepancy> discrepancies = DiscrepancyTable.getInstance().getAllItems();
 
         for(Discrepancy d : discrepancies) {
+            addDiscrepancy(d);
+        }
+    }
+
+    /**
+     * Adds a discrepancy to the notesPanel
+     * @param d
+     * @throws SQLException
+     */
+    private void addDiscrepancy(Discrepancy d)  {
+        try {
             notesPanel.add(new DiscrepancyLineItem(d).getContentPane());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
+            System.err.println(ex.getMessage());
         }
     }
 
