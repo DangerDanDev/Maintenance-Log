@@ -9,6 +9,9 @@ import java.sql.SQLException;
 
 public abstract class EditorPanel<T extends DatabaseObject> implements Table.TableListener<T> {
 
+    private long lastTransactionId = Table.INVALID_TRANSACTION_ID;
+    public long getLastTransactionId() { return lastTransactionId ;}
+
     /**
      *
      */
@@ -53,6 +56,9 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @return
      */
     public boolean save() {
+
+        lastTransactionId = Table.getTransactionId();
+
         //push the user's changes to the discrepancy object
         pushChanges();
 
@@ -99,7 +105,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @param addedItem
      */
     @Override
-    public void onItemAdded(T addedItem) {
+    public void onItemAdded(T addedItem, long transactionId) {
         //do nothing, we're just an editor panel and should only edit existing items
     }
 
@@ -108,13 +114,19 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @param editedItem
      */
     @Override
-    public void onItemUpdated(T editedItem) {
-        if(editedItem.equals(getItem()))
+    public void onItemUpdated(T editedItem, long transactionId) {
+
+
+        if(editedItem.equals(getItem()) && transactionId != lastTransactionId) {
+            System.out.println(this);
+            System.out.println("Transaction ID: " + transactionId);
+            System.out.println("EditorPanel's Stored transaction ID: " + getLastTransactionId());
             refreshData();
+        }
     }
 
     @Override
-    public void onItemDeleted(T deletedItem) {
+    public void onItemDeleted(T deletedItem, long transactionId) {
         //do nothing, we're just an editor panel and should only edit existing items
     }
 

@@ -22,6 +22,25 @@ public abstract class Table<T extends DatabaseObject> {
     public static final String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
 
     /**
+     * A starter number for transaction trackers that will never match the current transaction ID
+     */
+    public static final long INVALID_TRANSACTION_ID = -1;
+
+    /**
+     * A unique ID for database updates, insertions, deletions, etc;
+     * This allows table listeners to track if the database is notifying them on
+     * a change that they initiated to avoid a feedback loop
+     */
+    public static long transactionId = 0;
+
+    /**
+     * Returns a unique number transaction initiators can avoid responding to events that
+     * they themselves initiated, which can result in feedback loops.
+     * @return
+     */
+    public static long getTransactionId() { return ++transactionId;}
+
+    /**
      * A hash map of all loaded items stored by ID; used to
      * ensure we aren't loading the same objects multiple times
      */
@@ -167,7 +186,6 @@ public abstract class Table<T extends DatabaseObject> {
             item.setSaved(true);
             onItemUpdated(item);
 
-
         } catch (SQLException ex) {
 
             //if the update failed, be sure to revert the last edited date
@@ -217,6 +235,7 @@ public abstract class Table<T extends DatabaseObject> {
     /**
      *
      * @param item
+     * @return the change id, allowing the addItem initiator to avoid responding to this exact event
      */
     public void addItem(T item) {
 
@@ -311,6 +330,7 @@ public abstract class Table<T extends DatabaseObject> {
     }
 
     public void removeItem(T item) {
+        //TODO: Make this actually remove the item from the database
         onItemDeleted(item);
     }
 
@@ -442,7 +462,7 @@ public abstract class Table<T extends DatabaseObject> {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onItemAdded(item);
+                    listener.onItemAdded(item, transactionId);
                 }
             });
     }
@@ -453,10 +473,11 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
+            //listener.onItemUpdated(item, transactionId);
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onItemUpdated(item);
+                    listener.onItemUpdated(item, transactionId);
                 }
             });
     }
@@ -470,7 +491,7 @@ public abstract class Table<T extends DatabaseObject> {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onItemDeleted(item);
+                    listener.onItemDeleted(item,transactionId);
                 }
             });
     }
@@ -484,18 +505,18 @@ public abstract class Table<T extends DatabaseObject> {
          * Called on a listener when an item in this table is created
          * @param addedItem
          */
-        void onItemAdded(T addedItem);
+        void onItemAdded(T addedItem, long transactionId);
 
         /**
          * Called on a listener when an item in this table is edited
          * @param editedItem
          */
-        void onItemUpdated(T editedItem);
+        void onItemUpdated(T editedItem, long transactionId);
 
         /**
          * Called on a listener when an item is deleted from this table
          * @param deletedItem
          */
-        void onItemDeleted(T deletedItem);
+        void onItemDeleted(T deletedItem, long transactionId);
     }
 }

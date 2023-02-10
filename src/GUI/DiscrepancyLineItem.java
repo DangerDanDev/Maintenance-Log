@@ -124,16 +124,16 @@ public class DiscrepancyLineItem extends EditorPanel<Discrepancy> {
 
     public class StatusTableListener implements Table.TableListener<Status> {
         @Override
-        public void onItemAdded(Status addedItem) {
+        public void onItemAdded(Status addedItem, long transactionId) {
 
         }
 
         @Override
-        public void onItemUpdated(Status editedItem) {
+        public void onItemUpdated(Status editedItem, long transactionId) {
         }
 
         @Override
-        public void onItemDeleted(Status deletedItem) {
+        public void onItemDeleted(Status deletedItem, long transactionId) {
 
         }
     }
@@ -142,18 +142,18 @@ public class DiscrepancyLineItem extends EditorPanel<Discrepancy> {
 
     public class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
         @Override
-        public void onItemAdded(Discrepancy addedItem) {
+        public void onItemAdded(Discrepancy addedItem, long transactionId) {
 
         }
 
         @Override
-        public void onItemUpdated(Discrepancy editedItem) {
-            if(editedItem.equals(getItem()))
+        public void onItemUpdated(Discrepancy editedItem, long transactionId) {
+            if(editedItem.equals(getItem()) && transactionId != getLastTransactionId())
                 refreshData();
         }
 
         @Override
-        public void onItemDeleted(Discrepancy deletedItem) {
+        public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
 
         }
     }

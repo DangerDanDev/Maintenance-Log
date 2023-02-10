@@ -29,17 +29,17 @@ public class AppFrame extends JFrame {
 
         DiscrepancyTable.getInstance().addListener(new Table.TableListener<Discrepancy>() {
             @Override
-            public void onItemAdded(Discrepancy addedItem) {
+            public void onItemAdded(Discrepancy addedItem, long transactionId) {
                 addDiscrepancy(addedItem);
             }
 
             @Override
-            public void onItemUpdated(Discrepancy editedItem) {
+            public void onItemUpdated(Discrepancy editedItem, long transactionId) {
 
             }
 
             @Override
-            public void onItemDeleted(Discrepancy deletedItem) {
+            public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
 
             }
         });

@@ -40,6 +40,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
+        cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
 
         buttonSave.addActionListener(e -> save());
         buttonCancel.addActionListener(e -> cancel());
