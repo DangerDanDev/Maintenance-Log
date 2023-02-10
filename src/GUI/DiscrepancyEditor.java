@@ -1,6 +1,5 @@
 package GUI;
 
-import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
@@ -9,8 +8,6 @@ import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,6 +40,23 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
+
+        buttonSave.addActionListener(e -> save());
+        buttonCancel.addActionListener(e -> cancel());
+    }
+
+    @Override
+    public boolean save() {
+        boolean success = super.save();
+
+        if(success)
+            getEditorPanelHost().close();
+
+        return success;
+    }
+
+    public void cancel() {
+        getEditorPanelHost().close();
     }
 
     private void populateCBStatuses()  {

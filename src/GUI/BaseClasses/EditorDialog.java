@@ -1,213 +1,116 @@
 package GUI.BaseClasses;
 
+import GUI.DiscrepancyEditor;
+import GUI.StatusEditorPanel;
+import data.DBManager;
 import data.DatabaseObject;
 import data.tables.DiscrepancyTable;
+import data.tables.StatusTable;
 import data.tables.Table;
+import model.Status;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
-public abstract class EditorDialog<T extends DatabaseObject> extends JDialog implements DatabaseObject.ChangeListener, Table.TableListener {
+public class EditorDialog<T extends DatabaseObject> extends JDialog implements EditorPanel.EditorPanelHost<T> {
 
     private String editorTitle;
+    private JPanel contentPane = new JPanel();
+
     public String getEditorTitle() {
         return editorTitle;
     }
+
     public void setEditorTitle(String TITLE) {
         this.editorTitle = TITLE;
     }
 
-    private Table table;
+    private ArrayList<EditorPanel<T>> panels = new ArrayList<>();
 
-    /**
-     * The item I am responsible for editing
-     */
-    private T item;
-
-    public T getItem() {
-        return item;
-    }
-
-    public void setItem(T item) {
-        //if we were subscribed to a previous discrepancy, now is the time
-        //to unsubscribe
-        if(this.getItem() != null)
-            this.getItem().setListener(null);
-
-        this.item = item;
-
-        if(this.getItem() == null)
-            return; //do not refresh and do not set a listener if our item is null
-
-        this.getItem().setListener(this);
-
-        refreshData();
-    }
-
-    /**
-     * Updates all the GUI fields to match our discrepancy's latest data
-     */
-    public abstract void refreshData();
-
-    /**
-     * Pushes all the changes to the item we're editing, usually called when the save button is clicked
-     */
-    public abstract void pushChanges();
-
-    public EditorDialog(String windowTitle, Table table) {
+    public EditorDialog(String windowTitle) {
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         setEditorTitle(windowTitle);
         setTitle(getEditorTitle());
-        setTable(table);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        setContentPane(contentPane);
     }
 
-    public abstract Container getCustomContentPane();
+    public EditorDialog(String windowTitle, EditorPanel<T> editorPanel) {
+        this(windowTitle);
 
-    protected void onSave() {
-
-        //if the discrepancy has not been edited, we don't need to go through any of that saving
-        //funny business
-        if(!getItem().isSaved())
-            if(!save()) {
-
-                //yes is close anyways, no is keep window open
-                String options[] = {"Yes", "No"};
-                int result = JOptionPane.showOptionDialog(null, "Save failed. Close window anyways? Your changes will be lost.",
-                        "Save failed!", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-
-                if(result != 0)
-                    return;
-            }
-
-        closeWindow();
+        addEditorPanel(editorPanel);
     }
 
-    /**
-     * Attempts to save the item we are editing, displays a dialog if we fail
-     */
-    public boolean save() {
-        //push the user's changes to the discrepancy object
-        pushChanges();
+    public EditorDialog(String windowTitle, ArrayList<EditorPanel<T>> panels) {
+        this(windowTitle);
 
-        try {
-            getTable().updateItem(getItem());
-            return true;
-        } catch (SQLException ex) {
-            return false;
-        }
+        for(EditorPanel<T> panel : panels)
+            addEditorPanel(panel);
     }
 
-
-    protected void onCancel() {
-        closeWindow();
-    }
-
-    /**
-     * Unsubscribes from the Table updates and from Item updates
-     * then closes the dialog
-     */
-    public void closeWindow() {
-
-        getTable().removeListener(this);
-        getItem().setListener(null);
-
+    public void close() {
         dispose();
     }
 
+    public void addEditorPanel(EditorPanel<T> panel) {
+        panels.add(panel);
+        getContentPane().add(panel.getContentPane());
+        panel.setEditorPanelHost(this);
+        pack();
+    }
+
+    public void removeEditorPanel(EditorPanel<T> panel) {
+        panels.remove(panel);
+        getContentPane().remove(panel.getContentPane());
+        panel.setEditorPanelHost(null);
+    }
+
     @Override
-    public void onItemSaved() {
+    public void onItemEdited(T item) {
+        setTitle(getEditorTitle() + "*");
+    }
+
+    @Override
+    public void onItemSaved(T item) {
+        //only mark our title as saved if ALL of the
+        //data we host is saved
+        for(EditorPanel panel : panels) {
+            if(!panel.getItem().isSaved())
+                return;
+        }
+
         setTitle(getEditorTitle());
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // ITEM EDIT LISTENER
-    ////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Called when the user has made changes to the item we are editing via one of the GUI controls;
-     * Mark the window title to say unsaved and set the item's saved flag to false as well
-     */
-    public void onItemEdited() {
-        setTitle(getEditorTitle() + " (unsaved)");
-        getItem().setSaved(false);
-    }
-
-    private ItemEditListener itemEditListener = new ItemEditListener();
-
-    public ItemEditListener getItemEditListener() {
-        return itemEditListener;
-    }
-
-    public void setItemEditListener(ItemEditListener itemEditListener) {
-        this.itemEditListener = itemEditListener;
-    }
-
-    private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
-        @Override
-        public void keyTyped(KeyEvent e) {
-            onItemEdited();
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if(e.getStateChange() == ItemEvent.SELECTED)
-                onItemEdited();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            onItemEdited();
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // END ITEM EDIT LISTENER
-    /////////////////////////////////////////////////////////////////////////////
-
-
-    public Table getTable() {
-        return table;
-    }
-
-    public void setTable(Table table) {
-        if(this.table != null)
-            this.table.removeListener(this);
-
-        this.table = table;
-
-        if(this.table != null)
-            this.table.addListener(this);
-    }
-
-
-
     @Override
-    public void onItemAdded(Object addedItem) {
-        //do nothing
+    public void onItemSaveFailed(T item) {
+
     }
 
-    @Override
-    public void onItemUpdated(Object editedItem) {
-        //react to the changed item
-        if(editedItem.equals(getItem()))
-            refreshData();
-    }
+    public static void main(String[] args) {
 
-    @Override
-    public void onItemDeleted(Object deletedItem) {
+        try (Connection c = DBManager.getConnection()) {
+
+            DBManager.initialize();
+
+            ArrayList<EditorPanel<Status>> statusPanels = new ArrayList<>();
+            for(Status s : StatusTable.getInstance().getAllItems()) {
+                statusPanels.add(new StatusEditorPanel(s));
+            }
+
+            EditorDialog dialog = new EditorDialog("Statuses", statusPanels);
+            dialog.setVisible(true);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
     }
 }

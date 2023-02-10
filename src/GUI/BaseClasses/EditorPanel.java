@@ -220,6 +220,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         void onItemEdited(T item);
         void onItemSaved(T item);
         void onItemSaveFailed(T item);
+        void close();
     }
 
     /////////////////////////////////////////////////////////////////////////////

@@ -40,6 +40,10 @@ public class StatusEditorPanel extends EditorPanel<Status> {
         setItem(status);
     }
 
+    public StatusEditorPanel(Status status) {
+        this(status, null);
+    }
+
     @Override
     public JPanel getContentPane() {
         return contentPane;
@@ -117,6 +121,11 @@ public class StatusEditorPanel extends EditorPanel<Status> {
             ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();;
 
             EditorPanelHost host = new EditorPanelHost() {
+
+                @Override
+                public void close() {
+                    dialog.setVisible(false);
+                }
 
                 @Override
                 public void onItemSaveFailed(Object item) {
