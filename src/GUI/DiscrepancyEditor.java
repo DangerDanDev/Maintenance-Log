@@ -63,16 +63,6 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         return contentPane;
     }
 
-    @Override
-    public void onSaveFailed() {
-
-    }
-
-    @Override
-    public void onSaveSucceeded() {
-
-    }
-
     /**
      * Pushes the user's changes to the discrepancy object
      */
