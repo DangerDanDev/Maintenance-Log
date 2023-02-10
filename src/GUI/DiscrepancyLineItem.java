@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.BaseClasses.EditorDialog;
+import GUI.BaseClasses.EditorPanel;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
 import data.tables.Table;
@@ -12,7 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
-public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
+public class DiscrepancyLineItem extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
     private JPanel panel1;
     private JTextField tfNarrative;
@@ -20,6 +21,7 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
     private JTextField tfPartsOnOrder;
 
     public DiscrepancyLineItem(Discrepancy disc) throws SQLException {
+        super(DiscrepancyTable.getInstance(), null);
 
         populateComboBox();
         setItem(disc);
@@ -33,20 +35,28 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         cbStatus.addActionListener(e -> onStatusChanged());
     }
 
+    @Override
+    public JPanel getContentPane() {
+        return panel1;
+    }
+
+    @Override
+    public void pushChanges() {
+        getItem().setStatus((Status) cbStatus.getSelectedItem());
+    }
+
     /**
      * Called when the user selects a new item in cbStatus
      * Changes the color of cbStatus to match the color of the selected status,
      * updates the Discrepancy.Status and saves the changes to the table
      */
     private void onStatusChanged() {
-        try {
-            cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
-            getItem().setStatus((Status) cbStatus.getSelectedItem());
-            DiscrepancyTable.getInstance().updateItem(getItem());
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "There was an error trying to update the discrepancy's status");
-            System.err.println(ex.getMessage());
+        cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
+
+        if(!save()) {
+            JOptionPane.showMessageDialog(null, "Save failed due to database error.");
         }
+
     }
 
     /**
@@ -108,11 +118,6 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
 
         getItem().getStatus().selectInComboBox(cbStatus);
         cbStatus.setBackground(getItem().getStatus().getColor());
-    }
-
-    @Override
-    public JPanel getCustomContentPane() {
-        return panel1;
     }
 
     private StatusTableListener statusTableListener = new StatusTableListener();

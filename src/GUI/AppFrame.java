@@ -26,11 +26,11 @@ public class AppFrame extends JFrame {
 
         loadNotes();
 
-        setSize(800,600);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
         setContentPane(contentPane);
-        pack();
+        setSize(1024,768);
         setVisible(true);
     }
 
@@ -53,7 +53,7 @@ public class AppFrame extends JFrame {
         ArrayList<Discrepancy> discrepancies = DiscrepancyTable.getInstance().getAllItems();
 
         for(Discrepancy d : discrepancies) {
-            notesPanel.add(new DiscrepancyLineItem(d).getCustomContentPane());
+            notesPanel.add(new DiscrepancyLineItem(d).getContentPane());
         }
     }
 
