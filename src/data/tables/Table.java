@@ -458,13 +458,10 @@ public abstract class Table<T extends DatabaseObject> {
      * @param item
      */
     private void onItemAdded(T item) {
+
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onItemAdded(item, transactionId);
-                }
-            });
+            SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
+
     }
 
     /**
@@ -473,13 +470,7 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
-            //listener.onItemUpdated(item, transactionId);
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onItemUpdated(item, transactionId);
-                }
-            });
+            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
     }
 
     /**
@@ -488,12 +479,7 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemDeleted(T item) {
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onItemDeleted(item,transactionId);
-                }
-            });
+            SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
     }
 
     /**

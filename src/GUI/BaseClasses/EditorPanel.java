@@ -117,12 +117,9 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public void onItemUpdated(T editedItem, long transactionId) {
 
 
-        if(editedItem.equals(getItem()) && transactionId != lastTransactionId) {
-            System.out.println(this);
-            System.out.println("Transaction ID: " + transactionId);
-            System.out.println("EditorPanel's Stored transaction ID: " + getLastTransactionId());
+        if(editedItem.equals(getItem()) && transactionId != lastTransactionId)
             refreshData();
-        }
+
     }
 
     @Override

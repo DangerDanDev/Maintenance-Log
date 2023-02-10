@@ -32,7 +32,7 @@ public class DiscrepancyLineItem extends EditorPanel<Discrepancy> {
         tfNarrative.addMouseListener(doubleClickListener);
         tfPartsOnOrder.addMouseListener(doubleClickListener);
         tfTurnover.addMouseListener(doubleClickListener);
-        cbStatus.addActionListener(e -> onStatusChanged());
+        cbStatus.addItemListener(e -> onStatusChanged());
     }
 
     @Override
