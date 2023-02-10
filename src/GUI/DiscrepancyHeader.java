@@ -32,7 +32,7 @@ public class DiscrepancyHeader extends EditorPanel<Discrepancy> {
         tfNarrative.addMouseListener(doubleClickListener);
         tfPartsOnOrder.addMouseListener(doubleClickListener);
         tfTurnover.addMouseListener(doubleClickListener);
-        cbStatus.addItemListener(e -> onStatusChanged());
+        cbStatus.addItemListener(e -> onStatusChanged(e));
     }
 
     @Override
@@ -50,14 +50,16 @@ public class DiscrepancyHeader extends EditorPanel<Discrepancy> {
      * Changes the color of cbStatus to match the color of the selected status,
      * updates the Discrepancy.Status and saves the changes to the table
      */
-    private void onStatusChanged() {
-        cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
-        getItem().setSaved(false);
+    private void onStatusChanged(ItemEvent e) {
 
-        if(!save()) {
-            JOptionPane.showMessageDialog(null, "Save failed due to database error.");
+        if(e.getStateChange() == ItemEvent.SELECTED) {
+            cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
+            getItem().setSaved(false);
+
+            if (!save()) {
+                JOptionPane.showMessageDialog(null, "Save failed due to database error.");
+            }
         }
-
     }
 
     /**
