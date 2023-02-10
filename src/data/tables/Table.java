@@ -59,14 +59,18 @@ public abstract class Table<T extends DatabaseObject> {
     public Table(String name) {
         this.NAME = name;
 
-        this.COL_ID = new Column("id", INTEGER + PRIMARY_KEY);
+        this.COL_ID = new Column(this, "id", INTEGER + PRIMARY_KEY);
         addColumn(COL_ID);
 
-        this.COL_DATE_CREATED = new Column("date_created", TEXT);
+        this.COL_DATE_CREATED = new Column(this, "date_created", TEXT);
         addColumn(COL_DATE_CREATED);
 
-        this.COL_DATE_EDITED = new Column("date_edited", TEXT);
+        this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT);
         addColumn(COL_DATE_EDITED);
+    }
+
+    public String References(Column col) {
+        return " REFERENCES " + col.PARENT_TABLE.NAME + "(" + col + ")";
     }
 
     /**
@@ -398,51 +402,6 @@ public abstract class Table<T extends DatabaseObject> {
     public final Column COL_ID;
     public final Column COL_DATE_CREATED;
     public final Column COL_DATE_EDITED;
-
-    public class Column {
-        public final String NAME;
-        public final String TYPE;
-        public final String CONSTRAINTS;
-        public final String DEFAULTS;
-
-        public Column(String name, String type, String constraints, String defaults) {
-            NAME = Table.this.NAME + "_" + name;
-            TYPE = type;
-            CONSTRAINTS = constraints;
-            DEFAULTS = defaults;
-        }
-
-        public Column(String name, String type, String constraints) {
-            this(name, type, constraints, "");
-        }
-
-        public Column(String name, String type) {
-            this(name,type, "");
-        }
-
-        /**
-         *
-         * @return An SQL string with this column's definition, ie: "NAME TYPE"
-         */
-        public String getDefinitionSQL() {
-            StringBuilder str = new StringBuilder();
-
-            str.append(NAME + " ");
-            str.append(TYPE + " ");
-
-            if(CONSTRAINTS != "")
-                str.append(CONSTRAINTS);
-
-            if(DEFAULTS != "")
-                str.append( " DEFAULTS " + DEFAULTS);
-
-            return str.toString();
-        }
-
-        public String toString() {
-            return NAME;
-        }
-    }
 
     private ArrayList<TableListener<T>> listeners = new ArrayList();
 

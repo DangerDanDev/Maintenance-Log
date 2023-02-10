@@ -14,8 +14,8 @@ import java.sql.SQLException;
 
 public class StatusTable extends Table<Status> {
 
-    public final Column COL_TITLE;
-    public final Column COL_COLOR;
+    public final Column COL_TITLE = new Column(this, "title", TEXT, NOT_NULL);
+    public final Column COL_COLOR = new Column(this, "color", TEXT, NOT_NULL);
 
     private static final StatusTable instance = new StatusTable();
     public static StatusTable getInstance() { return instance;}
@@ -23,10 +23,7 @@ public class StatusTable extends Table<Status> {
     public StatusTable() {
         super("status");
 
-        COL_TITLE = new Column("title", TEXT, NOT_NULL);
         addColumn(COL_TITLE);
-
-        COL_COLOR = new Column("color", TEXT, NOT_NULL);
         addColumn(COL_COLOR);
     }
 

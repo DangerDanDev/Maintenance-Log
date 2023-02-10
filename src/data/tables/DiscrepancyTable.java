@@ -22,19 +22,19 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     private DiscrepancyTable() {
         super("discrepancies");
 
-        COL_TEXT = new Column("text", TEXT);
+        COL_TEXT = new Column(this, "text", TEXT);
         addColumn(COL_TEXT);
 
-        COL_TURNOVER = new Column("turnover", TEXT);
+        COL_TURNOVER = new Column(this, "turnover", TEXT);
         addColumn(COL_TURNOVER);
 
-        COL_DISC_BY = new Column( "crew", TEXT);
+        COL_DISC_BY = new Column(this, "crew", TEXT);
         addColumn(COL_DISC_BY);
 
-        COL_PARTS_ON_ORDER = new Column( "parts_on_order", TEXT);
+        COL_PARTS_ON_ORDER = new Column(this, "parts_on_order", TEXT);
         addColumn(COL_PARTS_ON_ORDER);
 
-        COL_STATUS_ID = new Column("status_id", INTEGER);
+        COL_STATUS_ID = new Column(this,"status_id", INTEGER);
         addColumn(COL_STATUS_ID);
     }
 

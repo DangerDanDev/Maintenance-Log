@@ -1,5 +1,6 @@
 package data;
 
+import data.tables.Column;
 import data.tables.Table;
 
 import java.util.ArrayList;
@@ -18,14 +19,14 @@ public class QueryIndexer {
     /**
      *
      */
-    private HashMap<Table.Column, Integer> values = new HashMap<>();
+    private HashMap<Column, Integer> values = new HashMap<>();
 
     /**
      * Adds and indexes a column
      * @param c
      * @return "?" so it can be used inline in SQL PreparedStatements
      */
-    public String index(Table.Column c) {
+    public String index(Column c) {
         values.put(c, currentIndex);
 
         currentIndex++;
@@ -37,7 +38,7 @@ public class QueryIndexer {
      * @param c
      * @return
      */
-    public int indexOf(Table.Column c) {
+    public int indexOf(Column c) {
         return values.get(c);
     }
 }
