@@ -33,6 +33,11 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         cbStatus.addActionListener(e -> onStatusChanged());
     }
 
+    /**
+     * Called when the user selects a new item in cbStatus
+     * Changes the color of cbStatus to match the color of the selected status,
+     * updates the Discrepancy.Status and saves the changes to the table
+     */
     private void onStatusChanged() {
         try {
             cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
@@ -86,6 +91,10 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         }
     }
 
+    /**
+     * Populates cbStatus with all the statuses from the StatusTable
+     * @throws SQLException
+     */
     private void populateComboBox() throws SQLException {
         for(Status s : StatusTable.getInstance().getAllItems())
             cbStatus.addItem(s);
