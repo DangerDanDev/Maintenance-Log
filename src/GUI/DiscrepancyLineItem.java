@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.BaseClasses.EditorDialog;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
 import data.tables.Table;
@@ -8,9 +9,7 @@ import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.sql.SQLException;
 
 public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
@@ -31,6 +30,18 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         tfNarrative.addMouseListener(doubleClickListener);
         tfPartsOnOrder.addMouseListener(doubleClickListener);
         tfTurnover.addMouseListener(doubleClickListener);
+        cbStatus.addActionListener(e -> onStatusChanged());
+    }
+
+    private void onStatusChanged() {
+        try {
+            cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
+            getItem().setStatus((Status) cbStatus.getSelectedItem());
+            DiscrepancyTable.getInstance().updateItem(getItem());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "There was an error trying to update the discrepancy's status");
+            System.err.println(ex.getMessage());
+        }
     }
 
     /**
@@ -46,14 +57,11 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         @Override
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-                JDialog dialog = new JDialog();
-                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                dialog.setModal(true);
 
-                DiscrepancyEditor editor = new DiscrepancyEditor(getItem(), null);
-                dialog.setContentPane(editor.getContentPane());
-                dialog.pack();
-                dialog.setVisible(true);
+                EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>("Discrepancy Editor",
+                        new DiscrepancyEditor(getItem(), null));
+
+                discrepancyEditorDialog.setVisible(true);
             }
         }
 
@@ -90,6 +98,7 @@ public class DiscrepancyLineItem extends LineItemBase<Discrepancy> {
         tfPartsOnOrder.setText(getItem().getPartsOnOrder());
 
         getItem().getStatus().selectInComboBox(cbStatus);
+        cbStatus.setBackground(getItem().getStatus().getColor());
     }
 
     @Override

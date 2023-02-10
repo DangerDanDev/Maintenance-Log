@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.BaseClasses.EditorDialog;
+import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
@@ -35,18 +36,17 @@ public class AppFrame extends JFrame {
 
     private void showStatusEditor()  {
 
-        /*try {
+        try {
 
-            ArrayList<Status> statuses = StatusTable.getInstance().getAllItems();
-            ArrayList<EditorDialog> panels = new ArrayList<>();
-            for (Status s : statuses)
-                panels.add(new StatusEditorPanel(s));
+            ArrayList<EditorPanel<Status>> statusEditorPanels = new ArrayList<>();
+            for(Status s : StatusTable.getInstance().getAllItems())
+                statusEditorPanels.add(new StatusEditorPanel(s));
 
-            PanelListDialog editorDialog = new PanelListDialog<Status>(panels);
+            new EditorDialog<Status>("Status Editor", statusEditorPanels).setVisible(true);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");
-        }*/
+        }
     }
 
     private void loadNotes() throws SQLException {
