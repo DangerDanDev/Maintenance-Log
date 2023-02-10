@@ -57,6 +57,11 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     public boolean save() {
 
+        if(getItem().isSaved()) {
+            getEditorPanelHost().close();
+            return true;
+        }
+
         lastTransactionId = Table.getTransactionId();
 
         //push the user's changes to the discrepancy object

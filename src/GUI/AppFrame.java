@@ -114,6 +114,7 @@ public class AppFrame extends JFrame {
             menuBar.add(edit);
             edit.add(editStatuses).addActionListener(event -> showStatusEditor());
             edit.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
+            newDiscrepancy.setAccelerator(KeyStroke.getKeyStroke("control N"));
         }
 
     }
