@@ -214,7 +214,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     /**
      * An interface so that I can notify my host (ie: JDialog or JFrame) that
-     * I have been edited
+     * I have been edited, saved, failed at saving, or that a close button has been clicked
      */
     public interface EditorPanelHost<T> {
         void onItemEdited(T item);
