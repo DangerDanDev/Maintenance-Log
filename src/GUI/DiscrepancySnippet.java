@@ -19,6 +19,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JTextField tfNarrative;
     private JTextField tfTurnover;
     private JTextField tfPartsOnOrder;
+    private JPanel logEntriesPanel;
 
     public DiscrepancySnippet(Discrepancy disc) throws SQLException {
         super(DiscrepancyTable.getInstance(), null);
