@@ -34,7 +34,7 @@ public class LogEntryTable extends Table<LogEntry> {
     @Override
     public LogEntry getItemFromResultSet(ResultSet rs) throws SQLException {
 
-        long discrepancyId = rs.getLong(DiscrepancyTable.getInstance().COL_ID.NAME);
+        long discrepancyId = rs.getLong(COL_PARENT_DISCREPANCY.NAME);
 
         LogEntry logEntry = new LogEntry(
                 DiscrepancyTable.getInstance().getItemById(discrepancyId),
