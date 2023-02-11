@@ -3,15 +3,18 @@ package GUI;
 import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.tables.DiscrepancyTable;
+import data.tables.LogEntryTable;
 import data.tables.StatusTable;
 import data.tables.Table;
 import model.Discrepancy;
+import model.LogEntry;
 import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
@@ -20,6 +23,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JTextField tfTurnover;
     private JTextField tfPartsOnOrder;
     private JPanel logEntriesPanel;
+
+    private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
 
     public DiscrepancySnippet(Discrepancy disc) throws SQLException {
         super(DiscrepancyTable.getInstance(), null);
@@ -34,6 +39,26 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         tfPartsOnOrder.addMouseListener(doubleClickListener);
         tfTurnover.addMouseListener(doubleClickListener);
         cbStatus.addItemListener(e -> onStatusChanged(e));
+    }
+
+    private void initLogEntriesPanel() {
+        logEntrySnippets.clear();
+
+        if(getItem() != null) {
+            for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem()))
+                logEntrySnippets.add(new LogEntrySnippet(entry));
+
+            for(LogEntrySnippet logEntry : logEntrySnippets)
+                logEntriesPanel.add(logEntry.getContentPane());
+        }
+
+    }
+
+    @Override
+    public void setItem(Discrepancy item) {
+        super.setItem(item);
+
+        initLogEntriesPanel();
     }
 
     @Override
@@ -67,6 +92,11 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
      * Listens for the user double clicking on discrepancy fields to open the editor
      */
     private DoubleClickListener doubleClickListener = new DoubleClickListener();
+
+    private void createUIComponents() {
+        logEntriesPanel = new JPanel();
+        logEntriesPanel.setLayout(new BoxLayout(logEntriesPanel,BoxLayout.Y_AXIS));
+    }
 
     /**
      * Listens for the user double clicking on the discrepancy fields

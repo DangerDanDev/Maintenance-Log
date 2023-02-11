@@ -2,12 +2,15 @@ package data.tables;
 
 import data.DBManager;
 import data.QueryIndexer;
+import model.Discrepancy;
 import model.LogEntry;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class LogEntryTable extends Table<LogEntry> {
 
@@ -53,17 +56,47 @@ public class LogEntryTable extends Table<LogEntry> {
         statement.setString(indexer.indexOf(COL_CREW), item.getCrew());
     }
 
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d) {
+        return getLogEntriesAgainstDiscrepancy(d.getId());
+    }
+
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId) {
+        ArrayList<LogEntry> logEntries = new ArrayList<>();
+
+        final String QUERY = " SELECT * FROM " + NAME +
+                WHERE + COL_PARENT_DISCREPANCY + "=?";
+
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY)) {
+
+            ps.setLong(1, discrepancyId);
+
+            try(ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    logEntries.add(getItemFromResultSet(rs));
+                }
+            }
+
+        }catch (SQLException ex) {
+
+        }
+
+        return logEntries;
+    }
+
     public static void main(String[] args) {
         try(Connection c = DBManager.getConnection()) {
 
             DBManager.initialize();
 
-            LogEntry entry = new LogEntry(DiscrepancyTable.getInstance().getItemById(15), "Test log entry", "swing shifffft");
+            /*LogEntry entry = new LogEntry(DiscrepancyTable.getInstance().getItemById(15), "Test log entry", "swing shifffft");
             LogEntryTable.getInstance().addItem(entry);
 
             entry.setNarrative("edited test log entry");
 
-            LogEntryTable.getInstance().updateItem(entry);
+            LogEntryTable.getInstance().updateItem(entry);*/
+
+            for(LogEntry entry : getInstance().getLogEntriesAgainstDiscrepancy(15))
+                JOptionPane.showMessageDialog(null, entry.getNarrative());
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

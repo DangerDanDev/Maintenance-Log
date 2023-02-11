@@ -1,3 +1,4 @@
+import GUI.AppFrame;
 import data.DBManager;
 
 import java.sql.Connection;
@@ -8,6 +9,8 @@ public class Main {
         try(Connection c = DBManager.getConnection()) {
 
             DBManager.initialize();
+
+            AppFrame appFrame = new AppFrame();
 
         } catch (SQLException ex) {
             ex.printStackTrace();

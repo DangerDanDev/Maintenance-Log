@@ -119,15 +119,4 @@ public class AppFrame extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        try (Connection c = DBManager.getConnection()) {
-
-            DBManager.initialize();
-
-            AppFrame appFrame = new AppFrame();
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "App crashed with SQL Error");
-        }
-    }
 }
