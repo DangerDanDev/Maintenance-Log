@@ -88,15 +88,15 @@ public class LogEntryTable extends Table<LogEntry> {
 
             DBManager.initialize();
 
-            /*LogEntry entry = new LogEntry(DiscrepancyTable.getInstance().getItemById(15), "Test log entry", "swing shifffft");
+            LogEntry entry = new LogEntry(DiscrepancyTable.getInstance().getItemById(15), "Test log entry", "swing shifffft");
             LogEntryTable.getInstance().addItem(entry);
 
             entry.setNarrative("edited test log entry");
 
-            LogEntryTable.getInstance().updateItem(entry);*/
+            LogEntryTable.getInstance().updateItem(entry);
 
-            for(LogEntry entry : getInstance().getLogEntriesAgainstDiscrepancy(15))
-                JOptionPane.showMessageDialog(null, entry.getNarrative());
+            //for(LogEntry entry : getInstance().getLogEntriesAgainstDiscrepancy(15))
+            //    JOptionPane.showMessageDialog(null, entry.getNarrative());
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
