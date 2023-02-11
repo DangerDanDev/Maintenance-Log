@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class LogEntrySnippet extends EditorPanel<LogEntry> {
-    private JTextArea tfNarrative;
+    private JLabel tfNarrative;
     private JPanel contentPane;
 
     public LogEntrySnippet(LogEntry entry) {

@@ -18,12 +18,11 @@ import java.util.ArrayList;
 
 public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
-    private JPanel panel1;
     private JTextField tfNarrative;
     private JTextField tfTurnover;
     private JTextField tfPartsOnOrder;
     private JPanel logEntriesPanel;
-    private JPanel borderPanel;
+    private JPanel contentPane;
 
     private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
 
@@ -64,7 +63,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     @Override
     public JPanel getContentPane() {
-        return borderPanel;
+        return contentPane;
     }
 
     @Override
