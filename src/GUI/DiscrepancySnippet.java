@@ -23,6 +23,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JTextField tfTurnover;
     private JTextField tfPartsOnOrder;
     private JPanel logEntriesPanel;
+    private JPanel borderPanel;
 
     private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
 
@@ -63,7 +64,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     @Override
     public JPanel getContentPane() {
-        return panel1;
+        return borderPanel;
     }
 
     @Override
