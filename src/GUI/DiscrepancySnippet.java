@@ -41,17 +41,23 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(e -> onStatusChanged(e));
     }
 
+    /**
+     * Populates my logEntriesPanel with log entries that
+     * pertain to my discrepancy
+     */
     private void initLogEntriesPanel() {
         logEntrySnippets.clear();
 
-        if(getItem() != null) {
+        if(getItem() != null)
             for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem()))
-                logEntrySnippets.add(new LogEntrySnippet(entry));
+                addLogEntry(entry);
 
-            for(LogEntrySnippet logEntry : logEntrySnippets)
-                logEntriesPanel.add(logEntry.getContentPane());
-        }
+    }
 
+    private void addLogEntry(LogEntry entry) {
+        LogEntrySnippet snippet = new LogEntrySnippet(entry);
+        logEntrySnippets.add(snippet);
+        logEntriesPanel.add(snippet.getContentPane());
     }
 
     @Override

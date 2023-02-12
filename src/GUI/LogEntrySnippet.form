@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.LogEntrySnippet">
-  <grid id="27dc6" binding="contentPane" layout-manager="FlowLayout" hgap="1" vgap="1" flow-align="0">
+  <grid id="27dc6" binding="contentPane" layout-manager="FlowLayout" hgap="1" vgap="-1" flow-align="0">
     <constraints>
       <xy x="20" y="20" width="436" height="26"/>
     </constraints>
@@ -16,7 +16,9 @@
           <background color="-1"/>
           <font style="0"/>
           <foreground color="-16777216"/>
+          <horizontalAlignment value="2"/>
           <text value="Label"/>
+          <verticalAlignment value="1"/>
         </properties>
       </component>
     </children>
