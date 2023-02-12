@@ -24,8 +24,8 @@ public class StatusEditorPanel extends EditorPanel<Status> {
 
     private Color colorPlaceHolder = Color.WHITE;
 
-    public StatusEditorPanel(Status status, EditorPanelHost host){
-        super(StatusTable.getInstance(),host);
+    public StatusEditorPanel(Window owner, Status status, EditorPanelHost host){
+        super(owner, StatusTable.getInstance(),host);
 
         //hook up all the events that get this item marked as unsaved
         tfStatusTitle.addKeyListener(getItemEditListener());
@@ -40,8 +40,8 @@ public class StatusEditorPanel extends EditorPanel<Status> {
         setItem(status);
     }
 
-    public StatusEditorPanel(Status status) {
-        this(status, null);
+    public StatusEditorPanel(Window owner, Status status) {
+        this(owner, status, null);
     }
 
     @Override
@@ -122,10 +122,6 @@ public class StatusEditorPanel extends EditorPanel<Status> {
 
             EditorPanelHost host = new EditorPanelHost() {
 
-                @Override
-                public void close() {
-                    dialog.setVisible(false);
-                }
 
                 @Override
                 public void onItemSaveFailed(Object item) {
@@ -150,7 +146,7 @@ public class StatusEditorPanel extends EditorPanel<Status> {
             ArrayList<StatusEditorPanel> panels = new ArrayList<>();
 
             for(Status s : statuses)
-                panels.add(new StatusEditorPanel(s, host));
+                panels.add(new StatusEditorPanel(dialog, s, host));
 
             JPanel panel = new JPanel();
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

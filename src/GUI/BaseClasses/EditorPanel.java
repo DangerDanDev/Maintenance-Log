@@ -4,6 +4,7 @@ import data.DatabaseObject;
 import data.tables.Table;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 
@@ -23,12 +24,17 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     private T item;
 
     /**
+     * The window that owns me; used to launch dialogs and stuff
+     */
+    private Window owner;
+
+    /**
      *
      * @param table
      * @param host: the dialog or jFrame that hosts me, if applicable
      */
-    public EditorPanel(Table<T> table, EditorPanelHost host) {
-
+    public EditorPanel(Window owner, Table<T> table, EditorPanelHost host) {
+        setOwner(owner);
         setTable(table);
         setEditorPanelHost(host);
     }
@@ -58,12 +64,8 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public boolean save() {
 
         //bypass saving if the user hasn't made any changes
-        if(getItem().isSaved()) {
-            if(getEditorPanelHost() != null)
-                getEditorPanelHost().close();
-
+        if(getItem().isSaved())
             return true;
-        }
 
         lastTransactionId = Table.getTransactionId();
 
@@ -77,6 +79,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
                 getTable().addItem(getItem());
             else
                 getTable().updateItem(getItem());
+
             onSaveSucceeded();
 
             //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved
@@ -158,6 +161,12 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         if(this.table != null)
             this.table.addListener(this);
     }
+
+    public void setOwner(Window owner) {
+        this.owner = owner;
+    }
+
+    public Window getOwner() { return this.owner; }
 
     /////////////////////////////////////////////////////////////////////////////////
     // ITEM EDIT LISTENER
@@ -242,7 +251,6 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         void onItemEdited(T item);
         void onItemSaved(T item);
         void onItemSaveFailed(T item);
-        void close();
     }
 
     /////////////////////////////////////////////////////////////////////////////

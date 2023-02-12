@@ -8,28 +8,26 @@ import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JPanel contentPane;
-    private JButton buttonSave;
-    private JButton buttonCancel;
     private JTextArea tfNarrative;
     private JTextArea tfTurnover;
     private JTextArea tfPartsOnOrder;
     private JTextField tfDiscoveredBy;
     private JComboBox cbStatus;
     private JPanel discrepancyDetailsPanel;
-    private JPanel bottomPanel;
     private JTextField tfDateCreated;
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
 
 
-    public DiscrepancyEditor(Discrepancy discrepancy, EditorPanelHost host) {
-        super(DiscrepancyTable.getInstance(), host);
+    public DiscrepancyEditor(Window owner, Discrepancy discrepancy, EditorPanelHost host) {
+        super(owner, DiscrepancyTable.getInstance(), host);
 
         populateCBStatuses();
         setItem(discrepancy);
@@ -41,24 +39,9 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
         cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
-
-        buttonSave.addActionListener(e -> save());
-        buttonCancel.addActionListener(e -> cancel());
     }
 
-    @Override
-    public boolean save() {
-        boolean success = super.save();
 
-        if(success)
-            getEditorPanelHost().close();
-
-        return success;
-    }
-
-    public void cancel() {
-        getEditorPanelHost().close();
-    }
 
     private void populateCBStatuses()  {
         cbStatus.removeAllItems();
@@ -122,7 +105,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
             JFrame frame = new JFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            DiscrepancyEditor editor = new DiscrepancyEditor(DiscrepancyTable.getInstance().getItemById(1), null);
+            DiscrepancyEditor editor = new DiscrepancyEditor(frame, DiscrepancyTable.getInstance().getItemById(1), null);
             JPanel contentPane = new JPanel();
             contentPane.add(editor.getContentPane());
             frame.setContentPane(contentPane);

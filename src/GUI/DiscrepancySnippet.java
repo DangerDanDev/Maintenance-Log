@@ -26,8 +26,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
 
-    public DiscrepancySnippet(Discrepancy disc) throws SQLException {
-        super(DiscrepancyTable.getInstance(), null);
+    public DiscrepancySnippet(Window owner, Discrepancy disc) throws SQLException {
+        super(owner, DiscrepancyTable.getInstance(), null);
 
         populateComboBox();
         setItem(disc);
@@ -55,7 +55,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     }
 
     private void addLogEntry(LogEntry entry) {
-        LogEntrySnippet snippet = new LogEntrySnippet(entry);
+        LogEntrySnippet snippet = new LogEntrySnippet(getOwner(), entry);
         logEntrySnippets.add(snippet);
         logEntriesPanel.add(snippet.getContentPane());
     }
@@ -113,8 +113,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 
-                EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>("Discrepancy Editor",
-                        new DiscrepancyEditor(getItem(), null));
+                EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>(getOwner(),"Discrepancy Editor",
+                        new DiscrepancyEditor(getOwner(), getItem(), null));
 
                 discrepancyEditorDialog.setVisible(true);
             }

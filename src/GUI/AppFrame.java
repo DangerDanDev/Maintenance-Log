@@ -58,9 +58,9 @@ public class AppFrame extends JFrame {
 
             ArrayList<EditorPanel<Status>> statusEditorPanels = new ArrayList<>();
             for(Status s : StatusTable.getInstance().getAllItems())
-                statusEditorPanels.add(new StatusEditorPanel(s));
+                statusEditorPanels.add(new StatusEditorPanel(getOwner(), s));
 
-            new EditorDialog<Status>("Status Editor", statusEditorPanels).setVisible(true);
+            new EditorDialog<Status>(this,"Status Editor", statusEditorPanels).setVisible(true);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");
@@ -86,7 +86,7 @@ public class AppFrame extends JFrame {
      */
     private void addDiscrepancy(Discrepancy d)  {
         try {
-            notesPanel.add(new DiscrepancySnippet(d).getContentPane());
+            notesPanel.add(new DiscrepancySnippet(this, d).getContentPane());
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
             System.err.println(ex.getMessage());
@@ -94,8 +94,8 @@ public class AppFrame extends JFrame {
     }
 
     private void createNewDiscrepancy() {
-        EditorDialog<Discrepancy> dialog = new EditorDialog<>("New Discrepancy",
-                new DiscrepancyEditor(new Discrepancy(), null));
+        EditorDialog<Discrepancy> dialog = new EditorDialog<>(this, "New Discrepancy",
+                new DiscrepancyEditor(getOwner(), new Discrepancy(), null));
 
         dialog.setVisible(true);
     }
