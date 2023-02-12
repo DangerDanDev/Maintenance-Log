@@ -94,10 +94,7 @@ public class AppFrame extends JFrame {
     }
 
     private void createNewDiscrepancy() {
-        EditorDialog<Discrepancy> dialog = new EditorDialog<>(this, "New Discrepancy",
-                new DiscrepancyEditor(getOwner(), new Discrepancy(), null));
-
-        dialog.setVisible(true);
+        EditorDialog.showDiscrepancy(new Discrepancy(), this);
     }
 
     private class MenuManager {

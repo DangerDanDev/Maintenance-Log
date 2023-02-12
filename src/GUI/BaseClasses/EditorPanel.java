@@ -26,7 +26,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     /**
      * The window that owns me; used to launch dialogs and stuff
      */
-    private Window owner;
+    private final Window OWNER;
 
     /**
      *
@@ -34,7 +34,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @param host: the dialog or jFrame that hosts me, if applicable
      */
     public EditorPanel(Window owner, Table<T> table, EditorPanelHost host) {
-        setOwner(owner);
+        this.OWNER = owner;
         setTable(table);
         setEditorPanelHost(host);
     }
@@ -162,11 +162,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
             this.table.addListener(this);
     }
 
-    public void setOwner(Window owner) {
-        this.owner = owner;
-    }
-
-    public Window getOwner() { return this.owner; }
+    public Window getOwner() { return this.OWNER; }
 
     /////////////////////////////////////////////////////////////////////////////////
     // ITEM EDIT LISTENER

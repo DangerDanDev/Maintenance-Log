@@ -112,11 +112,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         @Override
         public void mouseClicked(MouseEvent e) {
             if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-
-                EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>(getOwner(),"Discrepancy Editor",
-                        new DiscrepancyEditor(getOwner(), getItem(), null));
-
-                discrepancyEditorDialog.setVisible(true);
+                EditorDialog.showDiscrepancy(getItem(), getOwner());
             }
         }
 

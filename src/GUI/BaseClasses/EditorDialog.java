@@ -1,9 +1,11 @@
 package GUI.BaseClasses;
 
+import GUI.DiscrepancyEditor;
 import GUI.StatusEditorPanel;
 import data.DBManager;
 import data.DatabaseObject;
 import data.tables.StatusTable;
+import model.Discrepancy;
 import model.Status;
 
 import javax.swing.*;
@@ -28,6 +30,8 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     private JButton bSave = new JButton("Save");
     private JButton bCancel = new JButton("Cancel");
 
+    private final Window OWNER;
+
     public String getEditorTitle() {
         return editorTitle;
     }
@@ -40,6 +44,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     public EditorDialog(Window owner, String windowTitle) {
         super(owner);
+        OWNER = owner;
         borderLayout.setLayout(new BorderLayout());
         setEditorTitle(windowTitle);
         setTitle(getEditorTitle());
@@ -225,6 +230,14 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     @Override
     public void onItemSaveFailed(T item) {
 
+    }
+
+    public static void showDiscrepancy(Discrepancy d, Window parent) {
+        EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>(parent,"Discrepancy Editor");
+        discrepancyEditorDialog.addEditorPanel(new DiscrepancyEditor(discrepancyEditorDialog, d, discrepancyEditorDialog),
+                BorderLayout.WEST);
+
+        discrepancyEditorDialog.setVisible(true);
     }
 
     public static void main(String[] args) {
