@@ -158,6 +158,10 @@ public abstract class Table<T extends DatabaseObject> {
         }
     }
 
+    public HashMap<Long, T> getLoadedItems() {
+        return loadedItems;
+    }
+
     /**
      * Subclasses must implement this to inflate their objects from a Query ResultSet
      * @param rs

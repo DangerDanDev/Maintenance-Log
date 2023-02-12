@@ -26,6 +26,14 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     }
 
     @Override
+    public void setItem(LogEntry item) {
+        super.setItem(item);
+
+        System.out.println("LogEntryEditor setting item to: " + item);
+        System.out.println("ID: " + item.getId());
+    }
+
+    @Override
     public JPanel getContentPane() {
         return borderPanel;
     }

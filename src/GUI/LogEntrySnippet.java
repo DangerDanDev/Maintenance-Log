@@ -22,6 +22,14 @@ public class LogEntrySnippet extends EditorPanel<LogEntry> implements Table.Tabl
     }
 
     @Override
+    public void setItem(LogEntry item) {
+        super.setItem(item);
+
+        System.out.println("LogEntrySnippet setting item value to " + item);
+        System.out.println("ID: " + item.getId());
+    }
+
+    @Override
     public JPanel getContentPane() {
         return contentPane;
     }

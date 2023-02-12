@@ -41,7 +41,12 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
     }
 
+    @Override
+    public void setItem(Discrepancy item) {
+        super.setItem(item);
 
+        System.out.println("Discrepancy editor discrepancy hash: " + item);
+    }
 
     private void populateCBStatuses()  {
         cbStatus.removeAllItems();

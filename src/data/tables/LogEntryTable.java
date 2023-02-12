@@ -66,26 +66,16 @@ public class LogEntryTable extends Table<LogEntry> {
     }
 
     public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId) {
-        ArrayList<LogEntry> logEntries = new ArrayList<>();
 
-        final String QUERY = " SELECT * FROM " + NAME +
-                WHERE + COL_PARENT_DISCREPANCY + "=?";
+        try {
+           ArrayList<LogEntry> logEntries = getAllItems();
 
-        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY)) {
-
-            ps.setLong(1, discrepancyId);
-
-            try(ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    logEntries.add(getItemFromResultSet(rs));
-                }
-            }
-
-        }catch (SQLException ex) {
+            return logEntries;
+        } catch (SQLException ex) {
 
         }
 
-        return logEntries;
+        return null;
     }
 
     public static void main(String[] args) {

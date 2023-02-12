@@ -246,7 +246,9 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
                 BorderLayout.WEST);
 
         for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(d)) {
+
             EditorPanel editor = new LogEntryEditor(logEntry, parent, null);
+            System.out.println("Editor Dialog showDiscrepancy() LogEntry hash: " + editor.getItem());
             discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
         }
 

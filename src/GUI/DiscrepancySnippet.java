@@ -40,6 +40,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(e -> onStatusChanged(e));
     }
 
+
+
     /**
      * Populates my logEntriesPanel with log entries that
      * pertain to my discrepancy
@@ -62,6 +64,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     @Override
     public void setItem(Discrepancy item) {
         super.setItem(item);
+
+        System.out.println("DiscrepancySnippet hash: " + item);
 
         initLogEntriesPanel();
     }
