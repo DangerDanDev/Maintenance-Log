@@ -250,6 +250,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
             discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
         }
 
+        discrepancyEditorDialog.setSize(1024, 768);
         discrepancyEditorDialog.setVisible(true);
     }
 
