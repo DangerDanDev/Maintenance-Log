@@ -1,11 +1,14 @@
 package GUI.BaseClasses;
 
 import GUI.DiscrepancyEditor;
+import GUI.LogEntryEditor;
 import GUI.StatusEditorPanel;
 import data.DBManager;
 import data.DatabaseObject;
+import data.tables.LogEntryTable;
 import data.tables.StatusTable;
 import model.Discrepancy;
+import model.LogEntry;
 import model.Status;
 
 import javax.swing.*;
@@ -44,6 +47,8 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     public EditorDialog(Window owner, String windowTitle) {
         super(owner);
+        setModal(true);
+
         OWNER = owner;
         borderLayout.setLayout(new BorderLayout());
         setEditorTitle(windowTitle);
@@ -60,7 +65,10 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     private void initBorderLayout() {
         borderLayout.add(northPanel, BorderLayout.NORTH);
+
         borderLayout.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+
         borderLayout.add(southPanel, BorderLayout.SOUTH);
         borderLayout.add(eastPanel, BorderLayout.EAST);
         borderLayout.add(westPanel, BorderLayout.WEST);
@@ -237,6 +245,11 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         discrepancyEditorDialog.addEditorPanel(new DiscrepancyEditor(discrepancyEditorDialog, d, discrepancyEditorDialog),
                 BorderLayout.WEST);
 
+        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(d)) {
+            EditorPanel editor = new LogEntryEditor(logEntry, parent, null);
+            discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
+        }
+
         discrepancyEditorDialog.setVisible(true);
     }
 
@@ -252,7 +265,6 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
             for(Status s : StatusTable.getInstance().getAllItems()) {
                 dialog.addEditorPanel(new StatusEditorPanel(dialog, s));
             }
-
 
             dialog.setVisible(true);
 

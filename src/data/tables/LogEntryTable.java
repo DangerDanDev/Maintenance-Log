@@ -41,9 +41,12 @@ public class LogEntryTable extends Table<LogEntry> {
 
         LogEntry logEntry = new LogEntry(
                 DiscrepancyTable.getInstance().getItemById(discrepancyId),
+                rs.getLong(COL_ID.NAME),
                 rs.getString(COL_NARRATIVE.NAME),
                 rs.getString(COL_CREW.NAME)
         );
+
+        logEntry.setSaved(true);
         return logEntry;
     }
 

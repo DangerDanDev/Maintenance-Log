@@ -9,11 +9,15 @@ public class LogEntry extends DatabaseObject {
 
     private Discrepancy parentDiscrepancy = null;
 
-    public LogEntry(Discrepancy d, String narrative, String crew) {
-        this();
+    public LogEntry(Discrepancy d, long id, String narrative, String crew) {
         setParentDiscrepancy(d);
         setNarrative(narrative);
         setCrew(crew);
+        setId(id);
+    }
+
+    public LogEntry(Discrepancy d, String narrative, String crew) {
+        this(d, INVALID_ID, narrative, crew);
     }
 
     public LogEntry() {
