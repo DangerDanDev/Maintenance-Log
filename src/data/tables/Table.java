@@ -419,8 +419,8 @@ public abstract class Table<T extends DatabaseObject> {
     private void onItemAdded(T item) {
 
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
-
+            //SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
+            listener.onItemAdded(item, transactionId);
     }
 
     /**
@@ -429,7 +429,8 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
+            //SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
+            listener.onItemUpdated(item, transactionId);
     }
 
     /**
@@ -438,7 +439,8 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemDeleted(T item) {
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
+            //SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
+            listener.onItemDeleted(item, transactionId);
     }
 
     /**

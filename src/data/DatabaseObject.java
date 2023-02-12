@@ -65,14 +65,9 @@ public class DatabaseObject {
     public void setSaved(boolean saved) {
         this.saved = saved;
 
-        if(!this.saved)
-            doNothing();
-
         if(saved && listener != null)
             listener.onItemSaved();
     }
-
-    private void doNothing() { }
 
     @Override
     public boolean equals(Object obj) {

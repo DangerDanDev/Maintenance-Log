@@ -14,7 +14,7 @@
         <constraints border-constraint="Center"/>
         <properties>
           <background color="-1"/>
-          <editable value="false"/>
+          <editable value="true"/>
           <font style="0"/>
           <foreground color="-16777216"/>
           <lineWrap value="true"/>

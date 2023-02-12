@@ -127,7 +127,6 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     @Override
     public void onItemUpdated(T editedItem, long transactionId) {
 
-
         if(editedItem.equals(getItem()) && transactionId != lastTransactionId)
             refreshData();
 

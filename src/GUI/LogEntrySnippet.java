@@ -11,7 +11,7 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class LogEntrySnippet extends EditorPanel<LogEntry>  {
+public class LogEntrySnippet extends EditorPanel<LogEntry> implements Table.TableListener<LogEntry> {
     private JTextArea tfNarrative;
     private JPanel contentPane;
 
@@ -36,8 +36,10 @@ public class LogEntrySnippet extends EditorPanel<LogEntry>  {
         getItem().setNarrative(tfNarrative.getText());
     }
 
-
-
+    @Override
+    public void onItemUpdated(LogEntry editedItem, long transactionId) {
+        super.onItemUpdated(editedItem, transactionId);
+    }
 
     public static void main(String[] args) {
         try (Connection c = DBManager.getConnection()) {

@@ -19,10 +19,10 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     public LogEntryEditor(LogEntry entry, Window owner, EditorPanelHost host) {
         super(owner, LogEntryTable.getInstance(), host);
 
-        setItem(entry);
-
         tfNarrative.addKeyListener(getItemEditListener());
         cbShowOnNotes.addActionListener(getItemEditListener());
+
+        setItem(entry);
     }
 
     @Override

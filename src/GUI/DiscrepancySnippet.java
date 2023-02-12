@@ -32,7 +32,6 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         populateComboBox();
         setItem(disc);
 
-        StatusTable.getInstance().addListener(statusTableListener);
         DiscrepancyTable.getInstance().addListener(discrepancyTableListener);
 
         tfNarrative.addMouseListener(doubleClickListener);
@@ -156,24 +155,6 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         cbStatus.setBackground(getItem().getStatus().getColor());
     }
 
-    private StatusTableListener statusTableListener = new StatusTableListener();
-
-    public class StatusTableListener implements Table.TableListener<Status> {
-        @Override
-        public void onItemAdded(Status addedItem, long transactionId) {
-
-        }
-
-        @Override
-        public void onItemUpdated(Status editedItem, long transactionId) {
-        }
-
-        @Override
-        public void onItemDeleted(Status deletedItem, long transactionId) {
-
-        }
-    }
-
     private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
 
     public class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
@@ -190,23 +171,6 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
         @Override
         public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
-
-        }
-    }
-
-    private class LogEntryTableListener implements Table.TableListener<LogEntry> {
-        @Override
-        public void onItemAdded(LogEntry addedItem, long transactionId) {
-
-        }
-
-        @Override
-        public void onItemUpdated(LogEntry editedItem, long transactionId) {
-
-        }
-
-        @Override
-        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
 
         }
     }
