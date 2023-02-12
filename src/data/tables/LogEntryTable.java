@@ -34,6 +34,8 @@ public class LogEntryTable extends Table<LogEntry> {
         addColumn(COL_CREW);
     }
 
+
+
     @Override
     public LogEntry getItemFromResultSet(ResultSet rs) throws SQLException {
 

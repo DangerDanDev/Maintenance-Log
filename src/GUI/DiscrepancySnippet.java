@@ -193,4 +193,21 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
         }
     }
+
+    private class LogEntryTableListener implements Table.TableListener<LogEntry> {
+        @Override
+        public void onItemAdded(LogEntry addedItem, long transactionId) {
+
+        }
+
+        @Override
+        public void onItemUpdated(LogEntry editedItem, long transactionId) {
+
+        }
+
+        @Override
+        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
+
+        }
+    }
 }

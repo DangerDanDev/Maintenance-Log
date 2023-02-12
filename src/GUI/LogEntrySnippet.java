@@ -3,6 +3,7 @@ package GUI;
 import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.LogEntryTable;
+import data.tables.Table;
 import model.LogEntry;
 
 import javax.swing.*;
@@ -10,8 +11,8 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class LogEntrySnippet extends EditorPanel<LogEntry> {
-    private JLabel tfNarrative;
+public class LogEntrySnippet extends EditorPanel<LogEntry>  {
+    private JTextArea tfNarrative;
     private JPanel contentPane;
 
     public LogEntrySnippet(Window owner, LogEntry entry) {
@@ -34,6 +35,9 @@ public class LogEntrySnippet extends EditorPanel<LogEntry> {
     public void pushChanges() {
         getItem().setNarrative(tfNarrative.getText());
     }
+
+
+
 
     public static void main(String[] args) {
         try (Connection c = DBManager.getConnection()) {
