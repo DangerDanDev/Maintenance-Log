@@ -54,13 +54,17 @@ public class AppFrame extends JFrame {
 
     private void showStatusEditor()  {
 
+
+
         try {
 
-            ArrayList<EditorPanel<Status>> statusEditorPanels = new ArrayList<>();
+            /*ArrayList<EditorPanel<Status>> statusEditorPanels = new ArrayList<>();
             for(Status s : StatusTable.getInstance().getAllItems())
                 statusEditorPanels.add(new StatusEditorPanel(getOwner(), s));
 
-            new EditorDialog<Status>(this,"Status Editor", statusEditorPanels).setVisible(true);
+            new EditorDialog<Status>(this,"Status Editor", statusEditorPanels).setVisible(true);*/
+
+            EditorDialog.showStatusEditor(this);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");

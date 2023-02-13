@@ -2,6 +2,7 @@ package GUI;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
+import data.ComboBoxStatusTableListener;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.LogEntryTable;
@@ -31,6 +32,12 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JButton bAddLogEntry;
 
     private LogEntryTableListener logEntryTableListener = new LogEntryTableListener();
+
+    /**
+     * A utility class that listens for new and deleted statuses and updates
+     * my cbStatus with them.
+     */
+    private ComboBoxStatusTableListener cbStatusTableListener = new ComboBoxStatusTableListener(cbStatus);
 
 
     public DiscrepancyEditor(Window owner, Discrepancy discrepancy, EditorPanelHost host) {
@@ -124,6 +131,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         super.unsubscribeFromTableUpdates();
 
         LogEntryTable.getInstance().removeListener(logEntryTableListener);
+        cbStatusTableListener.unsubscribe();
     }
 
     public class LogEntryTableListener implements Table.TableListener<LogEntry> {

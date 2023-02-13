@@ -13,6 +13,8 @@ import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -101,6 +103,21 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     }
 
     public void addEditorPanel(EditorPanel<T> panel, String borderLayoutPosition) {
+        JPanel panelToAddTo = getBorderPanelByLocation(borderLayoutPosition);
+
+        editorPanels.add(panel);
+        panelToAddTo.add(panel.getContentPane());
+        panel.setEditorPanelHost(this);
+        revalidate();
+
+        //don't pack if I'm already on the screen!
+        if(!isVisible()) {
+            centerOnScreen();
+            pack();
+        }
+    }
+
+    private JPanel getBorderPanelByLocation(String borderLayoutPosition) {
         JPanel panelToAddTo = null;
 
         //select which panel we want to add to
@@ -121,21 +138,17 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
                 panelToAddTo = eastPanel;
                 break;
         }
-
-        editorPanels.add(panel);
-        panelToAddTo.add(panel.getContentPane());
-        panel.setEditorPanelHost(this);
-        revalidate();
-
-        //don't pack if I'm already on the screen!
-        if(!isVisible()) {
-            centerOnScreen();
-            pack();
-        }
+        return panelToAddTo;
     }
 
     public void addEditorPanel(EditorPanel<T> panel) {
         addEditorPanel(panel, BorderLayout.CENTER);
+    }
+
+    public void addComponent(JComponent component, String borderLayoutLocation) {
+        JPanel panel = getBorderPanelByLocation(borderLayoutLocation);
+
+        panel.add(component);
     }
 
     public void removeEditorPanel(EditorPanel<T> panel) {
@@ -273,6 +286,29 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         EditorDialog<LogEntry> dialog = new EditorDialog(parent, "New Log Entry");
         dialog.addEditorPanel(new LogEntryEditor(entry, parent, dialog, EditorPanel.Mode.EDIT), BorderLayout.CENTER);
         dialog.setSize(800,400);
+        dialog.setVisible(true);
+    }
+
+    public static void showStatusEditor(Window owner) throws SQLException {
+        EditorDialog<Status> dialog = new EditorDialog<Status>(owner, "Status Editor");
+
+        for(Status status : StatusTable.getInstance().getAllItems())
+            dialog.addEditorPanel(new StatusEditorPanel(owner, status, dialog));
+
+        JButton newStatusButton = new JButton("New Status");
+        newStatusButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Status status = new Status();
+                status.setTitle("new_status");
+
+                dialog.addEditorPanel(new StatusEditorPanel(owner, status, dialog));
+            }
+        });
+        dialog.addComponent(newStatusButton, BorderLayout.NORTH);
+
+
+        dialog.pack();
         dialog.setVisible(true);
     }
 

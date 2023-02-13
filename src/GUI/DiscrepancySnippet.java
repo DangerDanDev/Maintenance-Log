@@ -2,6 +2,7 @@ package GUI;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
+import data.ComboBoxStatusTableListener;
 import data.tables.DiscrepancyTable;
 import data.tables.LogEntryTable;
 import data.tables.StatusTable;
@@ -26,6 +27,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
 
+    private ComboBoxStatusTableListener cbStatusTableListener = new ComboBoxStatusTableListener(cbStatus);
+
     public DiscrepancySnippet(Window owner, Discrepancy disc) throws SQLException {
         super(owner, DiscrepancyTable.getInstance(), null);
 
@@ -40,7 +43,12 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(e -> onStatusChanged(e));
     }
 
+    @Override
+    public void unsubscribeFromTableUpdates() {
+        super.unsubscribeFromTableUpdates();
 
+        cbStatusTableListener.unsubscribe();
+    }
 
     /**
      * Populates my logEntriesPanel with log entries that
