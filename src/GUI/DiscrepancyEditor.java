@@ -145,6 +145,8 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
                 //if my owner is an instanceof EditorDialog, get a reference to that
                 //and add the log entry to it
                 if(getOwner() instanceof EditorDialog) {
+                    //The code to accomplish this section has been moved into DiscrepancyEditorDialog
+
                     //EditorDialog dialog = (EditorDialog) getOwner();
 
                     //dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost(), Mode.VIEW_ONLY), BorderLayout.CENTER);
