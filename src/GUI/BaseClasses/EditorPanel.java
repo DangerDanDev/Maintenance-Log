@@ -13,6 +13,13 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     private long lastTransactionId = Table.INVALID_TRANSACTION_ID;
     public long getLastTransactionId() { return lastTransactionId ;}
 
+    public enum Mode {
+        VIEW_ONLY,
+        EDIT,
+    }
+
+    public Mode mode = Mode.VIEW_ONLY;
+
     /**
      *
      */
@@ -236,6 +243,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     public EditorPanelHost<T> getEditorPanelHost() {
         return editorPanelHost;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public void setEditorPanelHost(EditorPanelHost<T> editorPanelHost) {

@@ -111,7 +111,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
 
     private void createNewLogEntry() {
         LogEntry logEntry = new LogEntry(this.getItem(), "", "");
-        LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost());
+        LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost(), Mode.EDIT);
 
         EditorDialog<LogEntry> dialog = new EditorDialog(this.getOwner(), "New Log Entry");
         dialog.addEditorPanel(editor, BorderLayout.CENTER);
@@ -136,7 +136,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
                 if(getOwner() instanceof EditorDialog) {
                     EditorDialog dialog = (EditorDialog) getOwner();
 
-                    dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost()), BorderLayout.CENTER);
+                    dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost(), Mode.VIEW_ONLY), BorderLayout.CENTER);
                 }
             }
         }

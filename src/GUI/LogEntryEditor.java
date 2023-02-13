@@ -16,13 +16,14 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     private JTextArea tfCrew;
     private JPanel eastPanel;
 
-    public LogEntryEditor(LogEntry entry, Window owner, EditorPanelHost host) {
+    public LogEntryEditor(LogEntry entry, Window owner, EditorPanelHost host, Mode mode) {
         super(owner, LogEntryTable.getInstance(), host);
 
         tfNarrative.addKeyListener(getItemEditListener());
         cbShowOnNotes.addActionListener(getItemEditListener());
 
         setItem(entry);
+        setMode(mode);
     }
 
     @Override
@@ -42,5 +43,23 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     @Override
     public void pushChanges() {
         getItem().setNarrative(tfNarrative.getText());
+    }
+
+    @Override
+    public void setMode(Mode mode) {
+
+        boolean editable = mode == Mode.EDIT;
+
+        Color color = Color.WHITE;
+        if(!editable)
+            color = Color.LIGHT_GRAY;
+
+        tfNarrative.setEditable(editable);
+        tfNarrative.setBackground(color);
+
+        tfCrew.setEditable(editable);
+        tfCrew.setBackground(color);
+
+        super.setMode(mode);
     }
 }

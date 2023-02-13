@@ -261,7 +261,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(d)) {
 
-            EditorPanel editor = new LogEntryEditor(logEntry, discrepancyEditorDialog, null);
+            EditorPanel editor = new LogEntryEditor(logEntry, discrepancyEditorDialog, null, EditorPanel.Mode.VIEW_ONLY);
             discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
         }
 
