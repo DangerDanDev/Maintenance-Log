@@ -345,9 +345,24 @@ public abstract class Table<T extends DatabaseObject> {
         return str.toString();
     }
 
-    public void removeItem(T item) {
+    public void removeItem(T item) throws SQLException {
         //TODO: Make this actually remove the item from the database
-        JOptionPane.showMessageDialog(null, "I know you said you want to delete this item, but that functionality is not yet implemented.");
+
+        QueryIndexer idx = new QueryIndexer();
+
+        final String DELETE_SQL = "DELETE FROM " + NAME +
+                WHERE + COL_ID + "=" + idx.index(COL_ID);
+
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(DELETE_SQL)) {
+
+            ps.setLong(idx.indexOf(COL_ID), item.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            throw ex;
+        }
+
+        //JOptionPane.showMessageDialog(null, "I know you said you want to delete this item, but that functionality is not yet implemented.");
         onItemDeleted(item);
     }
 

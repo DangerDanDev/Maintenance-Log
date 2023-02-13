@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -108,7 +109,7 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
         saveMenuItem.addActionListener(e -> saveAndReturnToViewOnlyMode());
         popupMenu.add(saveMenuItem);
 
-        deleteMenuItem.addActionListener(e -> LogEntryTable.getInstance().removeItem(getItem()));
+        deleteMenuItem.addActionListener(e -> removeLogEntry());
         popupMenu.add(deleteMenuItem);
 
         MouseListener popupMenuListener = new MouseListener() {
@@ -143,5 +144,13 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
         };
 
         tfNarrative.addMouseListener(popupMenuListener);
+    }
+
+    private void removeLogEntry(){
+        try {
+            LogEntryTable.getInstance().removeItem(getItem());
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(getOwner(),"Deleting log entry operation was unsuccessful.");
+        }
     }
 }

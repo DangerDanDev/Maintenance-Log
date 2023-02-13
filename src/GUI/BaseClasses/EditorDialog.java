@@ -1,6 +1,7 @@
 package GUI.BaseClasses;
 
 import GUI.DiscrepancyEditor;
+import GUI.DiscrepancyEditorDialog;
 import GUI.LogEntryEditor;
 import GUI.StatusEditorPanel;
 import data.DBManager;
@@ -160,6 +161,9 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         eastPanel.remove(panel.getContentPane());
         westPanel.remove(panel.getContentPane());
 
+        revalidate();
+        repaint();
+
         panel.setEditorPanelHost(null);
     }
 
@@ -201,7 +205,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         //if all of our data is saved, unsubscribe the editors from their tables and close the dialog
         if(!unsavedData) {
-            unsubscribeEditorPanelsFromTable();
+            unsubscribeFromTableUpdates();
             super.dispose();
         }
         //if we DO have unsaved changes, prompt the user for what to do
@@ -219,7 +223,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
                     break;
 
                 case CLOSE_WITHOUT_SAVING:
-                    unsubscribeEditorPanelsFromTable();
+                    unsubscribeFromTableUpdates();
                     super.dispose();
                     break;
 
@@ -263,12 +267,49 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     }
 
+    /**
+     * Just here for subclasses to override as needed
+     */
+    public void unsubscribeFromTableUpdates() {
+        unsubscribeEditorPanelsFromTable();
+
+        //Subclasses can override and add whatever tables they need to unsubscribe to
+    }
+
+    public JPanel getBorderLayout() {
+        return borderLayout;
+    }
+
+    public JPanel getNorthPanel() {
+        return northPanel;
+    }
+
+    public JPanel getCenterPanel() {
+        return centerPanel;
+    }
+
+    public JPanel getSouthPanel() {
+        return southPanel;
+    }
+
+    public JPanel getEastPanel() {
+        return eastPanel;
+    }
+
+    public JPanel getWestPanel() {
+        return westPanel;
+    }
+
+    public ArrayList<EditorPanel<T>> getEditorPanels() {
+        return editorPanels;
+    }
+
     public void centerOnScreen() {
         setLocationRelativeTo(null);
     }
 
-    public static void showDiscrepancy(Discrepancy d, Window parent) {
-        EditorDialog<Discrepancy> discrepancyEditorDialog = new EditorDialog<Discrepancy>(parent,"Discrepancy Editor");
+    public static void showDiscrepancy(Discrepancy d, Window owner) {
+        /*DiscrepancyEditorDialog discrepancyEditorDialog = new DiscrepancyEditorDialog(parent,d);
         discrepancyEditorDialog.addEditorPanel(new DiscrepancyEditor(discrepancyEditorDialog, d, discrepancyEditorDialog),
                 BorderLayout.WEST);
 
@@ -278,8 +319,11 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
             discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
         }
 
-        discrepancyEditorDialog.setSize(1024, 768);
-        discrepancyEditorDialog.setVisible(true);
+        discrepancyEditorDialog.setSize(1024, 768);*/
+
+        DiscrepancyEditorDialog dialog = new DiscrepancyEditorDialog(owner, d);
+
+        dialog.setVisible(true);
     }
 
     public static void showLogEntry(LogEntry entry, Window parent) {
@@ -330,6 +374,5 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
     }
 }

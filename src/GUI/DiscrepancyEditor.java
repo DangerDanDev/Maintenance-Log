@@ -141,10 +141,13 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
             //We only respond to log entries that are added to the table if they have my discrepancy
             //as their parent discrepancy
             if(addedItem.getParentDiscrepancy().equals(getItem()) && transactionId != getLastTransactionId()) {
-                if(getOwner() instanceof EditorDialog) {
-                    EditorDialog dialog = (EditorDialog) getOwner();
 
-                    dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost(), Mode.VIEW_ONLY), BorderLayout.CENTER);
+                //if my owner is an instanceof EditorDialog, get a reference to that
+                //and add the log entry to it
+                if(getOwner() instanceof EditorDialog) {
+                    //EditorDialog dialog = (EditorDialog) getOwner();
+
+                    //dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost(), Mode.VIEW_ONLY), BorderLayout.CENTER);
                 }
             }
         }
@@ -156,7 +159,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
 
         @Override
         public void onItemDeleted(LogEntry deletedItem, long transactionId) {
-            //TODO: implement this
+
         }
     }
 
