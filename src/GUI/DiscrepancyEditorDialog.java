@@ -30,7 +30,6 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(1024, 768);
-        setLocationRelativeTo(null);
     }
 
     private void populateLogEntries(Discrepancy discrepancy) {

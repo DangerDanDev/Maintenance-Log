@@ -65,6 +65,8 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         initSouthPanel();
 
         setContentPane(borderLayout);
+
+        setLocationRelativeTo(null);
     }
 
     private void initBorderLayout() {
