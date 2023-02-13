@@ -6,6 +6,7 @@ import data.DBManager;
 import data.tables.DiscrepancyTable;
 import data.tables.LogEntryTable;
 import data.tables.StatusTable;
+import data.tables.Table;
 import model.Discrepancy;
 import model.LogEntry;
 import model.Status;
@@ -29,12 +30,16 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JTextField tfDateLastEdited;
     private JButton bAddLogEntry;
 
+    private LogEntryTableListener logEntryTableListener = new LogEntryTableListener();
+
 
     public DiscrepancyEditor(Window owner, Discrepancy discrepancy, EditorPanelHost host) {
         super(owner, DiscrepancyTable.getInstance(), host);
 
         populateCBStatuses();
         setItem(discrepancy);
+
+        LogEntryTable.getInstance().addListener(logEntryTableListener);
 
         tfTurnover.addKeyListener(getItemEditListener());
         tfDiscoveredBy.addKeyListener(getItemEditListener());
@@ -112,6 +117,39 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         dialog.addEditorPanel(editor, BorderLayout.CENTER);
         dialog.setSize(800,600);
         dialog.setVisible(true);
+    }
+
+    @Override
+    public void unsubscribeFromTableUpdates() {
+        super.unsubscribeFromTableUpdates();
+
+        LogEntryTable.getInstance().removeListener(logEntryTableListener);
+    }
+
+    public class LogEntryTableListener implements Table.TableListener<LogEntry> {
+        @Override
+        public void onItemAdded(LogEntry addedItem, long transactionId) {
+
+            //We only respond to log entries that are added to the table if they have my discrepancy
+            //as their parent discrepancy
+            if(addedItem.getParentDiscrepancy().equals(getItem()) && transactionId != getLastTransactionId()) {
+                if(getOwner() instanceof EditorDialog) {
+                    EditorDialog dialog = (EditorDialog) getOwner();
+
+                    dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost()), BorderLayout.CENTER);
+                }
+            }
+        }
+
+        @Override
+        public void onItemUpdated(LogEntry editedItem, long transactionId) {
+
+        }
+
+        @Override
+        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
+            //TODO: implement this
+        }
     }
 
     public static final String TITLE = "Discrepancy Editor";

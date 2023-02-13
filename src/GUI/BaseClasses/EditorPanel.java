@@ -56,6 +56,10 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     public abstract void pushChanges();
 
+    public void unsubscribeFromTableUpdates() {
+        getTable().removeListener(this);
+    }
+
     /**
      * Pushes the user's changes to the object and attempts to save the
      * changes to database. If the save fails, calls onSaveFailed();

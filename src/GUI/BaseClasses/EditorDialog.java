@@ -125,7 +125,13 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         editorPanels.add(panel);
         panelToAddTo.add(panel.getContentPane());
         panel.setEditorPanelHost(this);
-        pack();
+        revalidate();
+
+        //don't pack if I'm already on the screen!
+        if(!isVisible()) {
+            centerOnScreen();
+            pack();
+        }
     }
 
     public void addEditorPanel(EditorPanel<T> panel) {
@@ -218,7 +224,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
      */
     private void unsubscribeEditorPanelsFromTable() {
         for(EditorPanel<T> panel : editorPanels) {
-            panel.getTable().removeListener(panel);
+            panel.unsubscribeFromTableUpdates();
         }
     }
 
@@ -242,6 +248,10 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     @Override
     public void onItemSaveFailed(T item) {
 
+    }
+
+    public void centerOnScreen() {
+        setLocationRelativeTo(null);
     }
 
     public static void showDiscrepancy(Discrepancy d, Window parent) {
