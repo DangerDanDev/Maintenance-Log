@@ -93,7 +93,7 @@ public abstract class Table<T extends DatabaseObject> {
             try (ResultSet rs = ps.executeQuery()) {
 
                 if(rs.next()) {
-                    return inflateOrReturnExistingItem(rs);
+                    return getItemFromResultSet(rs);
                 }
 
                 else {
@@ -119,19 +119,27 @@ public abstract class Table<T extends DatabaseObject> {
      * @return
      * @throws SQLException
      */
-    private T inflateOrReturnExistingItem(ResultSet rs) throws SQLException {
+    public T getItemFromResultSet(ResultSet rs) throws SQLException {
         //if we already have the object loaded, return it without
         //inflating the result set
-        if(loadedItems.containsKey(rs.getLong(COL_ID.NAME)))
+        if(this.containsItem(rs.getLong(COL_ID.NAME)))
             return loadedItems.get(rs.getLong(COL_ID.NAME));
 
         //if we do not have the object loaded, inflate it
         //and add it to our list of loaded objects
         else {
-            T item = getItemFromResultSet(rs);
+            T item = inflateItemFromResultSet(rs);
             loadedItems.put(item.getId(), item);
             return item;
         }
+    }
+
+    public boolean containsItem(DatabaseObject item) {
+        return containsItem(item.getId());
+    }
+
+    public boolean containsItem(long id) {
+        return loadedItems.containsKey(id);
     }
 
     /**
@@ -148,7 +156,7 @@ public abstract class Table<T extends DatabaseObject> {
             ArrayList<T> items = new ArrayList<>();
 
             while(rs.next()) {
-                items.add(inflateOrReturnExistingItem(rs));
+                items.add(getItemFromResultSet(rs));
             }
 
             return items;
@@ -167,7 +175,7 @@ public abstract class Table<T extends DatabaseObject> {
      * @param rs
      * @return
      */
-    public abstract T getItemFromResultSet(ResultSet rs) throws SQLException;
+    public abstract T inflateItemFromResultSet(ResultSet rs) throws SQLException;
 
     /**
      * Updates a single item in the database, including updating
@@ -423,8 +431,7 @@ public abstract class Table<T extends DatabaseObject> {
     private void onItemAdded(T item) {
 
         for(TableListener<T> listener : listeners)
-            //SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
-            listener.onItemAdded(item, transactionId);
+            SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
     }
 
     /**
@@ -433,8 +440,7 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemUpdated(T item) {
         for(TableListener<T> listener : listeners)
-            //SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
-            listener.onItemUpdated(item, transactionId);
+            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
     }
 
     /**
@@ -443,8 +449,7 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemDeleted(T item) {
         for(TableListener<T> listener : listeners)
-            //SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
-            listener.onItemDeleted(item, transactionId);
+            SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
     }
 
     /**

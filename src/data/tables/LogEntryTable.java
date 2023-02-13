@@ -5,7 +5,6 @@ import data.QueryIndexer;
 import model.Discrepancy;
 import model.LogEntry;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +36,7 @@ public class LogEntryTable extends Table<LogEntry> {
 
 
     @Override
-    public LogEntry getItemFromResultSet(ResultSet rs) throws SQLException {
+    public LogEntry inflateItemFromResultSet(ResultSet rs) throws SQLException {
 
         long discrepancyId = rs.getLong(COL_PARENT_DISCREPANCY.NAME);
 
@@ -66,16 +65,26 @@ public class LogEntryTable extends Table<LogEntry> {
     }
 
     public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId) {
+        ArrayList<LogEntry> logEntries = new ArrayList<>();
 
-        try {
-           ArrayList<LogEntry> logEntries = getAllItems();
+        final String QUERY = " SELECT * FROM " + NAME +
+                WHERE + COL_PARENT_DISCREPANCY + "=?";
 
-            return logEntries;
-        } catch (SQLException ex) {
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY)) {
+
+            ps.setLong(1, discrepancyId);
+
+            try(ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    logEntries.add(getItemFromResultSet(rs));
+                }
+            }
+
+        }catch (SQLException ex) {
 
         }
 
-        return null;
+        return logEntries;
     }
 
     public static void main(String[] args) {

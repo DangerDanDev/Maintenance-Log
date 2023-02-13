@@ -28,7 +28,7 @@ public class StatusTable extends Table<Status> {
     }
 
     @Override
-    public Status getItemFromResultSet(ResultSet rs) throws SQLException {
+    public Status inflateItemFromResultSet(ResultSet rs) throws SQLException {
         Status status = new Status();
 
         status.setId(rs.getLong(COL_ID.NAME));

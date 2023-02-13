@@ -56,7 +56,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
      * @throws SQLException
      */
     @Override
-    public Discrepancy getItemFromResultSet(ResultSet rs) throws SQLException {
+    public Discrepancy inflateItemFromResultSet(ResultSet rs) throws SQLException {
         Discrepancy d = new Discrepancy();
 
         d.setId(rs.getLong(COL_ID.NAME));
