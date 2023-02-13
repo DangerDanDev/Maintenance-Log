@@ -50,23 +50,27 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         setModal(true);
 
         OWNER = owner;
-        borderLayout.setLayout(new BorderLayout());
+
         setEditorTitle(windowTitle);
         setTitle(getEditorTitle());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-        initSouthPanel();
+
         initBorderLayout();
+        initSouthPanel();
 
         setContentPane(borderLayout);
     }
 
     private void initBorderLayout() {
+        borderLayout.setLayout(new BorderLayout());
+
         borderLayout.add(northPanel, BorderLayout.NORTH);
 
-        borderLayout.add(centerPanel, BorderLayout.CENTER);
+        JScrollPane centerScrollPane = new JScrollPane(centerPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        borderLayout.add(centerScrollPane, BorderLayout.CENTER);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
         borderLayout.add(southPanel, BorderLayout.SOUTH);
@@ -247,8 +251,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(d)) {
 
-            EditorPanel editor = new LogEntryEditor(logEntry, parent, null);
-            System.out.println("Editor Dialog showDiscrepancy() LogEntry hash: " + editor.getItem());
+            EditorPanel editor = new LogEntryEditor(logEntry, discrepancyEditorDialog, null);
             discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
         }
 

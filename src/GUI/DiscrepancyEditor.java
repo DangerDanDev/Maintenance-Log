@@ -1,10 +1,13 @@
 package GUI;
 
+import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.DiscrepancyTable;
+import data.tables.LogEntryTable;
 import data.tables.StatusTable;
 import model.Discrepancy;
+import model.LogEntry;
 import model.Status;
 
 import javax.swing.*;
@@ -24,6 +27,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JTextField tfDateCreated;
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
+    private JButton bAddLogEntry;
 
 
     public DiscrepancyEditor(Window owner, Discrepancy discrepancy, EditorPanelHost host) {
@@ -39,6 +43,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(getItemEditListener());
         cbTailNumber.addItemListener(getItemEditListener());
         cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
+        bAddLogEntry.addActionListener(e -> createNewLogEntry());
     }
 
     @Override
@@ -97,6 +102,16 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
 
         tfDateCreated.setText(getItem().getDateCreated().toString());
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());
+    }
+
+    private void createNewLogEntry() {
+        LogEntry logEntry = new LogEntry(this.getItem(), "", "");
+        LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost());
+
+        EditorDialog<LogEntry> dialog = new EditorDialog(this.getOwner(), "New Log Entry");
+        dialog.addEditorPanel(editor, BorderLayout.CENTER);
+        dialog.setSize(800,600);
+        dialog.setVisible(true);
     }
 
     public static final String TITLE = "Discrepancy Editor";
