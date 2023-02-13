@@ -309,20 +309,8 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     }
 
     public static void showDiscrepancy(Discrepancy d, Window owner) {
-        /*DiscrepancyEditorDialog discrepancyEditorDialog = new DiscrepancyEditorDialog(parent,d);
-        discrepancyEditorDialog.addEditorPanel(new DiscrepancyEditor(discrepancyEditorDialog, d, discrepancyEditorDialog),
-                BorderLayout.WEST);
-
-        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(d)) {
-
-            EditorPanel editor = new LogEntryEditor(logEntry, discrepancyEditorDialog, null, EditorPanel.Mode.VIEW_ONLY);
-            discrepancyEditorDialog.addEditorPanel(editor, BorderLayout.CENTER);
-        }
-
-        discrepancyEditorDialog.setSize(1024, 768);*/
 
         DiscrepancyEditorDialog dialog = new DiscrepancyEditorDialog(owner, d);
-
         dialog.setVisible(true);
     }
 

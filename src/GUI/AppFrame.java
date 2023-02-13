@@ -49,6 +49,7 @@ public class AppFrame extends JFrame {
         setJMenuBar(new MenuManager().menuBar);
         setContentPane(contentPane);
         setSize(1024,768);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

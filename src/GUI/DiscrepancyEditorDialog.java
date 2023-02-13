@@ -8,7 +8,6 @@ import model.Discrepancy;
 import model.LogEntry;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implements Table.TableListener<LogEntry> {
@@ -25,14 +24,19 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
         discrepancyEditor = new DiscrepancyEditor(this,discrepancy, this);
         addEditorPanel(discrepancyEditor, BorderLayout.WEST);
 
-        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy)) {
-            addLogEntry(logEntry);
-        }
+        populateLogEntries(discrepancy);
 
         LogEntryTable.getInstance().addListener(this);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(1024, 768);
+        setLocationRelativeTo(null);
+    }
+
+    private void populateLogEntries(Discrepancy discrepancy) {
+        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy)) {
+            addLogEntry(logEntry);
+        }
     }
 
     @Override
@@ -42,6 +46,10 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
         LogEntryTable.getInstance().removeListener(this);
     }
 
+    /**
+     * Adds a LogEntry to my center panel
+     * @param entry
+     */
     private void addLogEntry(LogEntry entry) {
         LogEntryEditor editor = new LogEntryEditor(entry, this, this, EditorPanel.Mode.VIEW_ONLY);
 
@@ -49,14 +57,23 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
         addEditorPanel((EditorPanel)editor, BorderLayout.CENTER);
     }
 
+    /**
+     * Removes a LogEntry from my center panel
+     * @param entry
+     */
     private void removeLogEntry(LogEntry entry) {
         removeEditorPanel((EditorPanel)logEntryEditors.get(entry));
         logEntryEditors.remove(entry);
     }
 
+    /**
+     * Checks if the added item belongs to my discrepancy; if so, adds it to the center display panel.
+     * @param addedItem
+     * @param transactionId
+     */
     @Override
     public void onItemAdded(LogEntry addedItem, long transactionId) {
-        if(!logEntryEditors.containsKey(addedItem))
+        if(!logEntryEditors.containsKey(addedItem) && addedItem.getParentDiscrepancy().equals(getDiscrepancy()))
             addLogEntry(addedItem);
     }
 
