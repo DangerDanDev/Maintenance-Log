@@ -157,6 +157,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
         getItem().getStatus().selectInComboBox(cbStatus);
         cbStatus.setBackground(getItem().getStatus().getColor());
+        tfNarrative.setBackground(getItem().getStatus().getColor());
     }
 
     private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();

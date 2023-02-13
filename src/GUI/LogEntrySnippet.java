@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.DBManager;
 import data.tables.LogEntryTable;
@@ -8,6 +9,8 @@ import model.LogEntry;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -19,6 +22,35 @@ public class LogEntrySnippet extends EditorPanel<LogEntry> implements Table.Tabl
         super(owner, LogEntryTable.getInstance(), null);
 
         setItem(entry);
+
+        tfNarrative.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+                    EditorDialog.showLogEntry(getItem(), getOwner());
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
     }
 
     @Override
