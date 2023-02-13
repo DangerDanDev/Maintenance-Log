@@ -18,9 +18,9 @@ import java.util.ArrayList;
 
 public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
-    private JTextField tfNarrative;
-    private JTextField tfTurnover;
-    private JTextField tfPartsOnOrder;
+    private JTextArea tfNarrative;
+    private JTextArea tfTurnover;
+    private JTextArea tfPartsOnOrder;
     private JPanel logEntriesPanel;
     private JPanel contentPane;
 
