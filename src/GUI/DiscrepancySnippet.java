@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JComboBox cbStatus;
@@ -25,7 +26,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JPanel logEntriesPanel;
     private JPanel contentPane;
 
-    private ArrayList<LogEntrySnippet> logEntrySnippets = new ArrayList<>();
+    private HashMap<LogEntry, LogEntrySnippet> logEntrySnippets = new HashMap<>();
 
     private ComboBoxStatusTableListener cbStatusTableListener = new ComboBoxStatusTableListener(cbStatus);
 
@@ -48,6 +49,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         super.unsubscribeFromTableUpdates();
 
         cbStatusTableListener.unsubscribe();
+        logEntryTableListener.unsubscribe();
     }
 
     /**
@@ -65,15 +67,24 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     private void addLogEntry(LogEntry entry) {
         LogEntrySnippet snippet = new LogEntrySnippet(getOwner(), entry);
-        logEntrySnippets.add(snippet);
+        logEntrySnippets.put(entry, snippet);
         logEntriesPanel.add(snippet.getContentPane());
+
+        logEntriesPanel.revalidate();
+        logEntriesPanel.repaint();
+    }
+
+    private void removeLogEntry(LogEntry entry) {
+        logEntriesPanel.remove(logEntrySnippets.get(entry).getContentPane());
+        logEntrySnippets.remove(entry);
+
+        logEntriesPanel.revalidate();
+        logEntriesPanel.repaint();
     }
 
     @Override
     public void setItem(Discrepancy item) {
         super.setItem(item);
-
-        System.out.println("DiscrepancySnippet hash: " + item);
 
         initLogEntriesPanel();
     }
@@ -185,6 +196,36 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         @Override
         public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
 
+        }
+    }
+
+    private LogEntryTableListener logEntryTableListener = new LogEntryTableListener();
+
+    public class LogEntryTableListener implements Table.TableListener<LogEntry> {
+
+        public LogEntryTableListener() {
+            LogEntryTable.getInstance().addListener(this);
+        }
+
+        public void unsubscribe() {
+            LogEntryTable.getInstance().removeListener(this);
+        }
+
+        @Override
+        public void onItemAdded(LogEntry addedItem, long transactionId) {
+            if(addedItem.getParentDiscrepancy().getId() == getItem().getId())
+                addLogEntry(addedItem);
+        }
+
+        @Override
+        public void onItemUpdated(LogEntry editedItem, long transactionId) {
+
+        }
+
+        @Override
+        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
+            if(logEntrySnippets.containsKey(deletedItem))
+                removeLogEntry(deletedItem);
         }
     }
 }
