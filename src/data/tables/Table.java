@@ -347,6 +347,7 @@ public abstract class Table<T extends DatabaseObject> {
 
     public void removeItem(T item) {
         //TODO: Make this actually remove the item from the database
+        JOptionPane.showMessageDialog(null, "I know you said you want to delete this item, but that functionality is not yet implemented.");
         onItemDeleted(item);
     }
 

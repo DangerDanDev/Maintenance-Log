@@ -68,6 +68,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     }
 
     /**
+     * Does nothing in superclass, but subclasses can implement it in order to see
+     * when they need to update their GUI fields.
+     */
+    public void refreshTimeLastEdited() {
+
+    }
+
+    /**
      * Pushes the user's changes to the object and attempts to save the
      * changes to database. If the save fails, calls onSaveFailed();
      * @return
@@ -138,9 +146,13 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     @Override
     public void onItemUpdated(T editedItem, long transactionId) {
 
+        //don't respond normally to an event that I initiated to avoid creating a feedback loop
         if(editedItem.equals(getItem()) && transactionId != lastTransactionId)
             refreshData();
 
+        //but DO respond by allowing subclasses to refresh their lastedited times
+        else if(editedItem.equals(getItem()))
+            refreshTimeLastEdited();
     }
 
     @Override

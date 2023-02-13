@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class LogEntryTable extends Table<LogEntry> {
@@ -46,6 +47,9 @@ public class LogEntryTable extends Table<LogEntry> {
                 rs.getString(COL_NARRATIVE.NAME),
                 rs.getString(COL_CREW.NAME)
         );
+
+        logEntry.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
+        logEntry.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
 
         logEntry.setSaved(true);
         return logEntry;
