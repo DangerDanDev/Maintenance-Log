@@ -64,7 +64,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public abstract void pushChanges();
 
     /**
-     * Checks all the data the user has inputted before allowing the item to save
+     * Can be overridden and used to check all the data the user has inputted before allowing the item to save
      * @return true if input data is valid, false if otherwise
      */
     public boolean isDataValid() {
