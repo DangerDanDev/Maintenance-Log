@@ -68,6 +68,19 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     }
 
     @Override
+    public boolean isDataValid() {
+        boolean valid = true;
+
+        if(tfNarrative.getText().length() == 0) {
+            valid = false;
+            JOptionPane.showMessageDialog(getOwner(), "A valid narrative is required to save this log entry.", "Narrative required",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        return valid;
+    }
+
+    @Override
     public void pushChanges() {
         getItem().setNarrative(tfNarrative.getText());
     }
