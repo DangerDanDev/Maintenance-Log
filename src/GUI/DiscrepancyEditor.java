@@ -12,6 +12,8 @@ import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JTextField tfDateCreated;
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
-    private JButton bAddLogEntry;
 
     private LogEntryTableListener logEntryTableListener = new LogEntryTableListener();
 
@@ -58,7 +59,6 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         cbStatus.addItemListener(getItemEditListener());
         cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
         cbTailNumber.addItemListener(getItemEditListener());
-        bAddLogEntry.addActionListener(e -> createNewLogEntry());
     }
 
     @Override
@@ -130,14 +130,67 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());
     }
 
-    private void createNewLogEntry() {
-        LogEntry logEntry = new LogEntry(this.getItem(), "", "");
-        LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost(), Mode.EDIT);
 
-        EditorDialog<LogEntry> dialog = new EditorDialog(this.getOwner(), "New Log Entry");
-        dialog.addEditorPanel(editor, BorderLayout.CENTER);
-        dialog.setSize(800,600);
-        dialog.setVisible(true);
+
+    @Override
+    public void initMenu(JMenuBar menuBar) {
+        super.initMenu(menuBar);
+
+        menuManager.initMenu(menuBar);
+    }
+
+    @Override
+    public void removeMenu(JMenuBar menuBar) {
+        super.removeMenu(menuBar);
+
+        menuManager.removeMenu(menuBar);
+    }
+
+    private final MenuManager menuManager = new MenuManager();
+
+    /**
+     * Helper class to encapsulate the methods we use to manage my JMenuBar.
+     */
+    private class MenuManager {
+
+        private JMenu menu = new JMenu("Discrepancy");
+        private final Action newLogEntryAction = new NewLogEntryAction();
+
+        public void initMenu(JMenuBar menuBar) {
+            menu.add(newLogEntryAction);
+
+            menuBar.add(menu);
+        }
+
+        public void removeMenu(JMenuBar menuBar) {
+
+            menu.remove(menu);
+        }
+    }
+
+    private final NewLogEntryAction newLogEntryAction = new NewLogEntryAction();
+    private class NewLogEntryAction extends AbstractAction {
+
+        public NewLogEntryAction() {
+            super("New Log Entry");
+
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            createNewLogEntry();
+        }
+
+        private void createNewLogEntry() {
+            LogEntry logEntry = new LogEntry(getItem(), "", "");
+            LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost(), Mode.EDIT);
+
+            EditorDialog<LogEntry> dialog = new EditorDialog(getOwner(), "New Log Entry");
+            dialog.addEditorPanel(editor, BorderLayout.CENTER);
+            dialog.setSize(800,600);
+            dialog.setVisible(true);
+        }
     }
 
     @Override

@@ -33,6 +33,9 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     private JButton bSave = new JButton("Save");
     private JButton bCancel = new JButton("Cancel");
 
+    /**
+     * This dialog's owning window
+     */
     private final Window OWNER;
 
     public String getEditorTitle() {
@@ -60,7 +63,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         initBorderLayout();
         //initSouthPanel();
-        new MenuManager().initJMenuBar();
+
 
         setContentPane(borderLayout);
 
@@ -82,15 +85,6 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         borderLayout.add(westPanel, BorderLayout.WEST);
     }
 
-    private void initSouthPanel() {
-        southPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        bSave.addActionListener(new SaveAction());
-        southPanel.add(bSave);
-
-        bCancel.addActionListener(e -> dispose());
-        southPanel.add(bCancel);
-    }
-
     public EditorDialog(Window owner,  String windowTitle, EditorPanel<T> editorPanel) {
         this(owner, windowTitle);
 
@@ -110,6 +104,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         editorPanels.add(panel);
         panelToAddTo.add(panel.getContentPane());
         panel.setEditorPanelHost(this);
+        panel.initMenu(getJMenuBar());
         revalidate();
 
         //don't pack if I'm already on the screen!
@@ -155,6 +150,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     public void removeEditorPanel(EditorPanel<T> panel) {
         editorPanels.remove(panel);
+        panel.removeMenu(getJMenuBar());
 
         northPanel.remove(panel.getContentPane());
         centerPanel.remove(panel.getContentPane());
@@ -168,19 +164,42 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         panel.setEditorPanelHost(null);
     }
 
+    private final MenuManager menuManager = new MenuManager();
+    public MenuManager getMenuManager() { return menuManager; }
+
     public class MenuManager {
 
-        JMenuBar menuBar = new JMenuBar();
+        private JMenuBar menuBar = new JMenuBar();
+
+        private JMenu fileMenu = new JMenu("File");
+
+        public MenuManager() {
+            initJMenuBar();
+        }
 
         private void initJMenuBar() {
-            menuBar = new JMenuBar();
-            JMenu fileMenu = new JMenu("File");
 
             fileMenu.add(new SaveAction());
             fileMenu.add(new ExitAction());
 
             menuBar.add(fileMenu);
             setJMenuBar(menuBar);
+        }
+
+        public void addJMenu(JMenu menu) {
+            menuBar.add(menu);
+        }
+
+        public void removeMenu(JMenu menu) {
+            menuBar.remove(menu);
+        }
+
+        public void addActionToMenu(JMenu menu, Action action) {
+            menu.add(action);
+        }
+
+        public void addActionToFileMenu(Action action) {
+            addActionToMenu(fileMenu, action);
         }
     }
 

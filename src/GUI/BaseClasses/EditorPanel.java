@@ -75,6 +75,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
     }
 
+    public void initMenu(JMenuBar menuBar) {
+
+    }
+
+    public void removeMenu(JMenuBar menuBar) {
+
+    }
+
     /**
      * Pushes the user's changes to the object and attempts to save the
      * changes to database. If the save fails, calls onSaveFailed();
