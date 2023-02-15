@@ -58,8 +58,6 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
     private void showStatusEditor()  {
 
-
-
         try {
 
             EditorDialog.showStatusEditor(this);

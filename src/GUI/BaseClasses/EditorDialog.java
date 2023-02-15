@@ -14,10 +14,7 @@ import model.Status;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,7 +47,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     public EditorDialog(Window owner, String windowTitle) {
         super(owner);
-        setModal(true);
+
 
         OWNER = owner;
 
@@ -63,10 +60,12 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         initBorderLayout();
         initSouthPanel();
+        new MenuManager().initJMenuBar();
 
         setContentPane(borderLayout);
 
         setLocationRelativeTo(null);
+        setModal(true);
     }
 
     private void initBorderLayout() {
@@ -85,7 +84,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
     private void initSouthPanel() {
         southPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        bSave.addActionListener(e -> saveAll());
+        bSave.addActionListener(new SaveAction());
         southPanel.add(bSave);
 
         bCancel.addActionListener(e -> dispose());
@@ -169,6 +168,48 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         panel.setEditorPanelHost(null);
     }
 
+    public class MenuManager {
+
+        JMenuBar menuBar = new JMenuBar();
+
+        private void initJMenuBar() {
+            menuBar = new JMenuBar();
+            JMenu fileMenu = new JMenu("File");
+
+            fileMenu.add(new SaveAction());
+            fileMenu.add(new ExitAction());
+
+            menuBar.add(fileMenu);
+            setJMenuBar(menuBar);
+        }
+    }
+
+    public class SaveAction extends AbstractAction {
+        public SaveAction() {
+            super("Save");
+
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            saveAll();
+        }
+    }
+
+    public class ExitAction extends AbstractAction {
+        public ExitAction() {
+            super("Exit");
+
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+        }
+    }
+
     /**
      * Attempts
      */
@@ -187,7 +228,9 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         if(!failDetected) {
 
             //then close the window
-            super.dispose();
+            //super.dispose();
+
+            setTitle(getEditorTitle());
         } else {
             //TODO: Handle the fail if applicable
         }
@@ -222,6 +265,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
             switch (result) {
                 case SAVE_AND_CLOSE:
                     saveAll();
+                    super.dispose();
                     break;
 
                 case CLOSE_WITHOUT_SAVING:
