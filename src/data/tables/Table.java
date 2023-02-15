@@ -16,6 +16,7 @@ public abstract class Table<T extends DatabaseObject> {
 
     public static final String INTEGER = " INTEGER ";
     public static final String TEXT = " TEXT ";
+    public static final String BOOL = " INTEGER "; //SQLite doesn't have bool, just 1 and 0
 
     public static final String NOT_NULL = " NOT NULL ";
 
@@ -62,10 +63,10 @@ public abstract class Table<T extends DatabaseObject> {
         this.COL_ID = new Column(this, "id", INTEGER + PRIMARY_KEY);
         addColumn(COL_ID);
 
-        this.COL_DATE_CREATED = new Column(this, "date_created", TEXT);
+        this.COL_DATE_CREATED = new Column(this, "date_created", TEXT, NOT_NULL);
         addColumn(COL_DATE_CREATED);
 
-        this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT);
+        this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT, NOT_NULL);
         addColumn(COL_DATE_EDITED);
     }
 
