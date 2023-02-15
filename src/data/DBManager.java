@@ -1,9 +1,6 @@
 package data;
 
-import data.tables.DiscrepancyTable;
-import data.tables.LogEntryTable;
-import data.tables.StatusTable;
-import data.tables.Table;
+import data.tables.*;
 import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
@@ -37,6 +34,7 @@ public class DBManager {
             DiscrepancyTable.getInstance(),
             StatusTable.getInstance(),
             LogEntryTable.getInstance(),
+            AircraftTable.getInstance(),
     };
 
     public static void initialize() throws SQLException {
