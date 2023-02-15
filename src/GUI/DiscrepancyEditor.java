@@ -6,6 +6,7 @@ import data.ComboBoxStatusTableListener;
 import data.DBManager;
 import data.DatabaseObject;
 import data.tables.*;
+import jdk.jshell.spi.ExecutionControl;
 import model.Aircraft;
 import model.Discrepancy;
 import model.LogEntry;
@@ -169,22 +170,37 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
      */
     private class MenuManager {
 
-        private JMenu menu = new JMenu("Discrepancy");
-        private final Action newLogEntryAction = new NewLogEntryAction();
+        private final JMenu menu = new JMenu("Discrepancy");
+
+        private final JMenu scheduleMenu = new JMenu("Schedule");
 
         public void initMenu(JMenuBar menuBar) {
-            menu.add(newLogEntryAction);
+
+            menu.add(new NewLogEntryAction());
+
+            scheduleMenu.add(new ScheduleStatusChangeAction());
+            menu.add(scheduleMenu);
 
             menuBar.add(menu);
         }
 
         public void removeMenu(JMenuBar menuBar) {
-
-            menu.remove(menu);
+            menuBar.remove(menu);
         }
     }
 
-    private final NewLogEntryAction newLogEntryAction = new NewLogEntryAction();
+    private class ScheduleStatusChangeAction extends  AbstractAction {
+        public ScheduleStatusChangeAction() {
+            super("Status Change");
+
+            setEnabled(false); //functionality not yet implemented
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //TODO: Implement
+        }
+    }
 
     /**
      * Helper class for adding a new LogEntry
