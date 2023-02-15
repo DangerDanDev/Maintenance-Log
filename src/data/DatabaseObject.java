@@ -34,6 +34,14 @@ public class DatabaseObject {
      */
     private boolean saved = false;
 
+    public DatabaseObject() {}
+
+    public DatabaseObject(long id, Instant dateCreated, Instant dateLastEdited) {
+        setId(id);
+        setDateCreated(dateCreated);
+        setDateLastEdited(dateLastEdited);
+    }
+
     public long getId() {
         return id;
     }
