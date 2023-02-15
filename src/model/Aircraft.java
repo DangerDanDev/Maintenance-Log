@@ -39,4 +39,9 @@ public class Aircraft extends DatabaseObject {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public String toString() {
+        return getTailNumber();
+    }
 }

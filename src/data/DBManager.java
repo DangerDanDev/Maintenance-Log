@@ -23,7 +23,7 @@ public class DBManager {
         return conn;
     }
 
-    public static void initConnection() throws SQLException {
+    private static void initConnection() throws SQLException {
         SQLiteConfig config = new SQLiteConfig();
         config.enforceForeignKeys(true);
 
