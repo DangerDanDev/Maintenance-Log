@@ -4,6 +4,7 @@ import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.ComboBoxStatusTableListener;
 import data.DBManager;
+import data.DatabaseObject;
 import data.tables.*;
 import model.Aircraft;
 import model.Discrepancy;
@@ -25,12 +26,10 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JTextArea tfPartsOnOrder;
     private JTextField tfDiscoveredBy;
     private JComboBox cbStatus;
-    private JPanel discrepancyDetailsPanel;
     private JTextField tfDateCreated;
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
-
-    private LogEntryTableListener logEntryTableListener = new LogEntryTableListener();
+    private JPanel discrepancyDetailsPanel;
 
     /**
      * A utility class that listens for new and deleted statuses and updates
@@ -49,8 +48,6 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(getOwner(), "There was an error connecting to the database, cannot load critical info.");
         }
-
-        LogEntryTable.getInstance().addListener(logEntryTableListener);
 
         tfTurnover.addKeyListener(getItemEditListener());
         tfDiscoveredBy.addKeyListener(getItemEditListener());
@@ -169,17 +166,34 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     }
 
     private final NewLogEntryAction newLogEntryAction = new NewLogEntryAction();
+
+    /**
+     * Helper class for adding a new LogEntry
+     */
     private class NewLogEntryAction extends AbstractAction {
 
         public NewLogEntryAction() {
             super("New Log Entry");
 
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            createNewLogEntry();
+
+            //if the item has an invalid ID, it is not yet in the database
+            //and we cannot save a log entry to it
+            if(getItem().getId() != DatabaseObject.INVALID_ID)
+                createNewLogEntry();
+
+            //if we need to prompt the user to save, prompt them
+            else {
+                String options[] = { "Ok", };
+
+                JOptionPane.showOptionDialog(getOwner(), "You must save the discrepancy before adding a log entry to it.",
+                        "Save required!", 0, 0, null, options, 0);
+            }
         }
 
         private void createNewLogEntry() {
@@ -197,39 +211,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     public void unsubscribeFromTableUpdates() {
         super.unsubscribeFromTableUpdates();
 
-        LogEntryTable.getInstance().removeListener(logEntryTableListener);
         cbStatusTableListener.unsubscribe();
-    }
-
-    public class LogEntryTableListener implements Table.TableListener<LogEntry> {
-        @Override
-        public void onItemAdded(LogEntry addedItem, long transactionId) {
-
-            //We only respond to log entries that are added to the table if they have my discrepancy
-            //as their parent discrepancy
-            if(addedItem.getParentDiscrepancy().equals(getItem()) && transactionId != getLastTransactionId()) {
-
-                //if my owner is an instanceof EditorDialog, get a reference to that
-                //and add the log entry to it
-                if(getOwner() instanceof EditorDialog) {
-                    //The code to accomplish this section has been moved into DiscrepancyEditorDialog
-
-                    //EditorDialog dialog = (EditorDialog) getOwner();
-
-                    //dialog.addEditorPanel(new LogEntryEditor(addedItem, getOwner(), getEditorPanelHost(), Mode.VIEW_ONLY), BorderLayout.CENTER);
-                }
-            }
-        }
-
-        @Override
-        public void onItemUpdated(LogEntry editedItem, long transactionId) {
-
-        }
-
-        @Override
-        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
-
-        }
     }
 
     public static final String TITLE = "Discrepancy Editor";
