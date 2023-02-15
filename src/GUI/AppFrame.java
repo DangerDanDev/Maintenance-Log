@@ -14,12 +14,15 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class AppFrame extends JFrame {
+public class AppFrame extends JFrame implements Table.TableListener<Discrepancy> {
 
     private JPanel contentPane;
     private JTabbedPane tabbedPane1;
     private JPanel notesPanel;
+
+    private HashMap<Discrepancy, DiscrepancySnippet> discrepancySnippets = new HashMap<>();
 
     public AppFrame() throws SQLException {
         super("Hawk Logbook");
@@ -59,12 +62,6 @@ public class AppFrame extends JFrame {
 
         try {
 
-            /*ArrayList<EditorPanel<Status>> statusEditorPanels = new ArrayList<>();
-            for(Status s : StatusTable.getInstance().getAllItems())
-                statusEditorPanels.add(new StatusEditorPanel(getOwner(), s));
-
-            new EditorDialog<Status>(this,"Status Editor", statusEditorPanels).setVisible(true);*/
-
             EditorDialog.showStatusEditor(this);
 
         } catch (SQLException ex) {
@@ -91,11 +88,18 @@ public class AppFrame extends JFrame {
      */
     private void addDiscrepancy(Discrepancy d)  {
         try {
-            notesPanel.add(new DiscrepancySnippet(this, d).getContentPane());
+            DiscrepancySnippet snippet = new DiscrepancySnippet(this, d);
+
+            discrepancySnippets.put(d, snippet);
+            notesPanel.add(discrepancySnippets.get(d).getContentPane());
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
             System.err.println(ex.getMessage());
         }
+    }
+
+    private void removeDiscrepancy(Discrepancy d) {
+        notesPanel.remove(discrepancySnippets.get(d).getContentPane());
     }
 
     private void createNewDiscrepancy() {
@@ -119,7 +123,25 @@ public class AppFrame extends JFrame {
             edit.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
             newDiscrepancy.setAccelerator(KeyStroke.getKeyStroke("control N"));
         }
+    }
+
+    /**
+     * Called when a discrepancy is added to the table
+     * @param addedItem
+     * @param transactionId
+     */
+    @Override
+    public void onItemAdded(Discrepancy addedItem, long transactionId) {
+        addDiscrepancy(addedItem);
+    }
+
+    @Override
+    public void onItemUpdated(Discrepancy editedItem, long transactionId) {
 
     }
 
+    @Override
+    public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
+        removeDiscrepancy(deletedItem);
+    }
 }
