@@ -59,7 +59,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
 
         initBorderLayout();
-        initSouthPanel();
+        //initSouthPanel();
         new MenuManager().initJMenuBar();
 
         setContentPane(borderLayout);
@@ -265,11 +265,17 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
             switch (result) {
                 case SAVE_AND_CLOSE:
                     saveAll();
+                    unsubscribeFromTableUpdates();
                     super.dispose();
                     break;
 
                 case CLOSE_WITHOUT_SAVING:
                     unsubscribeFromTableUpdates();
+
+                    //all of the items that were marked as unsaved should now be fixed
+                    for(EditorPanel<T> editorPanel : editorPanels)
+                        editorPanel.getItem().setSaved(true);
+
                     super.dispose();
                     break;
 
