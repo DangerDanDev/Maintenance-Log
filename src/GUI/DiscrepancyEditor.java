@@ -83,6 +83,25 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         return contentPane;
     }
 
+
+    @Override
+    public boolean isDataValid() {
+        boolean validData = true;
+        String errorText = "";
+        String errorTitle = "";
+
+        if(tfNarrative.getText().length() == 0) {
+            errorText += "You must give the discrepancy a valid narrative, 1 character minimum.";
+            errorTitle += "Narrative Required";
+            validData = false;
+        }
+
+        if(!validData)
+            JOptionPane.showMessageDialog(getOwner(), errorText, errorTitle, JOptionPane.ERROR_MESSAGE);
+
+        return validData;
+    }
+
     /**
      * Pushes the user's changes to the discrepancy object
      */

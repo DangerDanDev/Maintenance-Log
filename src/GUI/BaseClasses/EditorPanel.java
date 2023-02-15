@@ -63,6 +63,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      */
     public abstract void pushChanges();
 
+    /**
+     * Checks all the data the user has inputted before allowing the item to save
+     * @return true if input data is valid, false if otherwise
+     */
+    public boolean isDataValid() {
+        return true;
+    }
+
     public void unsubscribeFromTableUpdates() {
         getTable().removeListener(this);
     }
@@ -96,28 +104,34 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
 
         lastTransactionId = Table.getTransactionId();
 
-        //push the user's changes to the discrepancy object
-        pushChanges();
+        if(isDataValid()) {
+            //push the user's changes to the discrepancy object
+            pushChanges();
 
-        try {
-            //if it's a new object we want to insert it into the database first
-            //if it's not a new item, update it
-            if(getItem().getId() == DatabaseObject.INVALID_ID)
-                getTable().addItem(getItem());
-            else
-                getTable().updateItem(getItem());
+            try {
+                //if it's a new object we want to insert it into the database first
+                //if it's not a new item, update it
+                if (getItem().getId() == DatabaseObject.INVALID_ID)
+                    getTable().addItem(getItem());
+                else
+                    getTable().updateItem(getItem());
 
-            onSaveSucceeded();
+                onSaveSucceeded();
 
-            //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved
-            if(getEditorPanelHost() != null)
-                getEditorPanelHost().onItemSaved(getItem());
+                //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved
+                if (getEditorPanelHost() != null)
+                    getEditorPanelHost().onItemSaved(getItem());
 
-            return true;
-        } catch (SQLException ex) {
-            onSaveFailed();
-            return false;
+                return true;
+            } catch (SQLException ex) {
+                onSaveFailed();
+                return false;
+            }
+
         }
+        //if we get this far, our data was invalid so we cannot save
+        else
+            return false;
     }
 
     /**

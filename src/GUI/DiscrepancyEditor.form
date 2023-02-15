@@ -43,7 +43,9 @@
               </grid>
             </constraints>
             <properties>
+              <lineWrap value="true"/>
               <text value=""/>
+              <wrapStyleWord value="true"/>
             </properties>
           </component>
           <component id="d8e93" class="javax.swing.JTextArea" binding="tfTurnover">
@@ -52,7 +54,10 @@
                 <preferred-size width="166" height="50"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <lineWrap value="true"/>
+              <wrapStyleWord value="true"/>
+            </properties>
           </component>
           <component id="ed141" class="javax.swing.JLabel">
             <constraints>
@@ -70,7 +75,10 @@
                 <preferred-size width="166" height="50"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <lineWrap value="true"/>
+              <wrapStyleWord value="true"/>
+            </properties>
           </component>
           <component id="4669d" class="javax.swing.JLabel">
             <constraints>
