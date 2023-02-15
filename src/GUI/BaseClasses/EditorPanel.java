@@ -218,7 +218,9 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     private class ItemEditListener implements KeyListener, ItemListener, ActionListener {
         @Override
         public void keyTyped(KeyEvent e) {
-            onItemEdited();
+
+            if(!e.isControlDown())
+                onItemEdited();
         }
 
         @Override
