@@ -10,6 +10,7 @@ import data.tables.Table;
 import model.Discrepancy;
 import model.LogEntry;
 import model.Status;
+import model.actions.NewLogEntryAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         setItem(disc);
 
         DiscrepancyTable.getInstance().addListener(discrepancyTableListener);
+
+        MenuManager menuManager = new MenuManager();
 
         tfNarrative.addMouseListener(doubleClickListener);
         tfPartsOnOrder.addMouseListener(doubleClickListener);
@@ -180,8 +183,53 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     }
 
     private class MenuManager {
+
+        public final PopupMenuListener popupMenuListener = new PopupMenuListener();
+
         JPopupMenu popupMenu = new JPopupMenu();
+
+        public MenuManager() {
+            popupMenu.add(new NewLogEntryAction(getOwner(), getItem(), getEditorPanelHost()));
+
+            tfNarrative.addMouseListener(popupMenuListener);
+        }
+
+        /**
+         * Exists to open up the popupmenu when a control is right clicked
+         */
+        private class PopupMenuListener implements  MouseListener {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if(e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if(e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        }
     }
+
+
 
     private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
 
