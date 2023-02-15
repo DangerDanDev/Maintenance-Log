@@ -1,8 +1,11 @@
 package data.tables;
 
+import data.DBManager;
 import data.QueryIndexer;
 import model.Aircraft;
 
+import javax.swing.*;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,5 +44,33 @@ public class AircraftTable extends Table<Aircraft> {
 
         statement.setString(indexer.indexOf(COL_TAIL_NUM), item.getTailNumber());
         statement.setBoolean(indexer.indexOf(COL_ENABLED), item.isEnabled());
+    }
+
+    public static void populateComboBox(JComboBox cb) throws SQLException {
+        cb.removeAllItems();
+
+        for(Aircraft aircraft : getInstance().getAllItems()) {
+            cb.addItem(aircraft);
+        }
+    }
+
+    public static void main(String[] args) throws SQLException {
+        try (Connection connection = DBManager.getConnection()) {
+
+            DBManager.initialize();
+
+            Aircraft a2036 = new Aircraft();
+            a2036.setTailNumber("A2036");
+
+            Aircraft a2039 = new Aircraft();
+            a2039.setTailNumber("A2039");
+
+            AircraftTable.getInstance().addItem(a2036);
+            AircraftTable.getInstance().addItem(a2039);
+
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            throw ex;
+        }
     }
 }
