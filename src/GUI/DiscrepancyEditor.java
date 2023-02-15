@@ -11,6 +11,7 @@ import model.Aircraft;
 import model.Discrepancy;
 import model.LogEntry;
 import model.Status;
+import model.actions.NewLogEntryAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -176,7 +177,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
 
         public void initMenu(JMenuBar menuBar) {
 
-            menu.add(new NewLogEntryAction());
+            menu.add(new NewLogEntryAction(getOwner(), getItem(), getEditorPanelHost()));
 
             scheduleMenu.add(new ScheduleStatusChangeAction());
             menu.add(scheduleMenu);
@@ -199,46 +200,6 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         @Override
         public void actionPerformed(ActionEvent e) {
             //TODO: Implement
-        }
-    }
-
-    /**
-     * Helper class for adding a new LogEntry
-     */
-    private class NewLogEntryAction extends AbstractAction {
-
-        public NewLogEntryAction() {
-            super("New Log Entry");
-
-            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            //if the item has an invalid ID, it is not yet in the database
-            //and we cannot save a log entry to it
-            if(getItem().getId() != DatabaseObject.INVALID_ID)
-                createNewLogEntry();
-
-            //if we need to prompt the user to save, prompt them
-            else {
-                String options[] = { "Ok", };
-
-                JOptionPane.showOptionDialog(getOwner(), "You must save the discrepancy before adding a log entry to it.",
-                        "Save required!", 0, 0, null, options, 0);
-            }
-        }
-
-        private void createNewLogEntry() {
-            LogEntry logEntry = new LogEntry(getItem(), "", "");
-            LogEntryEditor editor = new LogEntryEditor(logEntry, getOwner(), getEditorPanelHost(), Mode.EDIT);
-
-            EditorDialog<LogEntry> dialog = new EditorDialog(getOwner(), "New Log Entry");
-            dialog.addEditorPanel(editor, BorderLayout.CENTER);
-            dialog.setSize(800,600);
-            dialog.setVisible(true);
         }
     }
 

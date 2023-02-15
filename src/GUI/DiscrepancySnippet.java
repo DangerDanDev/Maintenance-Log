@@ -179,6 +179,10 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         tfNarrative.setBackground(getItem().getStatus().getColor());
     }
 
+    private class MenuManager {
+        JPopupMenu popupMenu = new JPopupMenu();
+    }
+
     private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
 
     public class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
