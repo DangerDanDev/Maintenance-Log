@@ -193,7 +193,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         public ScheduleStatusChangeAction() {
             super("Status Change");
 
-            setEnabled(false); //functionality not yet implemented
+            setEnabled(false); //TODO: functionality not yet implemented
         }
 
         @Override
