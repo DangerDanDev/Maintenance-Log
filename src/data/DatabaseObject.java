@@ -30,9 +30,14 @@ public class DatabaseObject {
     private Instant dateLastEdited = Instant.from(dateCreated);
 
     /**
-     *
+     * Defaults to true so that brand new items aren't marked as unsaved which will force
+     * the "you have unsaved data" dialog to pop up if you try to create a new (for example)
+     * LogEntry but exit out without doing any editing. Defaulting this variable to true
+     * keeps that from happening until the user actively edits something.
+     * TODO: should eventually convert this into an "editedSinceSave" flag since that will make
+     * TODO: much more sense from a readability standpoint
      */
-    private boolean saved = false;
+    private boolean saved = true;
 
     public DatabaseObject() {}
 

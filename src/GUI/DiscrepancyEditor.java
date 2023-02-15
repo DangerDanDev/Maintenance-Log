@@ -56,8 +56,8 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfNarrative.addKeyListener(getItemEditListener());
         tfPartsOnOrder.addKeyListener(getItemEditListener());
         cbStatus.addItemListener(getItemEditListener());
-        cbTailNumber.addItemListener(getItemEditListener());
         cbStatus.addItemListener(e -> cbStatus.setBackground(((Status)cbStatus.getSelectedItem()).getColor()));
+        cbTailNumber.addItemListener(getItemEditListener());
         bAddLogEntry.addActionListener(e -> createNewLogEntry());
     }
 
@@ -96,6 +96,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         getItem().setDiscoveredBy(tfDiscoveredBy.getText());
         getItem().setPartsOnOrder(tfPartsOnOrder.getText());
         getItem().setStatus((Status)cbStatus.getSelectedItem());
+        getItem().setAircraft((Aircraft)cbTailNumber.getSelectedItem());
     }
 
     /**
@@ -109,11 +110,21 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
         tfDiscoveredBy.setText(getItem().getDiscoveredBy());
         tfPartsOnOrder.setText(getItem().getPartsOnOrder());
 
+        //default to the first status in the combo box if
+        //the object doesn't have an existing status
         if(getItem().getStatus() == null)
             getItem().setStatus((Status)cbStatus.getItemAt(0));
+        else {
+            getItem().getStatus().selectInComboBox(cbStatus);
+            cbStatus.setBackground(getItem().getStatus().getColor());
+        }
 
-        getItem().getStatus().selectInComboBox(cbStatus);
-        cbStatus.setBackground(getItem().getStatus().getColor());
+        //default to the first aircraft in the combo box if the discrepancy
+        //doesn't have a parent aircraft yet
+        if(getItem().getAircraft() == null)
+            getItem().setAircraft((Aircraft)cbTailNumber.getItemAt(0));
+        else
+            getItem().getAircraft().selectInComboBox(cbTailNumber);
 
         tfDateCreated.setText(getItem().getDateCreated().toString());
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());

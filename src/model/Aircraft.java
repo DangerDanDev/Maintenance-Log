@@ -2,6 +2,7 @@ package model;
 
 import data.DatabaseObject;
 
+import javax.swing.*;
 import java.time.Instant;
 
 public class Aircraft extends DatabaseObject {

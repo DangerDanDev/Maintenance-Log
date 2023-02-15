@@ -1,6 +1,7 @@
 package data.tables;
 
 import data.QueryIndexer;
+import model.Aircraft;
 import model.Discrepancy;
 
 import java.sql.PreparedStatement;
@@ -15,6 +16,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     public final Column COL_DISC_BY;
     public final Column COL_PARTS_ON_ORDER;
     public final Column COL_STATUS_ID;
+    public final Column COL_AIRCRAFT_ID;
 
     private static DiscrepancyTable instance = new DiscrepancyTable();
     public static DiscrepancyTable getInstance() { return instance; }
@@ -36,6 +38,9 @@ public class DiscrepancyTable extends Table<Discrepancy> {
 
         COL_STATUS_ID = new Column(this,"status_id", INTEGER);
         addColumn(COL_STATUS_ID);
+
+        COL_AIRCRAFT_ID = new Column(this, "aircraft_id", INTEGER, References(AircraftTable.getInstance().COL_ID));
+        addColumn(COL_AIRCRAFT_ID);
     }
 
     @Override
@@ -45,6 +50,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         statement.setString(indexer.indexOf(COL_DISC_BY), discrepancy.getDiscoveredBy());
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
         statement.setLong(indexer.indexOf(COL_STATUS_ID), discrepancy.getStatus().getId());
+        statement.setLong(indexer.indexOf(COL_AIRCRAFT_ID), discrepancy.getAircraft().getId());
 
         super.setStatementValues(statement, indexer, discrepancy);
     }
@@ -66,10 +72,10 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         d.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
         d.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
         d.setPartsOnOrder(rs.getString(COL_PARTS_ON_ORDER.NAME));
-        d.setSaved(true); //we just pulled it from the database so it's obviously saved
 
-        //inflate the status and give it to me
+        //inflate the status+aircraft and give it to me
         d.setStatus(StatusTable.getInstance().getItemById(rs.getLong(COL_STATUS_ID.NAME)));
+        d.setAircraft(AircraftTable.getInstance().getItemById(rs.getLong(COL_AIRCRAFT_ID.NAME)));
 
         return d;
     }
