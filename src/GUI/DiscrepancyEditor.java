@@ -4,10 +4,8 @@ import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.ComboBoxStatusTableListener;
 import data.DBManager;
-import data.tables.DiscrepancyTable;
-import data.tables.LogEntryTable;
-import data.tables.StatusTable;
-import data.tables.Table;
+import data.tables.*;
+import model.Aircraft;
 import model.Discrepancy;
 import model.LogEntry;
 import model.Status;
@@ -43,8 +41,13 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     public DiscrepancyEditor(Window owner, Discrepancy discrepancy, EditorPanelHost host) {
         super(owner, DiscrepancyTable.getInstance(), host);
 
-        populateCBStatuses();
-        setItem(discrepancy);
+        try {
+            populateCBStatuses();
+            AircraftTable.populateComboBox(cbTailNumber);
+            setItem(discrepancy);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(getOwner(), "There was an error connecting to the database, cannot load critical info.");
+        }
 
         LogEntryTable.getInstance().addListener(logEntryTableListener);
 
