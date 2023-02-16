@@ -1,17 +1,12 @@
 package GUI;
 
 import GUI.BaseClasses.EditorDialog;
-import GUI.BaseClasses.EditorPanel;
-import data.DBManager;
+import GUI.actions.OpenStatusEditorAction;
 import data.tables.DiscrepancyTable;
-import data.tables.StatusTable;
 import data.tables.Table;
 import model.Discrepancy;
-import model.Status;
 
 import javax.swing.*;
-import java.awt.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,17 +51,6 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
         setVisible(true);
     }
 
-    private void showStatusEditor()  {
-
-        try {
-
-            EditorDialog.showStatusEditor(this);
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "There was an error trying to open the status editor.");
-        }
-    }
-
     /**
      * Loads all the relevant discrepancies and populates the NotesPanel with them
      * @throws SQLException
@@ -109,16 +93,16 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
         JMenu file = new JMenu("File");
 
-        JMenu edit = new JMenu("Edit");
+        JMenu editMenu = new JMenu("Edit");
         JMenuItem editStatuses = new JMenuItem("Edit Statuses");
         JMenuItem newDiscrepancy = new JMenuItem("New Discrepancy");
 
         public MenuManager() {
             menuBar.add(file);
 
-            menuBar.add(edit);
-            edit.add(editStatuses).addActionListener(event -> showStatusEditor());
-            edit.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
+            menuBar.add(editMenu);
+            editMenu.add(new OpenStatusEditorAction(AppFrame.this));
+            editMenu.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
             newDiscrepancy.setAccelerator(KeyStroke.getKeyStroke("control N"));
         }
     }

@@ -393,26 +393,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
     }
 
     public static void showStatusEditor(Window owner) throws SQLException {
-        EditorDialog<Status> dialog = new EditorDialog<Status>(owner, "Status Editor");
 
-        for(Status status : StatusTable.getInstance().getAllItems())
-            dialog.addEditorPanel(new StatusEditorPanel(owner, status, dialog));
-
-        JButton newStatusButton = new JButton("New Status");
-        newStatusButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Status status = new Status();
-                status.setTitle("new_status");
-
-                dialog.addEditorPanel(new StatusEditorPanel(owner, status, dialog));
-            }
-        });
-        dialog.addComponent(newStatusButton, BorderLayout.NORTH);
-
-
-        dialog.pack();
-        dialog.setVisible(true);
     }
 
     public static void main(String[] args) {

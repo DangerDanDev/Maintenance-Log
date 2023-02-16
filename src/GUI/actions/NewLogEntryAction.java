@@ -15,18 +15,14 @@ import java.awt.event.KeyEvent;
 /**
  * Helper class for adding a new LogEntry
  */
-public class NewLogEntryAction extends AbstractAction {
+public class NewLogEntryAction extends BaseAction {
 
-    private final Window OWNER;
-    private final Discrepancy DISCREPANCY;
-    private final EditorPanel.EditorPanelHost EDITOR_PANEL_HOST;
+    public final Discrepancy DISCREPANCY;
 
     public NewLogEntryAction(Window owner, Discrepancy discrepancy, EditorPanel.EditorPanelHost editorPanelHost) {
-        super("New Log Entry");
+        super(owner, editorPanelHost,"New Log Entry");
 
-        this.OWNER = owner;
-        this.DISCREPANCY = discrepancy;
-        this.EDITOR_PANEL_HOST = editorPanelHost;
+        DISCREPANCY = discrepancy;
 
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
     }
