@@ -1,5 +1,6 @@
 package data.tables;
 
+import data.DBManager;
 import data.QueryIndexer;
 import model.Aircraft;
 import model.Discrepancy;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class DiscrepancyTable extends Table<Discrepancy> {
 
@@ -78,5 +80,30 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         d.setAircraft(AircraftTable.getInstance().getItemById(rs.getLong(COL_AIRCRAFT_ID.NAME)));
 
         return d;
+    }
+
+    public ArrayList<Discrepancy> getDiscrepanciesForNotes(Aircraft aircraft) throws SQLException{
+        final String query = "SELECT * FROM " + NAME +
+                INNER_JOIN + StatusTable.getInstance().NAME + ON + COL_STATUS_ID + "=" + StatusTable.getInstance().COL_ID +
+                WHERE + StatusTable.getInstance().COL_SHOW_ON_NOTES + "=" + TRUE;
+
+        System.out.println("SQL for notes discrepancies: " + query);
+
+        ArrayList<Discrepancy> discrepancies = new ArrayList<>();
+
+        try(PreparedStatement ps = DBManager.getConnection().prepareStatement(query)) {
+            try(ResultSet rs = ps.executeQuery()) {
+
+                while(rs.next())
+                    discrepancies.add(getItemFromResultSet(rs));
+
+            }catch (SQLException ex) {
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            throw ex;
+        }
+
+        return discrepancies;
     }
 }

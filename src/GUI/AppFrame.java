@@ -2,6 +2,7 @@ package GUI;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.actions.OpenStatusEditorAction;
+import data.tables.AircraftTable;
 import data.tables.DiscrepancyTable;
 import data.tables.Table;
 import model.Discrepancy;
@@ -56,7 +57,8 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
      * @throws SQLException
      */
     private void loadNotes() throws SQLException {
-        ArrayList<Discrepancy> discrepancies = DiscrepancyTable.getInstance().getAllItems();
+        ArrayList<Discrepancy> discrepancies = //DiscrepancyTable.getInstance().getAllItems();
+                DiscrepancyTable.getInstance().getDiscrepanciesForNotes(AircraftTable.getInstance().getAllItems().get(1));
 
         for(Discrepancy d : discrepancies) {
             addDiscrepancy(d);

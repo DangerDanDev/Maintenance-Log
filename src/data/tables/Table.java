@@ -25,6 +25,9 @@ public abstract class Table<T extends DatabaseObject> {
     public static final int TRUE = 1;
     public static final int FALSE = 0;
 
+    public static final String INNER_JOIN = " INNER JOIN ";
+    public static final String ON = " ON ";
+
     /**
      * A starter number for transaction trackers that will never match the current transaction ID
      */
