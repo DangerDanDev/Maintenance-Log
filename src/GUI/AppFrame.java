@@ -119,7 +119,7 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
             addDiscrepancy(editedItem);
 
         //now if we need to remove an item due to a status change
-        if(!editedItem.getStatus().isSaved())
+        if(!editedItem.getStatus().isShowOnNotes())
             removeDiscrepancy(editedItem);
     }
 
