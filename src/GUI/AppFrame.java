@@ -2,6 +2,7 @@ package GUI;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.actions.OpenStatusEditorAction;
+import GUI.actions.PrintAction;
 import data.tables.AircraftTable;
 import data.tables.DiscrepancyTable;
 import data.tables.Table;
@@ -84,19 +85,21 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
     private class MenuManager {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu file = new JMenu("File");
+        JMenu fileMenu = new JMenu("File");
 
         JMenu editMenu = new JMenu("Edit");
         JMenuItem editStatuses = new JMenuItem("Edit Statuses");
         JMenuItem newDiscrepancy = new JMenuItem("New Discrepancy");
 
         public MenuManager() {
-            menuBar.add(file);
+            menuBar.add(fileMenu);
 
             menuBar.add(editMenu);
             editMenu.add(new OpenStatusEditorAction(AppFrame.this));
             editMenu.add(newDiscrepancy).addActionListener(event ->createNewDiscrepancy());
             newDiscrepancy.setAccelerator(KeyStroke.getKeyStroke("control N"));
+
+            fileMenu.add(new PrintAction(AppFrame.this, null, notesPanel));
         }
     }
 
