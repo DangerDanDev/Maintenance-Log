@@ -10,13 +10,12 @@ import data.tables.Table;
 import model.Discrepancy;
 import model.LogEntry;
 import model.Status;
-import model.actions.NewLogEntryAction;
+import GUI.actions.NewLogEntryAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DiscrepancySnippet extends EditorPanel<Discrepancy> {

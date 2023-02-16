@@ -1,4 +1,4 @@
-package model.actions;
+package GUI.actions;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;

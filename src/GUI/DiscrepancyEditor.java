@@ -1,22 +1,17 @@
 package GUI;
 
-import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
 import data.ComboBoxStatusTableListener;
 import data.DBManager;
-import data.DatabaseObject;
 import data.tables.*;
-import jdk.jshell.spi.ExecutionControl;
 import model.Aircraft;
 import model.Discrepancy;
-import model.LogEntry;
 import model.Status;
-import model.actions.NewLogEntryAction;
+import GUI.actions.NewLogEntryAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
