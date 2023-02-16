@@ -109,7 +109,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private void onStatusChanged(ItemEvent e) {
 
         if(e.getStateChange() == ItemEvent.SELECTED) {
-            cbStatus.setBackground(((Status) cbStatus.getSelectedItem()).getColor());
+
+            refreshColors(((Status)cbStatus.getSelectedItem()).getColor());
             getItem().setSaved(false);
 
             if (!save()) {
@@ -177,8 +178,12 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         tfPartsOnOrder.setText(getItem().getPartsOnOrder());
 
         getItem().getStatus().selectInComboBox(cbStatus);
-        cbStatus.setBackground(getItem().getStatus().getColor());
-        tfNarrative.setBackground(getItem().getStatus().getColor());
+        refreshColors(getItem().getStatus().getColor());
+    }
+
+    private void refreshColors(Color color) {
+        cbStatus.setBackground(color);
+        tfNarrative.setBackground(color);
     }
 
     private class MenuManager {
