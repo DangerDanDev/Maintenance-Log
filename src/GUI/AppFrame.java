@@ -27,22 +27,7 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
         loadNotes();
 
-        DiscrepancyTable.getInstance().addListener(new Table.TableListener<Discrepancy>() {
-            @Override
-            public void onItemAdded(Discrepancy addedItem, long transactionId) {
-                addDiscrepancy(addedItem);
-            }
-
-            @Override
-            public void onItemUpdated(Discrepancy editedItem, long transactionId) {
-
-            }
-
-            @Override
-            public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
-
-            }
-        });
+        DiscrepancyTable.getInstance().addListener(this);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
@@ -76,6 +61,9 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
             discrepancySnippets.put(d, snippet);
             notesPanel.add(discrepancySnippets.get(d).getContentPane());
+
+            revalidate();
+            repaint();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
             System.err.println(ex.getMessage());
@@ -84,6 +72,9 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
     private void removeDiscrepancy(Discrepancy d) {
         notesPanel.remove(discrepancySnippets.get(d).getContentPane());
+
+        revalidate();
+        repaint();
     }
 
     private void createNewDiscrepancy() {
@@ -116,12 +107,20 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
      */
     @Override
     public void onItemAdded(Discrepancy addedItem, long transactionId) {
-        addDiscrepancy(addedItem);
+        if(addedItem.getStatus().isShowOnNotes())
+            addDiscrepancy(addedItem);
     }
 
     @Override
     public void onItemUpdated(Discrepancy editedItem, long transactionId) {
+        //if the item should's status has changed such that it now belongs on the notes
+        //but is not already shown
+        if(editedItem.getStatus().isShowOnNotes() && !discrepancySnippets.containsKey(editedItem))
+            addDiscrepancy(editedItem);
 
+        //now if we need to remove an item due to a status change
+        if(!editedItem.getStatus().isSaved())
+            removeDiscrepancy(editedItem);
     }
 
     @Override
