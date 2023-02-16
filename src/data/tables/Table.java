@@ -21,6 +21,9 @@ public abstract class Table<T extends DatabaseObject> {
     public static final String NOT_NULL = " NOT NULL ";
 
     public static final String PRIMARY_KEY = " PRIMARY KEY AUTOINCREMENT ";
+    public static final String DEFAULT = " DEFAULT " ;
+    public static final int TRUE = 1;
+    public static final int FALSE = 0;
 
     /**
      * A starter number for transaction trackers that will never match the current transaction ID

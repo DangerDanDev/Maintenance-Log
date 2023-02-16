@@ -97,6 +97,9 @@ public class StatusEditorPanel extends EditorPanel<Status> {
         bColorPicker.setBackground(getItem().getColor());
         colorPlaceHolder = getItem().getColor();
 
+        cbShowOnNotes.setSelected(getItem().isShowOnNotes());
+        cbCompletesJob.setSelected(getItem().isCompletesJob());
+
         bSave.setEnabled(false);
         bUndoChanges.setEnabled(false);
     }
@@ -105,6 +108,8 @@ public class StatusEditorPanel extends EditorPanel<Status> {
     public void pushChanges() {
         getItem().setTitle(tfStatusTitle.getText());
         getItem().setColor(colorPlaceHolder);
+        getItem().setCompletesJob(cbCompletesJob.isSelected());
+        getItem().setShowOnNotes(cbShowOnNotes.isSelected());
     }
 
 

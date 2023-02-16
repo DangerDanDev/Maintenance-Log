@@ -10,6 +10,11 @@ public class Status extends DatabaseObject {
 
     private Color color = Color.WHITE;
 
+    private boolean showOnNotes = true;
+
+    private boolean completesJob = false;
+
+
     public Color getColor() {
         return color;
     }
@@ -24,6 +29,22 @@ public class Status extends DatabaseObject {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isShowOnNotes() {
+        return showOnNotes;
+    }
+
+    public void setShowOnNotes(boolean showOnNotes) {
+        this.showOnNotes = showOnNotes;
+    }
+
+    public boolean isCompletesJob() {
+        return completesJob;
+    }
+
+    public void setCompletesJob(boolean completesJob) {
+        this.completesJob = completesJob;
     }
 
     @Override

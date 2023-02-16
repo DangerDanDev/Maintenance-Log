@@ -16,6 +16,8 @@ public class StatusTable extends Table<Status> {
 
     public final Column COL_TITLE = new Column(this, "title", TEXT, NOT_NULL);
     public final Column COL_COLOR = new Column(this, "color", TEXT, NOT_NULL);
+    public final Column COL_SHOW_ON_NOTES = new Column(this, "show_on_notes", BOOL, NOT_NULL + DEFAULT + TRUE);
+    public final Column COL_COMPLETES_JOB = new Column(this, "completes_job", NOT_NULL + DEFAULT + FALSE);
 
     private static final StatusTable instance = new StatusTable();
     public static StatusTable getInstance() { return instance;}
@@ -25,6 +27,8 @@ public class StatusTable extends Table<Status> {
 
         addColumn(COL_TITLE);
         addColumn(COL_COLOR);
+        addColumn(COL_SHOW_ON_NOTES);
+        addColumn(COL_COMPLETES_JOB);
     }
 
     @Override
@@ -37,7 +41,9 @@ public class StatusTable extends Table<Status> {
         String rawColor = rs.getString(COL_COLOR.NAME);
         String rgb[] = rawColor.split(",");
         status.setColor(new Color(Integer.parseInt(rgb[0].trim()), Integer.parseInt(rgb[1].trim()), Integer.parseInt(rgb[2].trim())));
-        status.setSaved(true);
+
+        status.setShowOnNotes(rs.getBoolean(COL_SHOW_ON_NOTES.NAME));
+        status.setCompletesJob(rs.getBoolean(COL_COMPLETES_JOB.NAME));
 
         return status;
     }
@@ -50,6 +56,8 @@ public class StatusTable extends Table<Status> {
 
         statement.setString(indexer.indexOf(COL_TITLE), item.getTitle());
         statement.setString(indexer.indexOf(COL_COLOR), rgb);
+        statement.setBoolean(indexer.indexOf(COL_SHOW_ON_NOTES), item.isShowOnNotes());
+        statement.setBoolean(indexer.indexOf(COL_COMPLETES_JOB), item.isCompletesJob());
     }
 
     public static void main(String[] args) {
