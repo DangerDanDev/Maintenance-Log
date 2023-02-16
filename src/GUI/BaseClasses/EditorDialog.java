@@ -195,7 +195,8 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         }
 
         public void addActionToMenu(JMenu menu, Action action) {
-            menu.add(action);
+            JMenuItem menuItem = new JMenuItem(action);
+            menu.add(menuItem, 0);
         }
 
         public void addActionToFileMenu(Action action) {

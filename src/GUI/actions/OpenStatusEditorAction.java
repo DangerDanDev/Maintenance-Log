@@ -27,7 +27,8 @@ public class OpenStatusEditorAction extends BaseAction {
             for (Status status : StatusTable.getInstance().getAllItems())
                 dialog.addEditorPanel(new StatusEditorPanel(getOwner(), status, dialog));
 
-            JButton newStatusButton = new JButton("New Status");
+            dialog.getMenuManager().addActionToFileMenu(new NewStatusAction(getOwner(), getEditorPanelHost()));
+            /*JButton newStatusButton = new JButton("New Status");
             newStatusButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -37,7 +38,7 @@ public class OpenStatusEditorAction extends BaseAction {
                     dialog.addEditorPanel(new StatusEditorPanel(getOwner(), status, dialog));
                 }
             });
-            dialog.addComponent(newStatusButton, BorderLayout.NORTH);
+            dialog.addComponent(newStatusButton, BorderLayout.NORTH);*/
 
 
             dialog.pack();
