@@ -8,6 +8,7 @@ import model.Discrepancy;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     public final Column COL_PARTS_ON_ORDER;
     public final Column COL_STATUS_ID;
     public final Column COL_AIRCRAFT_ID;
+    public final Column COL_DATE_COMPLETED;
 
     private static DiscrepancyTable instance = new DiscrepancyTable();
     public static DiscrepancyTable getInstance() { return instance; }
@@ -38,6 +40,9 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         COL_PARTS_ON_ORDER = new Column(this, "parts_on_order", TEXT);
         addColumn(COL_PARTS_ON_ORDER);
 
+        COL_DATE_COMPLETED = new Column(this, "date_completed", TEXT);
+        addColumn(COL_DATE_COMPLETED);
+
         COL_STATUS_ID = new Column(this,"status_id", INTEGER);
         addColumn(COL_STATUS_ID);
 
@@ -53,6 +58,12 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         statement.setString(indexer.indexOf(COL_PARTS_ON_ORDER), discrepancy.getPartsOnOrder());
         statement.setLong(indexer.indexOf(COL_STATUS_ID), discrepancy.getStatus().getId());
         statement.setLong(indexer.indexOf(COL_AIRCRAFT_ID), discrepancy.getAircraft().getId());
+
+        //date completed may or may not be null
+        if(discrepancy.getDateCompleted() != null)
+            statement.setString(indexer.indexOf(COL_DATE_COMPLETED), discrepancy.getDateCompleted().toString());
+        else
+            statement.setString(indexer.indexOf(COL_DATE_COMPLETED), null);
 
         super.setStatementValues(statement, indexer, discrepancy);
     }
@@ -78,6 +89,15 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         //inflate the status+aircraft and give it to me
         d.setStatus(StatusTable.getInstance().getItemById(rs.getLong(COL_STATUS_ID.NAME)));
         d.setAircraft(AircraftTable.getInstance().getItemById(rs.getLong(COL_AIRCRAFT_ID.NAME)));
+
+        String dateStr = rs.getString(COL_DATE_COMPLETED.NAME);
+        try {
+            d.setDateCompleted(Instant.parse(dateStr));
+        }catch ( DateTimeException ex) {
+            d.setDateCompleted(null);
+        } catch (NullPointerException ex) {
+            d.setDateCompleted(null);
+        }
 
         return d;
     }

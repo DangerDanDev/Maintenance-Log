@@ -28,6 +28,8 @@ public abstract class Table<T extends DatabaseObject> {
     public static final String INNER_JOIN = " INNER JOIN ";
     public static final String ON = " ON ";
 
+    public static final String NO_DATE = "NO_DATE";
+
     /**
      * A starter number for transaction trackers that will never match the current transaction ID
      */

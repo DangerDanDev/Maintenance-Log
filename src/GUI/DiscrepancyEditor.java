@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
@@ -27,6 +28,7 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
     private JComboBox cbTailNumber;
     private JTextField tfDateLastEdited;
     private JPanel discrepancyDetailsPanel;
+    private JTextField tfDateCompleted;
 
     /**
      * A utility class that listens for new and deleted statuses and updates
@@ -141,6 +143,13 @@ public class DiscrepancyEditor extends EditorPanel<Discrepancy> {
 
         tfDateCreated.setText(getItem().getDateCreated().toString());
         tfDateLastEdited.setText(getItem().getDateLastEdited().toString());
+
+        //date completed is "" if the job is not completed, or
+        //set to proper value if it is completed
+        if(getItem().getDateCompleted() != null)
+            tfDateCompleted.setText(getItem().getDateCompleted().toString());
+        else
+            tfDateCompleted.setText("");
     }
 
 

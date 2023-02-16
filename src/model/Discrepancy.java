@@ -18,6 +18,7 @@ public class Discrepancy extends DatabaseObject {
 
     private Aircraft aircraft;
 
+    private Instant dateCompleted = null;
 
     public Discrepancy() {
         super();
@@ -74,10 +75,27 @@ public class Discrepancy extends DatabaseObject {
 
     public void setStatus(Status status) {
         this.status = status;
+
+        //if the status completes the job and the job has not already been completed,
+        //we give it a brand new date completed
+        if(status.isCompletesJob() && getDateCompleted() == null)
+            setDateCompleted(Instant.now());
+
+            //if the item has been marked noncomplete, delete it's date completed
+        else if(!getStatus().isCompletesJob())
+            setDateCompleted(null);
     }
 
     public Aircraft getAircraft() {
         return aircraft;
+    }
+
+    public Instant getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(Instant dateCompleted) {
+        this.dateCompleted = dateCompleted;
     }
 
     public void setAircraft(Aircraft aircraft) {
