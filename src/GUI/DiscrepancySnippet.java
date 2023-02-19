@@ -26,6 +26,8 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private JPanel logEntriesPanel;
     private JPanel contentPane;
 
+    private LogEntryTable.QueryType queryType = LogEntryTable.QueryType.ALL_ENTRIES;
+
     private HashMap<LogEntry, LogEntrySnippet> logEntrySnippets = new HashMap<>();
 
     private ComboBoxStatusTableListener cbStatusTableListener = new ComboBoxStatusTableListener(cbStatus);
@@ -186,6 +188,14 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         tfNarrative.setBackground(color);
     }
 
+    public LogEntryTable.QueryType getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(LogEntryTable.QueryType queryType) {
+        this.queryType = queryType;
+    }
+
     private class MenuManager {
 
         public final PopupMenuListener popupMenuListener = new PopupMenuListener();
@@ -269,13 +279,38 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
         @Override
         public void onItemAdded(LogEntry addedItem) {
-            if(addedItem.getParentDiscrepancy().getId() == getItem().getId())
-                addLogEntry(addedItem);
+
+            //if we're showing all entries
+            if(queryType == LogEntryTable.QueryType.ALL_ENTRIES ||
+                    //or if I'm showing only On Notes entries but the log entry is to be shown on the notes
+                    (queryType == LogEntryTable.QueryType.ON_NOTES_ONLY && addedItem.isShowOnNotes())) {
+
+                //if the newly added LogEntry is against my discrepancy, add it to my list!
+                if (addedItem.getParentDiscrepancy().getId() == getItem().getId())
+                    addLogEntry(addedItem);
+
+            }
         }
 
         @Override
         public void onItemUpdated(LogEntry editedItem) {
 
+            //we don't care about removing/adding log entries when their Show On Notes
+            //checkbox is toggled unless we're in notes mode only
+            if(queryType == LogEntryTable.QueryType.ON_NOTES_ONLY) {
+
+                if (editedItem.getParentDiscrepancy().equals(getItem())) {
+
+                    //if the item is supposed to be shown on the notes but I am not
+                    //currently displaying it, add it!
+                    if (editedItem.isShowOnNotes() && !logEntrySnippets.containsKey(editedItem))
+                        addLogEntry(editedItem);
+
+                        //if the log entry was hidden from notes, make it go away
+                    else if (!editedItem.isShowOnNotes())
+                        removeLogEntry(editedItem);
+                }
+            }
         }
 
         @Override

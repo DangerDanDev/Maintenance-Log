@@ -5,6 +5,7 @@ import GUI.actions.OpenStatusEditorAction;
 import GUI.actions.PrintAction;
 import data.tables.AircraftTable;
 import data.tables.DiscrepancyTable;
+import data.tables.LogEntryTable;
 import data.tables.Table;
 import model.Discrepancy;
 
@@ -59,6 +60,7 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
     private void addDiscrepancy(Discrepancy d)  {
         try {
             DiscrepancySnippet snippet = new DiscrepancySnippet(this, d);
+            snippet.setQueryType(LogEntryTable.QueryType.ON_NOTES_ONLY);
 
             discrepancySnippets.put(d, snippet);
             notesPanel.add(discrepancySnippets.get(d).getContentPane());
@@ -106,7 +108,6 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
     /**
      * Called when a discrepancy is added to the table
      * @param addedItem
-     * @param transactionId
      */
     @Override
     public void onItemAdded(Discrepancy addedItem) {
