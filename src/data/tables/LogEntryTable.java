@@ -17,9 +17,15 @@ public class LogEntryTable extends Table<LogEntry> {
     private static final LogEntryTable instance = new LogEntryTable();
     public static final LogEntryTable getInstance() { return instance; }
 
+    public enum QueryType {
+        ALL_ENTRIES,
+        ON_NOTES_ONLY,
+    }
+
     public final Column COL_NARRATIVE;
     public final Column COL_CREW;
     public final Column COL_PARENT_DISCREPANCY;
+    public final Column COL_SHOW_ON_NOTES = new Column(this, "show_on_notes", BOOL, "");
 
     private LogEntryTable() {
         super("log_entries");
@@ -43,7 +49,7 @@ public class LogEntryTable extends Table<LogEntry> {
                 rs.getLong(COL_ID.NAME),
                 rs.getString(COL_NARRATIVE.NAME),
                 rs.getString(COL_CREW.NAME),
-                true //logEntry.isShowOnNotes()
+                rs.getBoolean(COL_SHOW_ON_NOTES.NAME)
         );
 
         logEntry.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
@@ -61,19 +67,30 @@ public class LogEntryTable extends Table<LogEntry> {
         statement.setString(indexer.indexOf(COL_CREW), item.getCrew());
     }
 
-    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d) {
-        return getLogEntriesAgainstDiscrepancy(d.getId());
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d, QueryType onNotesOnly) {
+        return getLogEntriesAgainstDiscrepancy(d.getId(), onNotesOnly);
     }
 
-    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId) {
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId, QueryType onNotesOnly) {
+
         ArrayList<LogEntry> logEntries = new ArrayList<>();
 
-        final String QUERY = " SELECT * FROM " + NAME +
-                WHERE + COL_PARENT_DISCREPANCY + "=?";
+        QueryIndexer idx = new QueryIndexer();
+
+        String QUERY = " SELECT * FROM " + NAME +
+                WHERE + COL_PARENT_DISCREPANCY + "=" + idx.index(COL_PARENT_DISCREPANCY);
+
+        //TOOD: if onNotesOnly, append a check to the query to only show log entries
+        //with onNotes enabled
+        if(onNotesOnly == QueryType.ON_NOTES_ONLY)
+            QUERY += AND + COL_SHOW_ON_NOTES + "=" + idx.index(COL_SHOW_ON_NOTES);
 
         try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY)) {
 
-            ps.setLong(1, discrepancyId);
+            ps.setLong(idx.indexOf(COL_PARENT_DISCREPANCY), discrepancyId);
+
+            if(onNotesOnly == QueryType.ON_NOTES_ONLY)
+                ps.setBoolean(idx.indexOf(COL_SHOW_ON_NOTES), true);
 
             try(ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

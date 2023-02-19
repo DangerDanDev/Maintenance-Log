@@ -62,7 +62,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         logEntrySnippets.clear();
 
         if(getItem() != null)
-            for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem()))
+            for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem(), LogEntryTable.QueryType.ON_NOTES_ONLY))
                 addLogEntry(entry);
 
     }

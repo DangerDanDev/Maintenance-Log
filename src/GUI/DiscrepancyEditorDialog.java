@@ -33,7 +33,7 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
     }
 
     private void populateLogEntries(Discrepancy discrepancy) {
-        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy)) {
+        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy, LogEntryTable.QueryType.ALL_ENTRIES)) {
             addLogEntry(logEntry);
         }
     }
