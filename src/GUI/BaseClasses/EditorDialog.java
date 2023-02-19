@@ -263,7 +263,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
         //check for any unsaved data
         for(EditorPanel<T> editorPanel : editorPanels) {
-            if (!editorPanel.getItem().isSaved()) {
+            if (!editorPanel.isSaved()) {
                 unsavedData = true;
             }
         }
@@ -294,7 +294,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
 
                     //all of the items that were marked as unsaved should now be fixed
                     for(EditorPanel<T> editorPanel : editorPanels)
-                        editorPanel.getItem().setSaved(true);
+                        editorPanel.setSaved(true);
 
                     super.dispose();
                     break;
@@ -327,7 +327,7 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         //only mark our title as saved if ALL of the
         //data we host is saved
         for(EditorPanel panel : editorPanels) {
-            if(!panel.getItem().isSaved())
+            if(!panel.isSaved())
                 return;
         }
 

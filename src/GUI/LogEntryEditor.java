@@ -55,7 +55,7 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
 
         refreshTimeLastEdited();
 
-        cbShowOnNotes.setSelected(getItem().isSaved());
+        cbShowOnNotes.setSelected(getItem().isShowOnNotes());
     }
 
     @Override

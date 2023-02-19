@@ -207,8 +207,6 @@ public abstract class Table<T extends DatabaseObject> {
             setUpdateQueryItemId(item, idx, ps);
             ps.executeUpdate();
 
-            //if we get here, the item was officially saved
-            item.setSaved(true);
             onItemUpdated(item);
 
         } catch (SQLException ex) {
@@ -280,8 +278,6 @@ public abstract class Table<T extends DatabaseObject> {
 
                 System.out.println("New item ID is: " + item.getId());
 
-                //if we reach here, we have successfully saved!
-                item.setSaved(true);
                 onItemAdded(item);
 
             }catch (SQLException ex) {

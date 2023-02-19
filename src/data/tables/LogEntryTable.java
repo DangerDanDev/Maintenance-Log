@@ -45,13 +45,13 @@ public class LogEntryTable extends Table<LogEntry> {
                 DiscrepancyTable.getInstance().getItemById(discrepancyId),
                 rs.getLong(COL_ID.NAME),
                 rs.getString(COL_NARRATIVE.NAME),
-                rs.getString(COL_CREW.NAME)
+                rs.getString(COL_CREW.NAME),
+                true //logEntry.isShowOnNotes()
         );
 
         logEntry.setDateCreated(Instant.parse(rs.getString(COL_DATE_CREATED.NAME)));
         logEntry.setDateLastEdited(Instant.parse(rs.getString(COL_DATE_EDITED.NAME)));
 
-        logEntry.setSaved(true);
         return logEntry;
     }
 
@@ -91,22 +91,4 @@ public class LogEntryTable extends Table<LogEntry> {
         return logEntries;
     }
 
-    public static void main(String[] args) {
-        try(Connection c = DBManager.getConnection()) {
-
-            DBManager.initialize();
-
-            LogEntry entry = new LogEntry(DiscrepancyTable.getInstance().getItemById(15), "Test log entry", "swing shifffft");
-            LogEntryTable.getInstance().addItem(entry);
-
-            entry.setNarrative("edited test log entry");
-
-            LogEntryTable.getInstance().updateItem(entry);
-
-            //for(LogEntry entry : getInstance().getLogEntriesAgainstDiscrepancy(15))
-            //    JOptionPane.showMessageDialog(null, entry.getNarrative());
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
 }

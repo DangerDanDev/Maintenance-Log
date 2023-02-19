@@ -111,7 +111,7 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         if(e.getStateChange() == ItemEvent.SELECTED) {
 
             refreshColors(((Status)cbStatus.getSelectedItem()).getColor());
-            getItem().setSaved(false);
+            setSaved(false);
 
             if (!save()) {
                 JOptionPane.showMessageDialog(null, "Save failed due to database error.");

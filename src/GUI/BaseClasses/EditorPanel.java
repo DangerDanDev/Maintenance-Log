@@ -18,6 +18,8 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         EDIT,
     }
 
+    private boolean saved;
+
     public Mode mode = Mode.VIEW_ONLY;
 
     /**
@@ -99,7 +101,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public boolean save() {
 
         //bypass saving if the user hasn't made any changes
-        if(getItem().isSaved())
+        if(isSaved())
             return true;
 
         lastTransactionId = Table.getTransactionId();
@@ -148,6 +150,8 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * remove "unsaved" markers from window titles, etc
      */
     public void onSaveSucceeded() {
+        setSaved(true);
+
         if(getEditorPanelHost() != null)
             getEditorPanelHost().onItemSaved(getItem());
     }
@@ -189,6 +193,11 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     public void setItem(T item) {
         this.item = item;
 
+        if(this.item.getId() == DatabaseObject.INVALID_ID)
+            setSaved(false);
+        else
+            setSaved(true);
+
         refreshData();
     }
 
@@ -206,6 +215,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
             this.table.addListener(this);
     }
 
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
+    }
+
     public Window getOwner() { return this.OWNER; }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +235,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * has been edited
      */
     public void onItemEdited() {
-        getItem().setSaved(false);
+        setSaved(false);
 
         if(getEditorPanelHost() != null)
             getEditorPanelHost().onItemEdited(getItem());

@@ -9,19 +9,18 @@ public class LogEntry extends DatabaseObject {
 
     private Discrepancy parentDiscrepancy = null;
 
-    public LogEntry(Discrepancy d, long id, String narrative, String crew) {
+    boolean showOnNotes = true;
+
+    public LogEntry(Discrepancy d, long id, String narrative, String crew, boolean showOnNotes) {
         setParentDiscrepancy(d);
         setNarrative(narrative);
         setCrew(crew);
+        setShowOnNotes(showOnNotes);
         setId(id);
     }
 
-    public LogEntry(Discrepancy d, String narrative, String crew) {
-        this(d, INVALID_ID, narrative, crew);
-    }
-
-    public LogEntry() {
-
+    public LogEntry(Discrepancy d) {
+        this(d, INVALID_ID, "", "", true);
     }
 
     public String getNarrative() {
@@ -46,5 +45,13 @@ public class LogEntry extends DatabaseObject {
 
     public void setParentDiscrepancy(Discrepancy parentDiscrepancy) {
         this.parentDiscrepancy = parentDiscrepancy;
+    }
+
+    public boolean isShowOnNotes() {
+        return showOnNotes;
+    }
+
+    public void setShowOnNotes(boolean showOnNotes) {
+        this.showOnNotes = showOnNotes;
     }
 }

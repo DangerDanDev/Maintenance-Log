@@ -29,16 +29,6 @@ public class DatabaseObject {
      */
     private Instant dateLastEdited = Instant.from(dateCreated);
 
-    /**
-     * Defaults to true so that brand new items aren't marked as unsaved which will force
-     * the "you have unsaved data" dialog to pop up if you try to create a new (for example)
-     * LogEntry but exit out without doing any editing. Defaulting this variable to true
-     * keeps that from happening until the user actively edits something.
-     * TODO: should eventually convert this into an "editedSinceSave" flag since that will make
-     * TODO: much more sense from a readability standpoint
-     */
-    private boolean saved = true;
-
     public DatabaseObject() {}
 
     public DatabaseObject(long id, Instant dateCreated, Instant dateLastEdited) {
@@ -71,16 +61,7 @@ public class DatabaseObject {
         this.dateLastEdited = dateLastEdited;
     }
 
-    public boolean isSaved() {
-        return saved;
-    }
 
-    public void setSaved(boolean saved) {
-        this.saved = saved;
-
-        if(saved && listener != null)
-            listener.onItemSaved();
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -93,27 +74,6 @@ public class DatabaseObject {
 
         //otherwise do the normal java checks
         return super.equals(obj);
-    }
-
-    /**
-     * Interface for an EditorDialog to be nofified when my item is saved
-     */
-    public interface ChangeListener {
-        //TODO: this seems redundant with the TableListener onItemUpdated() event
-        void onItemSaved();
-    }
-
-    /**
-     * The editor dialog listening for changes to me
-     */
-    private ChangeListener listener;
-
-    public ChangeListener getListener() {
-        return listener;
-    }
-
-    public void setListener(ChangeListener listener) {
-        this.listener = listener;
     }
 
     public void selectInComboBox(JComboBox cb) {

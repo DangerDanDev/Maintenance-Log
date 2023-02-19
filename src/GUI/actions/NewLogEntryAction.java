@@ -45,7 +45,7 @@ public class NewLogEntryAction extends BaseAction {
     }
 
     private void createNewLogEntry() {
-        LogEntry logEntry = new LogEntry(DISCREPANCY, "", "");
+        LogEntry logEntry = new LogEntry(DISCREPANCY, DatabaseObject.INVALID_ID, "new-log-entry", "", true);
         LogEntryEditor editor = new LogEntryEditor(logEntry, OWNER, EDITOR_PANEL_HOST, EditorPanel.Mode.EDIT);
 
         EditorDialog<LogEntry> dialog = new EditorDialog(OWNER, "New Log Entry");
