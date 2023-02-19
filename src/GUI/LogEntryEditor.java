@@ -80,6 +80,7 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
     @Override
     public void pushChanges() {
         getItem().setNarrative(tfNarrative.getText());
+        getItem().setShowOnNotes(cbShowOnNotes.isSelected());
     }
 
     @Override
