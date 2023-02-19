@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public abstract class EditorPanel<T extends DatabaseObject> implements Table.TableListener<T> {
 
@@ -74,20 +77,26 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         getTable().removeListener(this);
     }
 
-    /**
-     * Does nothing in superclass, but subclasses can implement it in order to see
-     * when they need to update their GUI fields.
-     */
-    public void refreshTimeLastEdited() {
-        //TODO: subclasses should just include this functionality in their refreshData() methods
-    }
-
     public void initMenu(JMenuBar menuBar) {
 
     }
 
     public void removeMenu(JMenuBar menuBar) {
 
+    }
+
+    public LocalDateTime getDateTime(Instant instant) {
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
+
+    public String getInstantToString(Instant instant) {
+        return getDateTimeToString(getDateTime(instant));
+    }
+
+    public String getDateTimeToString(LocalDateTime dateTime) {
+
+        return dateTime.getYear() + "-" + dateTime.getMonthValue() + "-" + dateTime.getDayOfMonth() + " at " +
+                dateTime.getHour() + ":" + dateTime.getMinute()+":"+ dateTime.getSecond();
     }
 
     /**
@@ -114,6 +123,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
                     getTable().updateItem(getItem(), this);
 
                 onSaveSucceeded();
+                refreshDateLastEdited();
 
                 //if I'm being hosted in a JFrame or Dialog, let it know that my item was saved
                 if (getEditorPanelHost() != null)
@@ -129,6 +139,14 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         //if we get this far, our data was invalid so we cannot save
         else
             return false;
+    }
+
+    /**
+     * Subclasses can override this to refresh when an item is successfully edited/saved to
+     * the table
+     */
+    public void refreshDateLastEdited() {
+
     }
 
     /**
@@ -167,10 +185,8 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
     @Override
     public void onItemUpdated(T editedItem) {
 
-        refreshData();
-
-        if(editedItem.equals(getItem()))
-            refreshTimeLastEdited();
+        if(editedItem.equals(this.getItem()))
+            refreshData();
     }
 
     @Override

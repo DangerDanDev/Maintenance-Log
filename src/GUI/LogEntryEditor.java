@@ -52,19 +52,16 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
         tfNarrative.setText(getItem().getNarrative());
         tfDateCreated.setText(getItem().getDateCreated().toString());
 
-
-        refreshTimeLastEdited();
+        refreshDateLastEdited();
 
         cbShowOnNotes.setSelected(getItem().isShowOnNotes());
     }
 
     @Override
-    public void refreshTimeLastEdited() {
-        LocalDateTime dateLastEdited = LocalDateTime.ofInstant(getItem().getDateLastEdited(), ZoneId.systemDefault());
-        tfDateLastEdited.setText(dateLastEdited.getYear() + "-" + dateLastEdited.getMonthValue() + "-" + dateLastEdited.getDayOfMonth() + " at " +
-                dateLastEdited.getHour() + ":" + dateLastEdited.getMinute()+":"+dateLastEdited.getSecond());
+    public void refreshDateLastEdited() {
+        LocalDateTime dateLastEdited = getDateTime(getItem().getDateLastEdited());
 
-        super.refreshTimeLastEdited();
+        tfDateLastEdited.setText(getInstantToString(getItem().getDateLastEdited()));
     }
 
     @Override
