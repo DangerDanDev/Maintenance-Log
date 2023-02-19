@@ -21,9 +21,6 @@ public class AircraftTable extends Table<Aircraft> {
 
     public AircraftTable() {
         super("aircraft");
-
-        addColumn(COL_TAIL_NUM);
-        addColumn(COL_ENABLED);
     }
 
     @Override

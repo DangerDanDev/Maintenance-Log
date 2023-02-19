@@ -24,11 +24,6 @@ public class StatusTable extends Table<Status> {
 
     public StatusTable() {
         super("status");
-
-        addColumn(COL_TITLE);
-        addColumn(COL_COLOR);
-        addColumn(COL_SHOW_ON_NOTES);
-        addColumn(COL_COMPLETES_JOB);
     }
 
     @Override

@@ -25,13 +25,10 @@ public class LogEntryTable extends Table<LogEntry> {
         super("log_entries");
 
         COL_PARENT_DISCREPANCY = new Column(this, "parent_discrepancy", INTEGER, References(DiscrepancyTable.getInstance().COL_ID));
-        addColumn(COL_PARENT_DISCREPANCY);
 
         COL_NARRATIVE = new Column(this,"narrative", TEXT);
-        addColumn(COL_NARRATIVE);
 
         COL_CREW = new Column(this,"crew", TEXT);
-        addColumn(COL_CREW);
     }
 
 

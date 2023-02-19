@@ -55,13 +55,10 @@ public abstract class Table<T extends DatabaseObject> {
         this.NAME = name;
 
         this.COL_ID = new Column(this, "id", INTEGER + PRIMARY_KEY);
-        addColumn(COL_ID);
 
         this.COL_DATE_CREATED = new Column(this, "date_created", TEXT, NOT_NULL);
-        addColumn(COL_DATE_CREATED);
 
         this.COL_DATE_EDITED = new Column(this,"date_edited", TEXT, NOT_NULL);
-        addColumn(COL_DATE_EDITED);
     }
 
     public String References(Column col) {

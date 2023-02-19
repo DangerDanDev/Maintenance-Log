@@ -29,25 +29,18 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         super("discrepancies");
 
         COL_TEXT = new Column(this, "text", TEXT);
-        addColumn(COL_TEXT);
 
         COL_TURNOVER = new Column(this, "turnover", TEXT);
-        addColumn(COL_TURNOVER);
 
         COL_DISC_BY = new Column(this, "crew", TEXT);
-        addColumn(COL_DISC_BY);
 
         COL_PARTS_ON_ORDER = new Column(this, "parts_on_order", TEXT);
-        addColumn(COL_PARTS_ON_ORDER);
 
         COL_DATE_COMPLETED = new Column(this, "date_completed", TEXT);
-        addColumn(COL_DATE_COMPLETED);
 
         COL_STATUS_ID = new Column(this,"status_id", INTEGER);
-        addColumn(COL_STATUS_ID);
 
         COL_AIRCRAFT_ID = new Column(this, "aircraft_id", INTEGER, References(AircraftTable.getInstance().COL_ID));
-        addColumn(COL_AIRCRAFT_ID);
     }
 
     @Override

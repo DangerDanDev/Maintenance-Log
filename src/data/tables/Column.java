@@ -13,6 +13,8 @@ public class Column {
         TYPE = type;
         CONSTRAINTS = constraints;
         DEFAULTS = defaults;
+
+        parent.addColumn(this);
     }
 
     public Column(Table parent, String name, String type, String constraints) {
