@@ -10,9 +10,6 @@ import java.sql.SQLException;
 
 public abstract class EditorPanel<T extends DatabaseObject> implements Table.TableListener<T> {
 
-    private long lastTransactionId = Table.INVALID_TRANSACTION_ID;
-    public long getLastTransactionId() { return lastTransactionId ;}
-
     public enum Mode {
         VIEW_ONLY,
         EDIT,
@@ -82,7 +79,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * when they need to update their GUI fields.
      */
     public void refreshTimeLastEdited() {
-
+        //TODO: subclasses should just include this functionality in their refreshData() methods
     }
 
     public void initMenu(JMenuBar menuBar) {
@@ -104,8 +101,6 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
         if(isSaved())
             return true;
 
-        lastTransactionId = Table.getTransactionId();
-
         if(isDataValid()) {
             //push the user's changes to the discrepancy object
             pushChanges();
@@ -116,7 +111,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
                 if (getItem().getId() == DatabaseObject.INVALID_ID)
                     getTable().addItem(getItem());
                 else
-                    getTable().updateItem(getItem());
+                    getTable().updateItem(getItem(), this);
 
                 onSaveSucceeded();
 
@@ -161,7 +156,7 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @param addedItem
      */
     @Override
-    public void onItemAdded(T addedItem, long transactionId) {
+    public void onItemAdded(T addedItem) {
         //do nothing, we're just an editor panel and should only edit existing items
     }
 
@@ -170,19 +165,16 @@ public abstract class EditorPanel<T extends DatabaseObject> implements Table.Tab
      * @param editedItem
      */
     @Override
-    public void onItemUpdated(T editedItem, long transactionId) {
+    public void onItemUpdated(T editedItem) {
 
-        //don't respond normally to an event that I initiated to avoid creating a feedback loop
-        if(editedItem.equals(getItem()) && transactionId != lastTransactionId)
-            refreshData();
+        refreshData();
 
-        //but DO respond by allowing subclasses to refresh their lastedited times
-        else if(editedItem.equals(getItem()))
+        if(editedItem.equals(getItem()))
             refreshTimeLastEdited();
     }
 
     @Override
-    public void onItemDeleted(T deletedItem, long transactionId) {
+    public void onItemDeleted(T deletedItem) {
         //do nothing, we're just an editor panel and should only edit existing items
     }
 

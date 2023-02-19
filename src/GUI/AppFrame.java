@@ -109,13 +109,13 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
      * @param transactionId
      */
     @Override
-    public void onItemAdded(Discrepancy addedItem, long transactionId) {
+    public void onItemAdded(Discrepancy addedItem) {
         if(addedItem.getStatus().isShowOnNotes())
             addDiscrepancy(addedItem);
     }
 
     @Override
-    public void onItemUpdated(Discrepancy editedItem, long transactionId) {
+    public void onItemUpdated(Discrepancy editedItem) {
         //if the item should's status has changed such that it now belongs on the notes
         //but is not already shown
         if(editedItem.getStatus().isShowOnNotes() && !discrepancySnippets.containsKey(editedItem))
@@ -127,7 +127,7 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
     }
 
     @Override
-    public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
+    public void onItemDeleted(Discrepancy deletedItem) {
         removeDiscrepancy(deletedItem);
     }
 }

@@ -239,18 +239,18 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
 
     public class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
         @Override
-        public void onItemAdded(Discrepancy addedItem, long transactionId) {
+        public void onItemAdded(Discrepancy addedItem) {
 
         }
 
         @Override
-        public void onItemUpdated(Discrepancy editedItem, long transactionId) {
-            if(editedItem.equals(getItem()) && transactionId != getLastTransactionId())
+        public void onItemUpdated(Discrepancy editedItem) {
+            if(editedItem.equals(getItem()))
                 refreshData();
         }
 
         @Override
-        public void onItemDeleted(Discrepancy deletedItem, long transactionId) {
+        public void onItemDeleted(Discrepancy deletedItem) {
 
         }
     }
@@ -268,18 +268,18 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
         }
 
         @Override
-        public void onItemAdded(LogEntry addedItem, long transactionId) {
+        public void onItemAdded(LogEntry addedItem) {
             if(addedItem.getParentDiscrepancy().getId() == getItem().getId())
                 addLogEntry(addedItem);
         }
 
         @Override
-        public void onItemUpdated(LogEntry editedItem, long transactionId) {
+        public void onItemUpdated(LogEntry editedItem) {
 
         }
 
         @Override
-        public void onItemDeleted(LogEntry deletedItem, long transactionId) {
+        public void onItemDeleted(LogEntry deletedItem) {
             if(logEntrySnippets.containsKey(deletedItem))
                 removeLogEntry(deletedItem);
         }

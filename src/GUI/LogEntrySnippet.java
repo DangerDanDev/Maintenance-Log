@@ -77,8 +77,8 @@ public class LogEntrySnippet extends EditorPanel<LogEntry> implements Table.Tabl
     }
 
     @Override
-    public void onItemUpdated(LogEntry editedItem, long transactionId) {
-        super.onItemUpdated(editedItem, transactionId);
+    public void onItemUpdated(LogEntry editedItem) {
+        super.onItemUpdated(editedItem);
     }
 
     public static void main(String[] args) {

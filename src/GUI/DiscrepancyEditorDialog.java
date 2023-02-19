@@ -68,21 +68,20 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
     /**
      * Checks if the added item belongs to my discrepancy; if so, adds it to the center display panel.
      * @param addedItem
-     * @param transactionId
      */
     @Override
-    public void onItemAdded(LogEntry addedItem, long transactionId) {
+    public void onItemAdded(LogEntry addedItem) {
         if(!logEntryEditors.containsKey(addedItem) && addedItem.getParentDiscrepancy().equals(getDiscrepancy()))
             addLogEntry(addedItem);
     }
 
     @Override
-    public void onItemUpdated(LogEntry editedItem, long transactionId) {
+    public void onItemUpdated(LogEntry editedItem) {
 
     }
 
     @Override
-    public void onItemDeleted(LogEntry deletedItem, long transactionId) {
+    public void onItemDeleted(LogEntry deletedItem) {
         if(logEntryEditors.containsKey(deletedItem))
             removeLogEntry(deletedItem);
     }

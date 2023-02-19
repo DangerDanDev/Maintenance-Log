@@ -36,20 +36,6 @@ public abstract class Table<T extends DatabaseObject> {
     public static final long INVALID_TRANSACTION_ID = -1;
 
     /**
-     * A unique ID for database updates, insertions, deletions, etc;
-     * This allows table listeners to track if the database is notifying them on
-     * a change that they initiated to avoid a feedback loop
-     */
-    public static long transactionId = 0;
-
-    /**
-     * Returns a unique number transaction initiators can avoid responding to events that
-     * they themselves initiated, which can result in feedback loops.
-     * @return
-     */
-    public static long getTransactionId() { return ++transactionId;}
-
-    /**
      * A hash map of all loaded items stored by ID; used to
      * ensure we aren't loading the same objects multiple times
      */
@@ -190,9 +176,12 @@ public abstract class Table<T extends DatabaseObject> {
      * Updates a single item in the database, including updating
      * it's "Last edited" field
      * @param item
+     * @param transactionIntiator The object that is trying to save T item. This value
+     *        is stored to ensure we do not send an update event to that object, as they already
+     *                            have the latest data.... they gave it to the table!
      * @throws SQLException
      */
-    public void updateItem(T item) throws SQLException{
+    public void updateItem(T item, Object transactionIntiator) throws SQLException{
         QueryIndexer idx = new QueryIndexer();
         Instant previousLastEditedDate = item.getDateLastEdited();
 
@@ -207,7 +196,7 @@ public abstract class Table<T extends DatabaseObject> {
             setUpdateQueryItemId(item, idx, ps);
             ps.executeUpdate();
 
-            onItemUpdated(item);
+            onItemUpdated(item, transactionIntiator);
 
         } catch (SQLException ex) {
 
@@ -452,16 +441,17 @@ public abstract class Table<T extends DatabaseObject> {
     private void onItemAdded(T item) {
 
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemAdded(item, transactionId));
+            SwingUtilities.invokeLater(() -> listener.onItemAdded(item));
     }
 
     /**
      * Notifies all listeners that an item has been edited in this table
      * @param item
      */
-    private void onItemUpdated(T item) {
+    private void onItemUpdated(T item, Object initiator) {
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item, transactionId));
+            if(!listener.equals(initiator))
+            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item));
     }
 
     /**
@@ -470,7 +460,7 @@ public abstract class Table<T extends DatabaseObject> {
      */
     private void onItemDeleted(T item) {
         for(TableListener<T> listener : listeners)
-            SwingUtilities.invokeLater(() -> listener.onItemDeleted(item,transactionId));
+            SwingUtilities.invokeLater(() -> listener.onItemDeleted(item));
     }
 
     /**
@@ -482,18 +472,18 @@ public abstract class Table<T extends DatabaseObject> {
          * Called on a listener when an item in this table is created
          * @param addedItem
          */
-        void onItemAdded(T addedItem, long transactionId);
+        void onItemAdded(T addedItem);
 
         /**
          * Called on a listener when an item in this table is edited
          * @param editedItem
          */
-        void onItemUpdated(T editedItem, long transactionId);
+        void onItemUpdated(T editedItem);
 
         /**
          * Called on a listener when an item is deleted from this table
          * @param deletedItem
          */
-        void onItemDeleted(T deletedItem, long transactionId);
+        void onItemDeleted(T deletedItem);
     }
 }

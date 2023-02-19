@@ -74,7 +74,7 @@ public class StatusTable extends Table<Status> {
             }
 
             status.setColor(Color.GREEN);
-            getInstance().updateItem(status);
+            getInstance().updateItem(status, null);
 
         } catch (SQLException ex) {
             ex.printStackTrace();

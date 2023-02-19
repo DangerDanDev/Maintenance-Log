@@ -25,17 +25,17 @@ public class ComboBoxStatusTableListener implements Table.TableListener<Status> 
     }
 
     @Override
-    public void onItemAdded(Status addedItem, long transactionId) {
+    public void onItemAdded(Status addedItem) {
         COMBO_BOX.addItem(addedItem);
     }
 
     @Override
-    public void onItemUpdated(Status editedItem, long transactionId) {
+    public void onItemUpdated(Status editedItem) {
 
     }
 
     @Override
-    public void onItemDeleted(Status deletedItem, long transactionId) {
+    public void onItemDeleted(Status deletedItem) {
         COMBO_BOX.removeItem(deletedItem);
     }
 }
