@@ -174,12 +174,12 @@ public abstract class Table<T extends DatabaseObject> {
      * Updates a single item in the database, including updating
      * it's "Last edited" field
      * @param item
-     * @param transactionIntiator The object that is trying to save T item. This value
+     * @param transactionInitiator The object that is trying to save T item. This value
      *        is stored to ensure we do not send an update event to that object, as they already
      *                            have the latest data.... they gave it to the table!
      * @throws SQLException
      */
-    public void updateItem(T item, Object transactionIntiator) throws SQLException{
+    public void updateItem(T item, Object transactionInitiator) throws SQLException{
         QueryIndexer idx = new QueryIndexer();
         Instant previousLastEditedDate = item.getDateLastEdited();
 
@@ -194,7 +194,7 @@ public abstract class Table<T extends DatabaseObject> {
             setUpdateQueryItemId(item, idx, ps);
             ps.executeUpdate();
 
-            onItemUpdated(item, transactionIntiator);
+            onItemUpdated(item, transactionInitiator);
 
         } catch (SQLException ex) {
 
