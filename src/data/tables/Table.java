@@ -449,7 +449,7 @@ public abstract class Table<T extends DatabaseObject> {
     private void onItemUpdated(T item, Object initiator) {
         for(TableListener<T> listener : listeners)
             if(!listener.equals(initiator))
-            SwingUtilities.invokeLater(() -> listener.onItemUpdated(item));
+                SwingUtilities.invokeLater(() -> listener.onItemUpdated(item));
     }
 
     /**
