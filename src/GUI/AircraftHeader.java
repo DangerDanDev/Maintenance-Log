@@ -49,6 +49,10 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
 
         super.setItem(item);
 
+        cbTailNumber.removeAllItems();
+        cbTailNumber.addItem(item);
+        item.selectInComboBox(cbTailNumber);
+
         try {
             for (Discrepancy d : discrepancyTable.getDiscrepanciesForNotes(getItem())) {
                 addDiscrepancy(d);
@@ -86,5 +90,10 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
     private void clearDiscrepancies() {
         discrepancySnippets.clear();
         discrepanciesPanel.removeAll();
+    }
+
+    private void createUIComponents() {
+        discrepanciesPanel = new JPanel();
+        discrepanciesPanel.setLayout(new BoxLayout(discrepanciesPanel,BoxLayout.Y_AXIS));
     }
 }

@@ -96,15 +96,26 @@ public class DiscrepancyTable extends Table<Discrepancy> {
     }
 
     public ArrayList<Discrepancy> getDiscrepanciesForNotes(Aircraft aircraft) throws SQLException{
-        final String query = "SELECT * FROM " + NAME +
-                INNER_JOIN + StatusTable.getInstance().NAME + ON + COL_STATUS_ID + "=" + StatusTable.getInstance().COL_ID +
-                WHERE + StatusTable.getInstance().COL_SHOW_ON_NOTES + "=" + TRUE;
+        QueryIndexer idx = new QueryIndexer();
+
+        final Column discrancyTailNum = DiscrepancyTable.getInstance().COL_AIRCRAFT_ID;
+        final String STATUS_TABLE = StatusTable.getInstance().NAME;
+        final Column STATUS_ID = StatusTable.getInstance().COL_ID;
+        final Column SHOW_ON_NOTES = StatusTable.getInstance().COL_SHOW_ON_NOTES;
+
+        final String query = "SELECT * FROM " + this.NAME +
+                INNER_JOIN + STATUS_TABLE + ON + COL_STATUS_ID + "=" + STATUS_ID +
+                WHERE + SHOW_ON_NOTES + "=" + TRUE + AND +
+                 discrancyTailNum + "=" + idx.index(COL_ID);
 
         System.out.println("SQL for notes discrepancies: " + query);
 
         ArrayList<Discrepancy> discrepancies = new ArrayList<>();
 
         try(PreparedStatement ps = DBManager.getConnection().prepareStatement(query)) {
+
+            ps.setLong(idx.indexOf(COL_ID), aircraft.getId());
+
             try(ResultSet rs = ps.executeQuery()) {
 
                 while(rs.next())

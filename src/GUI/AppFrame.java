@@ -7,6 +7,7 @@ import data.tables.AircraftTable;
 import data.tables.DiscrepancyTable;
 import data.tables.LogEntryTable;
 import data.tables.Table;
+import model.Aircraft;
 import model.Discrepancy;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AppFrame extends JFrame implements Table.TableListener<Discrepancy> {
+public class AppFrame extends JFrame {
 
     private JPanel contentPane;
     private JTabbedPane tabbedPane1;
@@ -29,8 +30,6 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
         loadNotes();
 
-        DiscrepancyTable.getInstance().addListener(this);
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setJMenuBar(new MenuManager().menuBar);
         setContentPane(contentPane);
@@ -43,43 +42,20 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
      * Loads all the relevant discrepancies and populates the NotesPanel with them
      * @throws SQLException
      */
-    private void loadNotes() throws SQLException {
-        ArrayList<Discrepancy> discrepancies =
-                DiscrepancyTable.getInstance().getDiscrepanciesForNotes(AircraftTable.getInstance().getAllItems().get(1));
-
-        for(Discrepancy d : discrepancies) {
-            addDiscrepancy(d);
-        }
-    }
-
-    /**
-     * Adds a discrepancy to the notesPanel
-     * @param d
-     * @throws SQLException
-     */
-    private void addDiscrepancy(Discrepancy d)  {
+    private void loadNotes() {
         try {
-            DiscrepancySnippet snippet = new DiscrepancySnippet(this, d);
-            snippet.setQueryType(LogEntryTable.QueryType.ON_NOTES_ONLY);
+            for (Aircraft aircraft : AircraftTable.getInstance().getAllItems()) {
+                AircraftHeader header = new AircraftHeader(this, null, aircraft);
 
-            discrepancySnippets.put(d, snippet);
-            notesPanel.add(discrepancySnippets.get(d).getContentPane());
-
-            revalidate();
-            repaint();
+                notesPanel.add(header.getContentPane());
+            }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "There was an error adding a discrepancy.");
+            JOptionPane.showMessageDialog(this, "There was an error loading aircraft from the table.");
             System.err.println(ex.getMessage());
         }
     }
 
-    private void removeDiscrepancy(Discrepancy d) {
-        notesPanel.remove(discrepancySnippets.get(d).getContentPane());
-        discrepancySnippets.remove(d);
 
-        revalidate();
-        repaint();
-    }
 
     private void createNewDiscrepancy() {
         EditorDialog.showDiscrepancy(new Discrepancy(), this);
@@ -104,32 +80,5 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
             fileMenu.add(new PrintAction(AppFrame.this, null, notesPanel));
         }
-    }
-
-    /**
-     * Called when a discrepancy is added to the table
-     * @param addedItem
-     */
-    @Override
-    public void onItemAdded(Discrepancy addedItem) {
-        if(addedItem.getStatus().isShowOnNotes())
-            addDiscrepancy(addedItem);
-    }
-
-    @Override
-    public void onItemUpdated(Discrepancy editedItem) {
-        //if the item should's status has changed such that it now belongs on the notes
-        //but is not already shown
-        if(editedItem.getStatus().isShowOnNotes() && !discrepancySnippets.containsKey(editedItem))
-            addDiscrepancy(editedItem);
-
-        //now if we need to remove an item due to a status change
-        if(!editedItem.getStatus().isShowOnNotes())
-            removeDiscrepancy(editedItem);
-    }
-
-    @Override
-    public void onItemDeleted(Discrepancy deletedItem) {
-        removeDiscrepancy(deletedItem);
     }
 }
