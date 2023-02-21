@@ -10,7 +10,7 @@
       <foreground color="-1"/>
       <maximumSize width="2147483647" height="2147483647"/>
     </properties>
-    <border type="etched"/>
+    <border type="none"/>
     <children>
       <component id="152c8" class="javax.swing.JComboBox" binding="cbStatus">
         <constraints>
@@ -31,7 +31,7 @@
           <background color="-1"/>
           <foreground color="-1"/>
         </properties>
-        <border type="etched"/>
+        <border type="none"/>
         <children>
           <component id="86b6a" class="javax.swing.JTextArea" binding="tfNarrative">
             <constraints/>

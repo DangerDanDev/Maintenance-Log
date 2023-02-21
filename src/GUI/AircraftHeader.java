@@ -11,14 +11,13 @@ import model.Discrepancy;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AircraftHeader extends EditorPanel<Aircraft> {
-    private JComboBox cbTailNumber;
-    private JPanel aircraftInfoPanel;
+    private JTextField tfTailNumber;
     private JPanel discrepanciesPanel;
     private JPanel contentPane;
+    private JPanel aircraftHeaderPanel;
 
     private HashMap<Discrepancy, DiscrepancySnippet> discrepancySnippets = new HashMap<>();
 
@@ -35,7 +34,7 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
 
     @Override
     public void refreshData() {
-        getItem().selectInComboBox(cbTailNumber);
+        tfTailNumber.setText(getItem().getTailNumber());
     }
 
     @Override
@@ -56,9 +55,6 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
 
         super.setItem(item);
 
-        cbTailNumber.removeAllItems();
-        cbTailNumber.addItem(item);
-        item.selectInComboBox(cbTailNumber);
 
         try {
             for (Discrepancy d : discrepancyTable.getDiscrepanciesForNotes(getItem())) {
