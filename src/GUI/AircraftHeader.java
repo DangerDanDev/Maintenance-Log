@@ -44,6 +44,13 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
     }
 
     @Override
+    public void unsubscribeFromTableUpdates() {
+        super.unsubscribeFromTableUpdates();
+
+        DiscrepancyTable.getInstance().removeListener(discrepancyTableListener);
+    }
+
+    @Override
     public void setItem(Aircraft item) {
         final DiscrepancyTable discrepancyTable = DiscrepancyTable.getInstance();
 
@@ -63,7 +70,7 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
         }
     }
 
-    private void addDiscrepancy(Discrepancy d) throws SQLException{
+    private void addDiscrepancy(Discrepancy d) {
         try {
             DiscrepancySnippet snippet = new DiscrepancySnippet(getOwner(), d);
             snippet.setQueryType(LogEntryTable.QueryType.ON_NOTES_ONLY);
@@ -95,5 +102,36 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
     private void createUIComponents() {
         discrepanciesPanel = new JPanel();
         discrepanciesPanel.setLayout(new BoxLayout(discrepanciesPanel,BoxLayout.Y_AXIS));
+    }
+
+    private DiscrepancyTableListener discrepancyTableListener = new DiscrepancyTableListener();
+
+    public class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
+
+        public DiscrepancyTableListener() {
+            DiscrepancyTable.getInstance().addListener(this);
+        }
+
+        @Override
+        public void onItemAdded(Discrepancy addedItem) {
+            if(getItem().equals(addedItem.getAircraft()))
+                addDiscrepancy(addedItem);
+        }
+
+        @Override
+        public void onItemUpdated(Discrepancy editedItem) {
+            //check if the item was moved from another tail number to mine
+            if(editedItem.getAircraft().equals(getItem()) && !discrepancySnippets.containsKey(editedItem))
+                addDiscrepancy(editedItem);
+
+            //check if the discrepancy was moved from my tail number to another
+            else if(!editedItem.getAircraft().equals(getItem()) && discrepancySnippets.containsKey(editedItem))
+                removeDiscrepancy(editedItem);
+        }
+
+        @Override
+        public void onItemDeleted(Discrepancy deletedItem) {
+            removeDiscrepancy(deletedItem);
+        }
     }
 }
