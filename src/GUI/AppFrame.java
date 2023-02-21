@@ -75,6 +75,7 @@ public class AppFrame extends JFrame implements Table.TableListener<Discrepancy>
 
     private void removeDiscrepancy(Discrepancy d) {
         notesPanel.remove(discrepancySnippets.get(d).getContentPane());
+        discrepancySnippets.remove(d);
 
         revalidate();
         repaint();
