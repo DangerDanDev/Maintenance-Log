@@ -114,6 +114,7 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
 
         @Override
         public void onItemAdded(Discrepancy addedItem) {
+            //if this discrepancy was added against my aircraft, add it to my panel
             if(getItem().equals(addedItem.getAircraft()))
                 addDiscrepancy(addedItem);
         }
