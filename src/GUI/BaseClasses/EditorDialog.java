@@ -380,12 +380,6 @@ public class EditorDialog<T extends DatabaseObject> extends JDialog implements E
         setLocationRelativeTo(null);
     }
 
-    public static void showDiscrepancy(Discrepancy d, Window owner) {
-
-        DiscrepancyEditorDialog dialog = new DiscrepancyEditorDialog(owner, d);
-        dialog.setVisible(true);
-    }
-
     public static void showLogEntry(LogEntry entry, Window parent) {
         EditorDialog<LogEntry> dialog = new EditorDialog(parent, "New Log Entry");
         dialog.addEditorPanel(new LogEntryEditor(entry, parent, dialog, EditorPanel.Mode.EDIT), BorderLayout.CENTER);

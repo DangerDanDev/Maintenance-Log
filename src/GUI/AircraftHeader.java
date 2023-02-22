@@ -1,6 +1,9 @@
 package GUI;
 
 import GUI.BaseClasses.EditorPanel;
+import GUI.BaseClasses.PopupMenuListener;
+import GUI.actions.MenuType;
+import GUI.actions.NewDiscrepancyAction;
 import data.tables.AircraftTable;
 import data.tables.DiscrepancyTable;
 import data.tables.LogEntryTable;
@@ -21,10 +24,13 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
 
     private HashMap<Discrepancy, DiscrepancySnippet> discrepancySnippets = new HashMap<>();
 
+    private JPopupMenu tailNumberPopupMenu = new JPopupMenu();
+
     public AircraftHeader(Window owner, EditorPanelHost host, Aircraft aircraft) {
         super(owner, AircraftTable.getInstance(), host);
 
         setItem(aircraft);
+        PopupMenuManager popupMenuManager = new PopupMenuManager();
     }
 
     @Override
@@ -129,6 +135,22 @@ public class AircraftHeader extends EditorPanel<Aircraft> {
         @Override
         public void onItemDeleted(Discrepancy deletedItem) {
             removeDiscrepancy(deletedItem);
+        }
+    }
+
+    public class PopupMenuManager extends PopupMenuListener {
+
+        private final JPopupMenu menu = tailNumberPopupMenu;
+
+        public PopupMenuManager() {
+            super(tailNumberPopupMenu);
+            initMenu();
+
+            tfTailNumber.addMouseListener(this);
+        }
+
+        private void initMenu() {
+            menu.add(new NewDiscrepancyAction(getOwner(), getEditorPanelHost(), getItem(), MenuType.JPopupMenu));
         }
     }
 }
