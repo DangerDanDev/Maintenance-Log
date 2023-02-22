@@ -65,6 +65,7 @@ public class LogEntryTable extends Table<LogEntry> {
         statement.setLong(indexer.indexOf(COL_PARENT_DISCREPANCY), item.getParentDiscrepancy().getId());
         statement.setString(indexer.indexOf(COL_NARRATIVE), item.getNarrative());
         statement.setString(indexer.indexOf(COL_CREW), item.getCrew());
+        statement.setBoolean(indexer.indexOf(COL_SHOW_ON_NOTES), item.isShowOnNotes());
     }
 
     public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d, QueryType onNotesOnly) {
