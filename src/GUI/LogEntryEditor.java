@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.BaseClasses.EditorPanel;
+import GUI.BaseClasses.PopupMenuListener;
 import data.tables.LogEntryTable;
 import model.LogEntry;
 
@@ -123,37 +124,7 @@ public class LogEntryEditor extends EditorPanel<LogEntry> {
         deleteMenuItem.addActionListener(e -> removeLogEntry());
         popupMenu.add(deleteMenuItem);
 
-        MouseListener popupMenuListener = new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if(e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if(e.isPopupTrigger()) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        };
-
+        PopupMenuListener popupMenuListener = new PopupMenuListener(popupMenu);
         tfNarrative.addMouseListener(popupMenuListener);
     }
 
