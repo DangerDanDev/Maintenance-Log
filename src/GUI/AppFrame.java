@@ -1,34 +1,25 @@
 package GUI;
 
-import GUI.BaseClasses.EditorDialog;
-import GUI.actions.MenuType;
-import GUI.actions.NewDiscrepancyAction;
-import GUI.actions.OpenStatusEditorAction;
-import GUI.actions.PrintAction;
+import GUI.BaseClasses.Refreshable;
+import GUI.actions.*;
 import data.tables.AircraftTable;
-import data.tables.DiscrepancyTable;
-import data.tables.LogEntryTable;
-import data.tables.Table;
 import model.Aircraft;
-import model.Discrepancy;
 
 import javax.swing.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class AppFrame extends JFrame {
+public class AppFrame extends JFrame implements Refreshable {
 
     private JPanel contentPane;
     private JTabbedPane tabbedPane1;
     private JPanel notesPanel;
+    private JScrollPane notesScrollPane;
 
-    private HashMap<Discrepancy, DiscrepancySnippet> discrepancySnippets = new HashMap<>();
 
     public AppFrame() throws SQLException {
         super("Hawk Logbook");
-
-        notesPanel.setLayout(new BoxLayout(notesPanel, BoxLayout.Y_AXIS));
 
         loadNotes();
 
@@ -39,29 +30,36 @@ public class AppFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
+    private HashMap<Aircraft, AircraftHeader> aircraftHeaders = new HashMap<>();
     /**
      * Loads all the relevant discrepancies and populates the NotesPanel with them
      * @throws SQLException
      */
     private void loadNotes() {
         try {
+
+            notesPanel.removeAll();
+            aircraftHeaders.clear();
+
+            notesPanel.setLayout(new BoxLayout(notesPanel, BoxLayout.Y_AXIS));
+
             for (Aircraft aircraft : AircraftTable.getInstance().getAllItems()) {
                 AircraftHeader header = new AircraftHeader(this, null, aircraft);
-
+                aircraftHeaders.put(aircraft, header);
                 notesPanel.add(header.getContentPane());
             }
+
+
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "There was an error loading aircraft from the table.");
             System.err.println(ex.getMessage());
         }
     }
 
-
-
-    private void createNewDiscrepancy() {
-        //EditorDialog.showDiscrepancy(new Discrepancy(), this);
+    public void refresh() {
+        loadNotes();
     }
+
 
     private class MenuManager {
         JMenuBar menuBar = new JMenuBar();
@@ -77,7 +75,7 @@ public class AppFrame extends JFrame {
             menuBar.add(editMenu);
             editMenu.add(new OpenStatusEditorAction(AppFrame.this));
             editMenu.add(new NewDiscrepancyAction(getOwner(), null, null, MenuType.JMenuBar));
-
+            editMenu.add(new RefreshAction(getOwner(), null, AppFrame.this));
         }
     }
 }

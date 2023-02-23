@@ -12,7 +12,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="17518">
+          <scrollpane id="17518" binding="notesScrollPane">
             <constraints>
               <tabbedpane title="Notes"/>
             </constraints>
