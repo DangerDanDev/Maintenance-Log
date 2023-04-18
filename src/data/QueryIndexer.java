@@ -1,5 +1,6 @@
 package data;
 
+import data.queries.Criterion;
 import data.tables.Column;
 import data.tables.Table;
 
@@ -34,6 +35,15 @@ public class QueryIndexer {
     }
 
     /**
+     * Adds and indexes a criterion's column
+     * @param c
+     * @return
+     */
+    public String index(Criterion c) {
+        return index(c.COLUMN);
+    }
+
+    /**
      * Returns the index of a column
      * @param c
      * @return
@@ -41,4 +51,13 @@ public class QueryIndexer {
     public int indexOf(Column c) {
         return values.get(c);
     }
+
+    public int indexOf(Criterion c) {
+        return values.get(c.COLUMN);
+    }
+
+    public int getTotalIndexes() {
+        return currentIndex;
+    }
+
 }
