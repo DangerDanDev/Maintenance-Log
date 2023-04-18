@@ -14,5 +14,4 @@ public class Criterion {
         this.COLUMN = col;
         this.VALUE = val;
     }
-
 }

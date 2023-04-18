@@ -2,6 +2,9 @@ package data.tables;
 
 import data.DBManager;
 import data.QueryIndexer;
+import data.queries.AndOr;
+import data.queries.Criterion;
+import data.queries.WhereClause;
 import model.Aircraft;
 import model.Discrepancy;
 

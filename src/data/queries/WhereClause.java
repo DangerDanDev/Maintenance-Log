@@ -14,7 +14,6 @@ import java.util.ArrayList;
  * @param <T>
  */
 public class WhereClause<T extends DatabaseObject>{
-    public final Table TABLE;
     public final QueryIndexer indexer = new QueryIndexer();
 
     /**
@@ -29,8 +28,8 @@ public class WhereClause<T extends DatabaseObject>{
 
     private String sqlString;
 
-    public WhereClause(Table t) {
-        this.TABLE = t;
+    public WhereClause() {
+
     }
 
     public void addCriterion(Criterion c, AndOr andOr) {
@@ -78,7 +77,7 @@ public class WhereClause<T extends DatabaseObject>{
         Criterion ID_EQUALS_ID = new Criterion(DiscrepancyTable.getInstance().COL_ID, "7");
         Criterion DISCREPANCY_CONTAINS_POOP = new Criterion(DiscrepancyTable.getInstance().COL_TEXT, "POOP");
 
-        WhereClause ID_MATCHES_CONTAINS_POOP = new WhereClause(DiscrepancyTable.getInstance());
+        WhereClause ID_MATCHES_CONTAINS_POOP = new WhereClause();
         ID_MATCHES_CONTAINS_POOP.addCriterion(ID_EQUALS_ID, AndOr.AND);
         ID_MATCHES_CONTAINS_POOP.addCriterion(DISCREPANCY_CONTAINS_POOP, AndOr.NONE);
 
