@@ -1,11 +1,12 @@
 package data.tables;
 
-import data.DBManager;
 import data.QueryIndexer;
+import data.queries.AndOr;
+import data.queries.Criterion;
+import data.queries.Query;
 import model.Discrepancy;
 import model.LogEntry;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,13 +25,13 @@ public class LogEntryTable extends Table<LogEntry> {
 
     public final Column COL_NARRATIVE;
     public final Column COL_CREW;
-    public final Column COL_PARENT_DISCREPANCY;
+    public final Column COL_PARENT_DISCREPANCY_ID;
     public final Column COL_SHOW_ON_NOTES = new Column(this, "show_on_notes", BOOL, "");
 
     private LogEntryTable() {
         super("log_entries");
 
-        COL_PARENT_DISCREPANCY = new Column(this, "parent_discrepancy", INTEGER, References(DiscrepancyTable.getInstance().COL_ID));
+        COL_PARENT_DISCREPANCY_ID = new Column(this, "parent_discrepancy", INTEGER, References(DiscrepancyTable.getInstance().COL_ID));
 
         COL_NARRATIVE = new Column(this,"narrative", TEXT);
 
@@ -42,7 +43,7 @@ public class LogEntryTable extends Table<LogEntry> {
     @Override
     public LogEntry inflateItemFromResultSet(ResultSet rs) throws SQLException {
 
-        long discrepancyId = rs.getLong(COL_PARENT_DISCREPANCY.NAME);
+        long discrepancyId = rs.getLong(COL_PARENT_DISCREPANCY_ID.NAME);
 
         LogEntry logEntry = new LogEntry(
                 DiscrepancyTable.getInstance().getItemById(discrepancyId),
@@ -62,48 +63,36 @@ public class LogEntryTable extends Table<LogEntry> {
     public void setStatementValues(PreparedStatement statement, QueryIndexer indexer, LogEntry item) throws SQLException {
         super.setStatementValues(statement, indexer, item);
 
-        statement.setLong(indexer.indexOf(COL_PARENT_DISCREPANCY), item.getParentDiscrepancy().getId());
+        statement.setLong(indexer.indexOf(COL_PARENT_DISCREPANCY_ID), item.getParentDiscrepancy().getId());
         statement.setString(indexer.indexOf(COL_NARRATIVE), item.getNarrative());
         statement.setString(indexer.indexOf(COL_CREW), item.getCrew());
         statement.setBoolean(indexer.indexOf(COL_SHOW_ON_NOTES), item.isShowOnNotes());
     }
 
-    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d, QueryType onNotesOnly) {
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(Discrepancy d, QueryType onNotesOnly) throws SQLException {
         return getLogEntriesAgainstDiscrepancy(d.getId(), onNotesOnly);
     }
 
-    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId, QueryType onNotesOnly) {
+    /**
+     * Queries all log entries against the given discrepancy, or if selected, pulls only the ones that should be on the notes
+     * @param discrepancyId
+     * @param onNotesOnly
+     * @return
+     * @throws SQLException
+     */
+    public ArrayList<LogEntry> getLogEntriesAgainstDiscrepancy(long discrepancyId, QueryType onNotesOnly) throws SQLException {
 
-        ArrayList<LogEntry> logEntries = new ArrayList<>();
+        Query logEntriesAgainstDiscrepancyQuery = new Query(this);
 
-        QueryIndexer idx = new QueryIndexer();
+        Criterion logEntryIdMatchesDiscrepancyId = new Criterion(COL_PARENT_DISCREPANCY_ID, discrepancyId + "");
+        Criterion onNotesOnlyCriteria = new Criterion(COL_SHOW_ON_NOTES, TRUE + "");
 
-        String QUERY = " SELECT * FROM " + NAME +
-                WHERE + COL_PARENT_DISCREPANCY + "=" + idx.index(COL_PARENT_DISCREPANCY);
-
-        //TOOD: if onNotesOnly, append a check to the query to only show log entries
-        //with onNotes enabled
         if(onNotesOnly == QueryType.ON_NOTES_ONLY)
-            QUERY += AND + COL_SHOW_ON_NOTES + "=" + idx.index(COL_SHOW_ON_NOTES);
+            logEntriesAgainstDiscrepancyQuery.addWhereCriterion(onNotesOnlyCriteria, AndOr.AND);
 
-        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY)) {
+        logEntriesAgainstDiscrepancyQuery.addWhereCriterion(logEntryIdMatchesDiscrepancyId, AndOr.NONE);
 
-            ps.setLong(idx.indexOf(COL_PARENT_DISCREPANCY), discrepancyId);
-
-            if(onNotesOnly == QueryType.ON_NOTES_ONLY)
-                ps.setBoolean(idx.indexOf(COL_SHOW_ON_NOTES), true);
-
-            try(ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    logEntries.add(getItemFromResultSet(rs));
-                }
-            }
-
-        }catch (SQLException ex) {
-
-        }
-
-        return logEntries;
+        return query(logEntriesAgainstDiscrepancyQuery);
     }
 
 }

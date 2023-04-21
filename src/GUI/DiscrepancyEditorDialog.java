@@ -2,12 +2,15 @@ package GUI;
 
 import GUI.BaseClasses.EditorDialog;
 import GUI.BaseClasses.EditorPanel;
+import data.queries.JoinClause;
 import data.tables.LogEntryTable;
 import data.tables.Table;
 import model.Discrepancy;
 import model.LogEntry;
 
+import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implements Table.TableListener<LogEntry> {
@@ -33,8 +36,12 @@ public class DiscrepancyEditorDialog extends EditorDialog<Discrepancy> implement
     }
 
     private void populateLogEntries(Discrepancy discrepancy) {
-        for(LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy, LogEntryTable.QueryType.ALL_ENTRIES)) {
-            addLogEntry(logEntry);
+        try {
+            for (LogEntry logEntry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(discrepancy, LogEntryTable.QueryType.ALL_ENTRIES)) {
+                addLogEntry(logEntry);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "There was an error populating the log entries, most likely a database connectivity issue.");
         }
     }
 

@@ -63,9 +63,15 @@ public class DiscrepancySnippet extends EditorPanel<Discrepancy> {
     private void initLogEntriesPanel() {
         logEntrySnippets.clear();
 
-        if(getItem() != null)
-            for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem(), LogEntryTable.QueryType.ON_NOTES_ONLY))
-                addLogEntry(entry);
+        try {
+
+            if (getItem() != null)
+                for (LogEntry entry : LogEntryTable.getInstance().getLogEntriesAgainstDiscrepancy(getItem(), LogEntryTable.QueryType.ON_NOTES_ONLY))
+                    addLogEntry(entry);
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "There was a database connectivity error trying to load the log entries.");
+        }
 
     }
 
