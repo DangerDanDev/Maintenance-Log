@@ -4,7 +4,7 @@ import data.DatabaseObject;
 import data.QueryIndexer;
 import data.tables.Column;
 import data.tables.DiscrepancyTable;
-import data.tables.Table;
+import data.tables.StatusTable;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,12 +14,15 @@ import java.util.ArrayList;
  * @param <T>
  */
 public class WhereClause<T extends DatabaseObject>{
-    public final QueryIndexer indexer = new QueryIndexer();
 
     /**
      * The list of boolean criteria that this where clause checks
      */
     private ArrayList<Criterion> criteria = new ArrayList<>();
+
+    public Criterion getCriterion(int index) { return criteria.get(index);}
+
+    public final Query QUERY;
 
     /**
      * The And/Or (if applicable)
@@ -28,8 +31,8 @@ public class WhereClause<T extends DatabaseObject>{
 
     private String sqlString;
 
-    public WhereClause() {
-
+    public WhereClause(Query query) {
+        this.QUERY = query;
     }
 
     public void addCriterion(Criterion c, AndOr andOr) {
@@ -37,6 +40,9 @@ public class WhereClause<T extends DatabaseObject>{
         andOrs.add(andOr);
     }
 
+    /**
+     * Builds the Where clause, NOT including the " WHERE "; includes only the actual expressions
+     */
     public void build() {
         StringBuilder str = new StringBuilder();
 
@@ -47,7 +53,7 @@ public class WhereClause<T extends DatabaseObject>{
                 Criterion criterion = criteria.get(i);
                 Column column = criterion.COLUMN;
                 AndOr andOr = andOrs.get(i);
-                indexer.index(column);
+                getIndexer().index(column);
 
                 str.append(column + "=?"  + andOr);
             }
@@ -58,10 +64,11 @@ public class WhereClause<T extends DatabaseObject>{
 
     public void setValues(PreparedStatement ps) throws SQLException {
         for(int i = 0; i < criteria.size(); i++ ) {
-            Criterion c = criteria.get(i);
+            Criterion criterion = criteria.get(i);
 
             //TODO: Convert this to use real data types instead of just converting everything to text
-            ps.setString(indexer.indexOf(c), c.VALUE);
+            System.out.println("Index " + (i+1) + ": " + criterion.VALUE);
+            ps.setString(getIndexer().indexOf(criterion), criterion.VALUE);
         }
     }
 
@@ -73,14 +80,22 @@ public class WhereClause<T extends DatabaseObject>{
         return sqlString;
     }
 
+    public QueryIndexer getIndexer() {
+        return QUERY.getIndexer();
+    }
+
     public static void main(String[] args) {
         Criterion ID_EQUALS_ID = new Criterion(DiscrepancyTable.getInstance().COL_ID, "7");
         Criterion DISCREPANCY_CONTAINS_POOP = new Criterion(DiscrepancyTable.getInstance().COL_TEXT, "POOP");
 
-        WhereClause ID_MATCHES_CONTAINS_POOP = new WhereClause();
+        Query query = new Query(StatusTable.getInstance());
+
+        WhereClause ID_MATCHES_CONTAINS_POOP = new WhereClause(query);
         ID_MATCHES_CONTAINS_POOP.addCriterion(ID_EQUALS_ID, AndOr.AND);
         ID_MATCHES_CONTAINS_POOP.addCriterion(DISCREPANCY_CONTAINS_POOP, AndOr.NONE);
 
         System.out.println(ID_MATCHES_CONTAINS_POOP.toString());
+        System.out.println(ID_MATCHES_CONTAINS_POOP.getCriterion(0).VALUE);
+        System.out.println(ID_MATCHES_CONTAINS_POOP.getCriterion(1).VALUE);
     }
 }

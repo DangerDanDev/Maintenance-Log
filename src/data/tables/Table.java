@@ -484,4 +484,9 @@ public abstract class Table<T extends DatabaseObject> {
          */
         void onItemDeleted(T deletedItem);
     }
+
+    @Override
+    public String toString() {
+        return NAME;
+    }
 }
