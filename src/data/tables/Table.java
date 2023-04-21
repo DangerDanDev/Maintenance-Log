@@ -3,6 +3,10 @@ package data.tables;
 import data.DBManager;
 import data.DatabaseObject;
 import data.QueryIndexer;
+import data.queries.AndOr;
+import data.queries.Criterion;
+import data.queries.Query;
+import data.queries.WhereClause;
 
 import javax.swing.*;
 import java.sql.*;
@@ -66,6 +70,30 @@ public abstract class Table<T extends DatabaseObject> {
         return " REFERENCES " + col.PARENT_TABLE.NAME + "(" + col + ")";
     }
 
+    public ArrayList<T> query(Query query) throws SQLException{
+
+        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(query.toString())) {
+
+            query.setValues(ps);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                ArrayList<T> items = new ArrayList<>();
+
+                while (rs.next()) {
+                    items.add(getItemFromResultSet(rs));
+                }
+
+                return items;
+
+            } catch (SQLException ex) {
+                throw ex;
+            }
+        } catch (SQLException ex) {
+            throw ex;
+        }
+    }
+
     /**
      * Looks an item up by its ID and inflates it from the given resultset
      * @param id
@@ -74,34 +102,10 @@ public abstract class Table<T extends DatabaseObject> {
      */
     public T getItemById(long id) throws SQLException {
 
-        QueryIndexer idx = new QueryIndexer();
-        String QUERY_BY_ID = " SELECT * FROM " + NAME + WHERE + COL_ID + "=" + idx.index(COL_ID);
+        Query queryById = new Query(this);
+        queryById.addWhereCriterion(new Criterion(COL_ID, id + ""), AndOr.NONE);
 
-        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_BY_ID)) {
-
-            //we can't nest the try-with-resources because we have to set this
-            //index here which makes this block a lot messier :/
-            ps.setLong(idx.indexOf(COL_ID), id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if(rs.next()) {
-                    return getItemFromResultSet(rs);
-                }
-
-                else {
-                    return null;
-                }
-
-            } catch (SQLException ex) {
-                throw ex;
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("Error inflating item from database");
-            System.err.println(ex.getMessage());
-            throw ex;
-        }
+        return query(queryById).get(0);
     }
 
     /**
@@ -141,22 +145,7 @@ public abstract class Table<T extends DatabaseObject> {
      * @throws SQLException
      */
     public ArrayList<T> getAllItems() throws SQLException{
-        String QUERY_ALL_ITEMS = "SELECT * FROM " + NAME;
-
-        try (PreparedStatement ps = DBManager.getConnection().prepareStatement(QUERY_ALL_ITEMS);
-            ResultSet rs = ps.executeQuery()) {
-
-            ArrayList<T> items = new ArrayList<>();
-
-            while(rs.next()) {
-                items.add(getItemFromResultSet(rs));
-            }
-
-            return items;
-
-        } catch (SQLException ex) {
-            throw ex;
-        }
+        return query(new Query(this));
     }
 
     public HashMap<Long, T> getLoadedItems() {
@@ -207,6 +196,13 @@ public abstract class Table<T extends DatabaseObject> {
         }
     }
 
+    /**
+     * Generates an SQL string to update a given item in the database, starting with (including) the word
+     * " UPDATE "
+     * @param item
+     * @param idx
+     * @return
+     */
     public String getUpdateStatement(T item, QueryIndexer idx) {
         StringBuilder str = new StringBuilder();
 

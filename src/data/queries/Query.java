@@ -1,9 +1,7 @@
 package data.queries;
 
-import GUI.AppFrame;
 import data.DBManager;
 import data.QueryIndexer;
-import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
 import data.tables.Table;
 
@@ -17,7 +15,7 @@ public class Query {
     private WhereClause whereClause;
     private QueryIndexer indexer;
 
-    private String sqlStr;
+    private String queryString;
 
     public Query(Table table) {
         TABLE = table;
@@ -25,21 +23,22 @@ public class Query {
 
     public void build() {
         indexer = new QueryIndexer();
+
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT * FROM " + TABLE + " ");
 
         if(whereClause != null)
             sql.append(" WHERE " + whereClause + " ");
 
-        sqlStr = sql.toString();
+        queryString = sql.toString();
     }
 
     @Override
     public String toString() {
-        if(sqlStr == null)
+        if(queryString == null)
             build();
 
-        return sqlStr;
+        return queryString;
     }
 
     public void setValues(PreparedStatement ps) throws SQLException {
@@ -58,6 +57,13 @@ public class Query {
 
     public void setWhereClause(WhereClause whereClause) {
         this.whereClause = whereClause;
+    }
+
+    public void addWhereCriterion(Criterion c, AndOr andOr) {
+        if(getWhereClause() == null)
+            setWhereClause(new WhereClause(this));
+
+        getWhereClause().addCriterion(c, andOr);
     }
 
     public static void main(String[] args) {
