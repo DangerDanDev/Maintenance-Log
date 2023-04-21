@@ -2,9 +2,7 @@ package data.tables;
 
 import data.DBManager;
 import data.QueryIndexer;
-import data.queries.AndOr;
-import data.queries.Criterion;
-import data.queries.WhereClause;
+import data.queries.*;
 import model.Aircraft;
 import model.Discrepancy;
 
@@ -98,37 +96,25 @@ public class DiscrepancyTable extends Table<Discrepancy> {
         return d;
     }
 
-    public ArrayList<Discrepancy> getDiscrepanciesForNotes(Aircraft aircraft) throws SQLException{
-        QueryIndexer idx = new QueryIndexer();
+    public ArrayList<Discrepancy> getDiscrepanciesForNotes(Aircraft aircraft) throws SQLException {
 
-        final Column discrepancyTailNum = DiscrepancyTable.getInstance().COL_AIRCRAFT_ID;
-        final String STATUS_TABLE = StatusTable.getInstance().NAME;
-        final Column STATUS_ID = StatusTable.getInstance().COL_ID;
-        final Column SHOW_ON_NOTES = StatusTable.getInstance().COL_SHOW_ON_NOTES;
+        Query byAircraft_OnNotes = new Query(this);
 
-        final String query = "SELECT * FROM " + this.NAME +
-                INNER_JOIN + STATUS_TABLE + ON + COL_STATUS_ID + "=" + STATUS_ID +
-                WHERE + SHOW_ON_NOTES + "=" + TRUE + AND +
-                 discrepancyTailNum + "=" + idx.index(COL_ID);
+        final Column COL_SHOW_ON_NOTES = StatusTable.getInstance().COL_SHOW_ON_NOTES;
 
-        ArrayList<Discrepancy> discrepancies = new ArrayList<>();
+        //for pulling all the discrepancies against this aircraft
+        Criterion matchesAircraft = new Criterion(COL_AIRCRAFT_ID, aircraft.getId() + "");
+        Criterion showOnNotes = new Criterion(COL_SHOW_ON_NOTES, TRUE + "");
 
-        try(PreparedStatement ps = DBManager.getConnection().prepareStatement(query)) {
+        byAircraft_OnNotes.addWhereCriterion(matchesAircraft, AndOr.AND);
+        byAircraft_OnNotes.addWhereCriterion(showOnNotes, AndOr.NONE);
 
-            ps.setLong(idx.indexOf(COL_ID), aircraft.getId());
+        Table statusTable = StatusTable.getInstance();
 
-            try(ResultSet rs = ps.executeQuery()) {
+        JoinClause innerJoin_Status = new JoinClause(JoinType.InnerJoin, statusTable, COL_STATUS_ID, statusTable.COL_ID);
+        byAircraft_OnNotes.addJoinClause(innerJoin_Status);
 
-                while(rs.next())
-                    discrepancies.add(getItemFromResultSet(rs));
+        return query(byAircraft_OnNotes);
 
-            }catch (SQLException ex) {
-                throw ex;
-            }
-        } catch (SQLException ex) {
-            throw ex;
-        }
-
-        return discrepancies;
     }
 }

@@ -15,6 +15,8 @@ public class Query {
     private WhereClause whereClause;
     private QueryIndexer indexer;
 
+    private JoinClause joinClause;
+
     private String queryString;
 
     public Query(Table table) {
@@ -27,8 +29,11 @@ public class Query {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT * FROM " + TABLE + " ");
 
+        if(joinClause != null)
+            sql.append(joinClause.toString());
+
         if(whereClause != null)
-            sql.append(" WHERE " + whereClause + " ");
+            sql.append(" " + whereClause + " ");
 
         queryString = sql.toString();
     }
@@ -64,6 +69,10 @@ public class Query {
             setWhereClause(new WhereClause(this));
 
         getWhereClause().addCriterion(c, andOr);
+    }
+
+    public void addJoinClause(JoinClause clause) {
+        this.joinClause = clause;
     }
 
     public static void main(String[] args) {

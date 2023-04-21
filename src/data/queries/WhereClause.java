@@ -46,6 +46,8 @@ public class WhereClause<T extends DatabaseObject>{
     public void build() {
         StringBuilder str = new StringBuilder();
 
+        str.append(" WHERE " );
+
         //there is no where clause if there are no criteria
         if(criteria.size() > 0) {
             for(int i = 0; i < criteria.size(); i++) {
