@@ -33,7 +33,7 @@ public class Query {
             sql.append(joinClause.toString());
 
         if(whereClause != null)
-            sql.append(" " + whereClause + " ");
+            sql.append(whereClause.toString());
 
         queryString = sql.toString();
     }
