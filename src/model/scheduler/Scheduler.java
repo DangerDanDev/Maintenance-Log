@@ -5,6 +5,8 @@ import data.queries.JoinClause;
 import data.tables.DiscrepancyTable;
 import data.tables.Table;
 import model.Discrepancy;
+import model.scheduler.conditions.DiscrepancyStatusChangeCondition;
+import model.scheduler.tasks.StatusChangeTask;
 
 import javax.swing.*;
 import javax.xml.crypto.Data;
@@ -24,6 +26,26 @@ public class Scheduler {
 
     private Scheduler() {
         DiscrepancyTable.getInstance().addListener(new DiscrepancyTableListener());
+
+        //initTest();
+    }
+
+    private void initTest() {
+        StatusChangeTask statusChangeTask =  new StatusChangeTask(131, 5);
+        DiscrepancyStatusChangeCondition statusChangeCondition = new DiscrepancyStatusChangeCondition(130, 1);
+
+        Trigger trigger = new Trigger();
+        trigger.setCondition(statusChangeCondition);
+        trigger.setTask(statusChangeTask);
+
+        addTrigger(trigger);
+
+        try {
+            checkTriggers();
+
+        } catch (SQLException ex) {
+
+        }
     }
 
     /**
