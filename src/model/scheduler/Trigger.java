@@ -2,6 +2,8 @@ package model.scheduler;
 
 import data.DatabaseObject;
 
+import java.sql.SQLException;
+
 public class Trigger extends DatabaseObject {
     private Condition condition;
     private Task task;
@@ -12,7 +14,7 @@ public class Trigger extends DatabaseObject {
      */
     private boolean executed = false;
 
-    public void execute() {
+    public void execute() throws SQLException {
         getTask().execute();
         setExecuted(true);
     }
