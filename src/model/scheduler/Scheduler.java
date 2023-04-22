@@ -1,5 +1,13 @@
 package model.scheduler;
 
+import data.DatabaseObject;
+import data.queries.JoinClause;
+import data.tables.DiscrepancyTable;
+import data.tables.Table;
+import model.Discrepancy;
+
+import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -8,6 +16,10 @@ import java.util.ArrayList;
  */
 public class Scheduler {
     private ArrayList<Trigger> triggers = new ArrayList<>();
+
+    public Scheduler() {
+        DiscrepancyTable.getInstance().addListener(new DiscrepancyTableListener());
+    }
 
     /**
      * Loops through all the loaded triggers and executes anything with its conditions met
@@ -29,7 +41,27 @@ public class Scheduler {
         triggers.removeIf(trigger -> trigger.isExecuted());
     }
 
-    public static void main(String[] args) {
+    /**
+     * Listens for updated discrepancies
+     */
+    private class DiscrepancyTableListener implements Table.TableListener<Discrepancy> {
+        @Override
+        public void onItemAdded(Discrepancy addedItem) {
 
+        }
+
+        @Override
+        public void onItemUpdated(Discrepancy editedItem) {
+            try {
+                checkTriggers();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+
+        @Override
+        public void onItemDeleted(Discrepancy deletedItem) {
+
+        }
     }
 }
