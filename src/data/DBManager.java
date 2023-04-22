@@ -1,6 +1,7 @@
 package data;
 
 import data.tables.*;
+import model.scheduler.Scheduler;
 import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
@@ -43,5 +44,7 @@ public class DBManager {
 
         for(Table table : tables)
             table.create();
+
+        Scheduler.init();
     }
 }

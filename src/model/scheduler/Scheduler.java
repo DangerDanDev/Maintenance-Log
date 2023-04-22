@@ -15,9 +15,14 @@ import java.util.ArrayList;
  * Manages all the open triggers and determines when to execute them
  */
 public class Scheduler {
+
+    private static Scheduler scheduler = new Scheduler();
+    public static Scheduler getInstance() { if(scheduler == null) init(); return scheduler; }
+    public static void init() { scheduler = new Scheduler();}
+
     private ArrayList<Trigger> triggers = new ArrayList<>();
 
-    public Scheduler() {
+    private Scheduler() {
         DiscrepancyTable.getInstance().addListener(new DiscrepancyTableListener());
     }
 
@@ -39,6 +44,10 @@ public class Scheduler {
 
     private void removeExecutedTriggers() {
         triggers.removeIf(trigger -> trigger.isExecuted());
+    }
+
+    public void addTrigger(Trigger t) {
+        triggers.add(t);
     }
 
     /**
