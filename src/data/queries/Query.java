@@ -8,15 +8,33 @@ import data.tables.Table;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Query {
 
+    /**
+     * The table we are pulling from
+     */
     private final Table TABLE;
+
+    /**
+     * If applicable, the selection criteria
+     */
     private WhereClause whereClause;
+
+    /**
+     * The indexer that keeps track of jdbc's "?" markers in a PerparedStatement
+     */
     private QueryIndexer indexer;
 
-    private JoinClause joinClause;
+    /**
+     * A list of all the other tables we want to join into our query
+     */
+    private ArrayList<JoinClause> joinClauses = new ArrayList<>();
 
+    /**
+     * The final form, this entire query converted to an SQL text string
+     */
     private String queryString;
 
     public Query(Table table) {
@@ -29,8 +47,9 @@ public class Query {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT * FROM " + TABLE + " ");
 
-        if(joinClause != null)
-            sql.append(joinClause.toString());
+        if(joinClauses.size() != 0)
+            for(JoinClause joinClause : joinClauses)
+                sql.append(joinClause.toString());
 
         if(whereClause != null)
             sql.append(whereClause.toString());
@@ -64,6 +83,11 @@ public class Query {
         this.whereClause = whereClause;
     }
 
+    /**
+     * Passes through to the getWhereClause() method to add a criterion to the where clause
+     * @param c
+     * @param andOr
+     */
     public void addWhereCriterion(Criterion c, AndOr andOr) {
         if(getWhereClause() == null)
             setWhereClause(new WhereClause(this));
@@ -71,8 +95,12 @@ public class Query {
         getWhereClause().addCriterion(c, andOr);
     }
 
+    /**
+     *
+     * @param clause
+     */
     public void addJoinClause(JoinClause clause) {
-        this.joinClause = clause;
+        joinClauses.add(clause);
     }
 
     public static void main(String[] args) {

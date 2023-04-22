@@ -20,8 +20,16 @@ public class WhereClause<T extends DatabaseObject>{
      */
     private ArrayList<Criterion> criteria = new ArrayList<>();
 
+    /**
+     * Returns the query object at a specific index
+     * @param index
+     * @return
+     */
     public Criterion getCriterion(int index) { return criteria.get(index);}
 
+    /**
+     * The query that encapsulates me and the other query data
+     */
     public final Query QUERY;
 
     /**
@@ -69,7 +77,6 @@ public class WhereClause<T extends DatabaseObject>{
             Criterion criterion = criteria.get(i);
 
             //TODO: Convert this to use real data types instead of just converting everything to text
-            System.out.println("Index " + (i+1) + ": " + criterion.VALUE);
             ps.setString(getIndexer().indexOf(criterion), criterion.VALUE);
         }
     }
