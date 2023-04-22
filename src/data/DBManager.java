@@ -44,7 +44,5 @@ public class DBManager {
 
         for(Table table : tables)
             table.create();
-
-        Scheduler.init();
     }
 }

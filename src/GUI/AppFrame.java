@@ -4,6 +4,7 @@ import GUI.BaseClasses.Refreshable;
 import GUI.actions.*;
 import data.tables.AircraftTable;
 import model.Aircraft;
+import model.scheduler.Scheduler;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -29,6 +30,8 @@ public class AppFrame extends JFrame implements Refreshable {
         setSize(1024,768);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        Scheduler.init();
     }
     private HashMap<Aircraft, AircraftHeader> aircraftHeaders = new HashMap<>();
     /**
@@ -58,6 +61,13 @@ public class AppFrame extends JFrame implements Refreshable {
 
     public void refresh() {
         loadNotes();
+
+        try {
+            Scheduler.getInstance().checkTriggers();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "The scheduler encountered an SQL error");
+            System.err.println(ex.getMessage());
+        }
     }
 
 
