@@ -1,15 +1,12 @@
 package model.scheduler;
 
-import data.DatabaseObject;
-import data.queries.JoinClause;
 import data.tables.DiscrepancyTable;
 import data.tables.Table;
 import model.Discrepancy;
-import model.scheduler.conditions.DiscrepancyStatusChangeCondition;
+import model.scheduler.conditions.StatusChangedCondition;
 import model.scheduler.tasks.StatusChangeTask;
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -27,12 +24,12 @@ public class Scheduler {
     private Scheduler() {
         DiscrepancyTable.getInstance().addListener(new DiscrepancyTableListener());
 
-        //initTest();
+        //unitTest();
     }
 
-    private void initTest() {
+    private void unitTest() {
         StatusChangeTask statusChangeTask =  new StatusChangeTask(131, 5);
-        DiscrepancyStatusChangeCondition statusChangeCondition = new DiscrepancyStatusChangeCondition(130, 1);
+        StatusChangedCondition statusChangeCondition = new StatusChangedCondition(130, 1);
 
         Trigger trigger = new Trigger();
         trigger.setCondition(statusChangeCondition);

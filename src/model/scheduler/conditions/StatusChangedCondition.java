@@ -5,7 +5,6 @@ import data.DatabaseObject;
 import data.queries.*;
 import data.tables.DiscrepancyTable;
 import data.tables.StatusTable;
-import data.tables.Table;
 import model.Discrepancy;
 import model.Status;
 import model.scheduler.Condition;
@@ -15,7 +14,7 @@ import java.sql.SQLException;
 /**
  * A condition that monitors a given discrepancy for when it's status is updated to a specific status
  */
-public class DiscrepancyStatusChangeCondition extends Condition {
+public class StatusChangedCondition extends Condition {
 
     private final static StatusTable STATUS_TABLE = StatusTable.getInstance();
     private final static DiscrepancyTable DISCREPANCY_TABLE = DiscrepancyTable.getInstance();
@@ -30,12 +29,12 @@ public class DiscrepancyStatusChangeCondition extends Condition {
      */
     private long statusId = DatabaseObject.INVALID_ID;
 
-    public DiscrepancyStatusChangeCondition(long discrepancyId, long statusId) {
+    public StatusChangedCondition(long discrepancyId, long statusId) {
         this.discrepancyId = discrepancyId;
         this.statusId = statusId;
     }
 
-    public DiscrepancyStatusChangeCondition(Discrepancy d, Status s) {
+    public StatusChangedCondition(Discrepancy d, Status s) {
         this(d.getId(), s.getId());
     }
 
@@ -66,7 +65,7 @@ public class DiscrepancyStatusChangeCondition extends Condition {
         Discrepancy d = DISCREPANCY_TABLE.getAllItems().get(0);
 
         System.out.println(d.getStatus().getTitle());
-        DiscrepancyStatusChangeCondition condition = new DiscrepancyStatusChangeCondition(d.getId(), 1);
+        StatusChangedCondition condition = new StatusChangedCondition(d.getId(), 1);
         System.out.println("Condition is met: " + condition.isMet());
     }
 }
