@@ -27,6 +27,10 @@ public class Scheduler {
         //unitTest();
     }
 
+    /**
+     * Adds a trigger that monitors one discrepancy for a change to a specific status and marks another as IFOC
+     * when that happens
+     */
     private void unitTest() {
         StatusChangeTask statusChangeTask =  new StatusChangeTask(131, 5);
         StatusChangedCondition statusChangeCondition = new StatusChangedCondition(130, 1);
