@@ -30,7 +30,10 @@ public class NotesPanel extends JPanel {
             removeAll();
             aircraftHeaders.clear();
 
-            for (Aircraft aircraft : aircraftTable.getAllItems())
+            Query notesQuery = new Query(aircraftTable, null,
+                    new Criterion(aircraftTable.COL_ENABLED, Table.TRUE + ""), AndOr.NONE);
+
+            for (Aircraft aircraft : aircraftTable.query(notesQuery))
                 addAircraft(aircraft);
 
     }

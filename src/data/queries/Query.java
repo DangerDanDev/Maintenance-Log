@@ -44,17 +44,17 @@ public class Query {
     private String queryString;
 
     public Query(Table table) {
-        this(table, null, null);
+        this(table, null, null, null);
     }
 
-    public Query(Table table, JoinClause joinClause, WhereClause whereClause) {
+    public Query(Table table, JoinClause joinClause, Criterion criterion, AndOr andOr) {
         TABLE = table;
 
         if(joinClause != null)
             addJoinClause(joinClause);
 
-        if(whereClause != null)
-            addWhereClause(whereClause);
+        if(criterion != null)
+            addWhereCriterion(criterion, andOr);
     }
 
     public void build() {
@@ -103,8 +103,9 @@ public class Query {
      * Adds a where clause to the query
      * @param whereClause
      */
-    public void addWhereClause(WhereClause whereClause) {
+    public void addWhereClause(WhereClause whereClause, AndOr andOr) {
         this.whereClauses.add(whereClause);
+        this.andOrs.add(andOr);
     }
 
     /**
@@ -114,11 +115,10 @@ public class Query {
      */
     public void addWhereCriterion(Criterion c, AndOr andOr) {
         WhereClause whereClause = new WhereClause(this);
-        andOrs.add(andOr);
 
         whereClause.addCriterion(c, AndOr.NONE);
 
-        addWhereClause(whereClause);
+        addWhereClause(whereClause, andOr);
     }
 
     /**
@@ -144,7 +144,7 @@ public class Query {
             WhereClause whereClause = new WhereClause(query);
             whereClause.addCriterion(new Criterion(StatusTable.getInstance().COL_ID, "1"), AndOr.AND);
             whereClause.addCriterion(new Criterion(StatusTable.getInstance().COL_SHOW_ON_NOTES, "SEIFJ"), AndOr.NONE);
-            query.addWhereClause(whereClause);
+            query.addWhereClause(whereClause, AndOr.NONE);
 
             query.build();
             System.out.println("Query with where clause: " + query);
