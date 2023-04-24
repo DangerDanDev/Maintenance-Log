@@ -18,9 +18,9 @@ public class Query {
     private final Table TABLE;
 
     /**
-     * If applicable, the selection criteria
+     * A list of all my separate where clauses
      */
-    private WhereClause whereClause;
+    private ArrayList<WhereClause> whereClauses = new ArrayList<>();
 
     /**
      * The indexer that keeps track of jdbc's "?" markers in a PerparedStatement
@@ -51,10 +51,15 @@ public class Query {
             for(JoinClause joinClause : joinClauses)
                 sql.append(joinClause.toString());
 
-        if(whereClause != null)
-            sql.append(whereClause.toString());
+        if(whereClauses.size() != 0) {
+            sql.append(" WHERE " );
+
+            for(WhereClause whereClause : whereClauses)
+                sql.append(whereClause.toString());
+        }
 
         queryString = sql.toString();
+        System.out.println(queryString);
     }
 
     @Override
@@ -66,8 +71,9 @@ public class Query {
     }
 
     public void setValues(PreparedStatement ps) throws SQLException {
-        if(getWhereClause() != null ){
-            getWhereClause().setValues(ps);
+        if(whereClauses.size() != 0) {
+            for(WhereClause whereClause : whereClauses)
+                whereClause.setValues(ps);
         }
     }
 
@@ -75,24 +81,25 @@ public class Query {
         return this.indexer;
     }
 
-    public WhereClause getWhereClause() {
-        return whereClause;
-    }
-
-    public void setWhereClause(WhereClause whereClause) {
-        this.whereClause = whereClause;
+    /**
+     * Adds a where clause to the query
+     * @param whereClause
+     */
+    public void addWhereClause(WhereClause whereClause) {
+        this.whereClauses.add(whereClause);
     }
 
     /**
-     * Passes through to the getWhereClause() method to add a criterion to the where clause
+     * Wraps a single Criterion in a where clause and adds that where clause to the query
      * @param c
      * @param andOr
      */
     public void addWhereCriterion(Criterion c, AndOr andOr) {
-        if(getWhereClause() == null)
-            setWhereClause(new WhereClause(this));
+        WhereClause whereClause = new WhereClause(this, andOr);
 
-        getWhereClause().addCriterion(c, andOr);
+        whereClause.addCriterion(c, AndOr.NONE);
+
+        addWhereClause(whereClause);
     }
 
     /**
@@ -118,7 +125,7 @@ public class Query {
             WhereClause whereClause = new WhereClause(query);
             whereClause.addCriterion(new Criterion(StatusTable.getInstance().COL_ID, "1"), AndOr.AND);
             whereClause.addCriterion(new Criterion(StatusTable.getInstance().COL_SHOW_ON_NOTES, "SEIFJ"), AndOr.NONE);
-            query.setWhereClause(whereClause);
+            query.addWhereClause(whereClause);
 
             query.build();
             System.out.println("Query with where clause: " + query);

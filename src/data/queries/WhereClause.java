@@ -32,6 +32,8 @@ public class WhereClause<T extends DatabaseObject>{
      */
     public final Query QUERY;
 
+    private AndOr andOr = AndOr.NONE;
+
     /**
      * The And/Or (if applicable)
      */
@@ -39,8 +41,13 @@ public class WhereClause<T extends DatabaseObject>{
 
     private String sqlString;
 
-    public WhereClause(Query query) {
+    public WhereClause(Query query, AndOr andOr) {
         this.QUERY = query;
+        this.andOr = andOr;
+    }
+
+    public WhereClause(Query query) {
+        this(query, AndOr.NONE);
     }
 
     public void addCriterion(Criterion c, AndOr andOr) {
@@ -49,27 +56,27 @@ public class WhereClause<T extends DatabaseObject>{
     }
 
     /**
-     * Builds the Where clause, NOT including the " WHERE "; includes only the actual expressions
+     * Builds the Where clause, surrounds it with parentheses, and adds "AND" or "OR" if applicable
      */
     public void build() {
         StringBuilder str = new StringBuilder();
 
-        str.append(" WHERE " );
+        str.append(" ( ");
 
-        //there is no where clause if there are no criteria
-        if(criteria.size() > 0) {
-            for(int i = 0; i < criteria.size(); i++) {
+        for(int i = 0; i < criteria.size(); i++) {
 
-                Criterion criterion = criteria.get(i);
-                Column column = criterion.COLUMN;
-                AndOr andOr = andOrs.get(i);
-                getIndexer().index(column);
+            Criterion criterion = criteria.get(i);
+            Column column = criterion.COLUMN;
+            AndOr andOr = andOrs.get(i);
+            getIndexer().index(column);
 
-                str.append(column + "=?"  + andOr);
-            }
+            str.append(column + "=?"  + andOr);
         }
 
+        str.append(" ) " + getAndOr());
+
         sqlString = str.toString();
+        System.out.println(sqlString);
     }
 
     public void setValues(PreparedStatement ps) throws SQLException {
@@ -79,6 +86,14 @@ public class WhereClause<T extends DatabaseObject>{
             //TODO: Convert this to use real data types instead of just converting everything to text
             ps.setString(getIndexer().indexOf(criterion), criterion.VALUE);
         }
+    }
+
+    public AndOr getAndOr() {
+        return andOr;
+    }
+
+    public void setAndOr(AndOr andOr) {
+        this.andOr = andOr;
     }
 
     @Override
