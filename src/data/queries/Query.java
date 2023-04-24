@@ -44,7 +44,17 @@ public class Query {
     private String queryString;
 
     public Query(Table table) {
+        this(table, null, null);
+    }
+
+    public Query(Table table, JoinClause joinClause, WhereClause whereClause) {
         TABLE = table;
+
+        if(joinClause != null)
+            addJoinClause(joinClause);
+
+        if(whereClause != null)
+            addWhereClause(whereClause);
     }
 
     public void build() {
