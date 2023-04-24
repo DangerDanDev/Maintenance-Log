@@ -32,8 +32,6 @@ public class WhereClause<T extends DatabaseObject>{
      */
     public final Query QUERY;
 
-    private AndOr andOr = AndOr.NONE;
-
     /**
      * The And/Or (if applicable)
      */
@@ -41,14 +39,10 @@ public class WhereClause<T extends DatabaseObject>{
 
     private String sqlString;
 
-    public WhereClause(Query query, AndOr andOr) {
+    public WhereClause(Query query) {
         this.QUERY = query;
-        this.andOr = andOr;
     }
 
-    public WhereClause(Query query) {
-        this(query, AndOr.NONE);
-    }
 
     public void addCriterion(Criterion c, AndOr andOr) {
         criteria.add(c);
@@ -73,7 +67,7 @@ public class WhereClause<T extends DatabaseObject>{
             str.append(column + "=?"  + andOr);
         }
 
-        str.append(" ) " + getAndOr());
+        str.append(" ) ");
 
         sqlString = str.toString();
         System.out.println(sqlString);
@@ -86,14 +80,6 @@ public class WhereClause<T extends DatabaseObject>{
             //TODO: Convert this to use real data types instead of just converting everything to text
             ps.setString(getIndexer().indexOf(criterion), criterion.VALUE);
         }
-    }
-
-    public AndOr getAndOr() {
-        return andOr;
-    }
-
-    public void setAndOr(AndOr andOr) {
-        this.andOr = andOr;
     }
 
     @Override

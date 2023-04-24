@@ -18,6 +18,12 @@ public class Query {
     private final Table TABLE;
 
     /**
+     * ArrayList aligned with whereClauses array list
+     * Used so we can chain multiple where clauses together
+     */
+    private ArrayList<AndOr> andOrs = new ArrayList<>();
+
+    /**
      * A list of all my separate where clauses
      */
     private ArrayList<WhereClause> whereClauses = new ArrayList<>();
@@ -47,19 +53,21 @@ public class Query {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT * FROM " + TABLE + " ");
 
-        if(joinClauses.size() != 0)
-            for(JoinClause joinClause : joinClauses)
-                sql.append(joinClause.toString());
+        for(JoinClause joinClause : joinClauses)
+            sql.append(joinClause.toString());
 
         if(whereClauses.size() != 0) {
             sql.append(" WHERE " );
 
-            for(WhereClause whereClause : whereClauses)
-                sql.append(whereClause.toString());
+            for(int i = 0; i < whereClauses.size(); i++) {
+                WhereClause whereClause = whereClauses.get(i);
+                AndOr andOr = andOrs.get(i);
+
+                sql.append(whereClause.toString() + andOr);
+            }
         }
 
         queryString = sql.toString();
-        System.out.println(queryString);
     }
 
     @Override
@@ -95,7 +103,8 @@ public class Query {
      * @param andOr
      */
     public void addWhereCriterion(Criterion c, AndOr andOr) {
-        WhereClause whereClause = new WhereClause(this, andOr);
+        WhereClause whereClause = new WhereClause(this);
+        andOrs.add(andOr);
 
         whereClause.addCriterion(c, AndOr.NONE);
 
