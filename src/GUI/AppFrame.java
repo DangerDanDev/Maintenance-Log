@@ -54,6 +54,7 @@ public class AppFrame extends JFrame implements Refreshable {
     private void createUIComponents() {
 
         //The NotesPanel has a good bit of custom initiation code
+        //so its encapsulated in its own NotesPanel class
         notesPanelMngr = new NotesPanel(this);
         notesPanel = notesPanelMngr;
     }
